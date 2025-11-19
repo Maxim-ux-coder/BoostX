@@ -95,8 +95,7 @@
                 
                 <!-- Standard Booster Card с фоновым изображением -->
                 <div class="relative mb-4 rounded-2xl overflow-hidden bg-boost-card">
-                    <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30">
-                    <div class="relative p-6 z-10">
+                    <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70"> <div class="relative p-6 z-10">
                         <h2 class="text-2xl font-bold text-white mb-3">Standard booster</h2>
                         <p class="text-gray-400 text-sm mb-6 max-w-[70%]">
                             A basic booster package that automatically improves your blockchain project's core metrics.
@@ -108,10 +107,8 @@
                     </div>
                 </div>
 
-                <!-- Advanced Booster Card с фоновым изображением -->
                 <div class="relative rounded-2xl overflow-hidden bg-boost-card">
-                    <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30">
-                    <div class="relative p-6 z-10">
+                    <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70"> <div class="relative p-6 z-10">
                         <h2 class="text-2xl font-bold text-white mb-3">Advanced booster</h2>
                         <p class="text-gray-400 text-sm mb-6 max-w-[70%]">
                             An advanced enhancement package that gives you complete control over the growth dynamics of your project.
@@ -145,7 +142,7 @@
                     <button onclick="selectBoostType(this, 'Holders')" 
                         class="w-full bg-boost-card rounded-2xl p-4 flex items-start gap-4 transition-all">
                         <div class="w-12 h-12 bg-boost-red rounded-xl flex items-center justify-center flex-shrink-0">
-                            <img src="images/Holders.png" alt="Holders" class="w-8 h-8">
+                            <img src="images/holders.png" alt="Holders" class="w-8 h-8">
                         </div>
                         <div class="flex-1 text-left">
                             <h3 class="text-white font-semibold text-lg mb-1">Holders</h3>
@@ -159,7 +156,7 @@
                     <button onclick="selectBoostType(this, 'Transactions')" 
                         class="w-full bg-boost-card rounded-2xl p-4 flex items-start gap-4 transition-all">
                         <div class="w-12 h-12 bg-boost-red rounded-xl flex items-center justify-center flex-shrink-0">
-                            <img src="images/Transactions.png" alt="Transactions" class="w-8 h-8">
+                            <img src="images/transactions.png" alt="Transactions" class="w-8 h-8">
                         </div>
                         <div class="flex-1 text-left">
                             <h3 class="text-white font-semibold text-lg mb-1">Transactions</h3>
@@ -173,7 +170,7 @@
                     <button onclick="selectBoostType(this, 'Volume')" 
                         class="w-full bg-boost-card rounded-2xl p-4 flex items-start gap-4 transition-all">
                         <div class="w-12 h-12 bg-boost-red rounded-xl flex items-center justify-center flex-shrink-0">
-                            <img src="images/Volume.png" alt="Volume" class="w-8 h-8">
+                            <img src="images/volume.png" alt="Volume" class="w-8 h-8">
                         </div>
                         <div class="flex-1 text-left">
                             <h3 class="text-white font-semibold text-lg mb-1">Volume</h3>
@@ -1327,7 +1324,13 @@
         // Функция для показа лоадера в кнопке
         function showButtonLoader(button) {
             const originalText = button.innerHTML;
+            const originalWidth = button.offsetWidth;
+            const originalHeight = button.offsetHeight;
             button.disabled = true;
+            button.style.width = originalWidth + 'px';
+            button.style.height = originalHeight + 'px';
+            button.style.minWidth = originalWidth + 'px';
+            button.style.minHeight = originalHeight + 'px';
             button.innerHTML = `
                 <div class="flex justify-center gap-1">
                     <div class="w-1.5 h-1.5 bg-white rounded-full dot-wave"></div>
@@ -2103,7 +2106,6 @@
     </script>
 </body>
 </html>
-
 
 
 
