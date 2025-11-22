@@ -5,11 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Crypto Boost Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* Custom Scrollbar for cleaner look */
+        body {
+            background-color: #111;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        /* Mobile App Container */
+        #app-container {
+            background-color: #000;
+            height: 100%;
+            width: 100%;
+            max-width: 430px; /* Mobile width constraint */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
             background: #000;
@@ -19,7 +49,6 @@
             border-radius: 2px;
         }
         
-        /* Hide scrollbar for horizontal scrolling if needed */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -28,40 +57,26 @@
             scrollbar-width: none;
         }
 
-        body {
-            background-color: #111; /* Dark background for desktop area */
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Mobile Container Centered */
-        #app-container {
-            background-color: #000;
-            min-height: 100vh;
-            width: 100%;
-            max-width: 430px; /* Typical mobile width */
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        /* Tab Animation */
-        .tab-indicator {
-            transition: all 0.3s ease;
-        }
-        
-        /* Smooth transitions for modals */
+        /* Modal Transitions */
         .modal {
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateX(100%);
+            z-index: 50; /* Base modal z-index */
         }
         .modal.active {
             transform: translateX(0);
         }
+        
+        /* Slide Up Modal (Wallet) */
+        .modal-slide-up {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(100%);
+            z-index: 100;
+        }
+        .modal-slide-up.active {
+            transform: translateY(0);
+        }
 
-        /* Gradient text for special inputs */
         .input-dark {
             background-color: #0a0a0a;
             border: 1px solid #222;
@@ -69,6 +84,24 @@
         .input-dark:focus {
             border-color: #dc2626;
             outline: none;
+        }
+
+        /* FAQ Accordion Animation */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Arbitrary large height */
+            opacity: 1;
+        }
+        .rotate-icon {
+            transition: transform 0.3s ease;
+        }
+        .rotate-icon.open {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -79,12 +112,12 @@
         <!-- MAIN CONTENT AREA (Scrollable) -->
         <div class="flex-1 overflow-y-auto pb-24 relative no-scrollbar" id="main-scroll">
             
-            <!-- Header Section with Red Glow Background -->
+            <!-- Header Section -->
             <div class="relative bg-gradient-to-b from-red-900/40 via-black to-black pt-4 px-4 pb-6">
                 
                 <!-- Top Bar -->
                 <div class="flex justify-end mb-4">
-                    <button onclick="openSettings()" class="text-gray-400 hover:text-white transition">
+                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition">
                         <!-- Hexagon Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -96,13 +129,9 @@
                 <!-- Profile Info -->
                 <div class="flex flex-col items-center">
                     <div class="relative mb-3">
-                        <!-- Avatar Placeholder (Fire Character) -->
                         <div class="w-24 h-24 rounded-full border-2 border-white/10 overflow-hidden bg-gray-800 flex items-center justify-center relative">
-                            <!-- Using an icon as placeholder if image fails, but styling it to look like the character -->
-                            <i class="fa-solid fa-fire text-orange-500 text-5xl"></i>
                             <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="absolute inset-0 w-full h-full object-cover" alt="Avatar">
                         </div>
-                        <!-- Online Status -->
                         <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black"></div>
                     </div>
 
@@ -117,7 +146,7 @@
                     
                     <p class="text-gray-400 text-xs mb-6">CryptoBoost Solutions</p>
 
-                    <!-- Social Icons Row -->
+                    <!-- Social Icons -->
                     <div class="flex gap-4 mb-2">
                         <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5">
                             <i class="fa-brands fa-telegram text-xl"></i>
@@ -148,18 +177,14 @@
             <!-- CONTENT SECTIONS -->
             <div class="p-4">
                 
-                <!-- Search Bar (Visible on some tabs, keeping consistent) -->
                 <div class="relative mb-6">
                     <input type="text" placeholder="Search..." class="w-full bg-[#0a0a0a] text-gray-300 text-sm py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-red-600 focus:outline-none transition-colors">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-gray-500"></i>
                 </div>
 
-                <!-- WALL TAB CONTENT -->
+                <!-- WALL TAB -->
                 <div id="content-wall" class="space-y-4 animate-fade-in">
-                    
-                    <!-- Post Card -->
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                        <!-- Author Header -->
                         <div class="flex items-center gap-3 mb-3">
                             <div class="w-8 h-8 rounded-full overflow-hidden">
                                 <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover">
@@ -167,21 +192,17 @@
                             <span class="text-white text-sm font-medium">Alex Kuznetsov</span>
                         </div>
 
-                        <!-- Chart Placeholder (CSS Only Mockup) -->
                         <div class="w-full h-40 bg-[#080808] rounded-lg mb-4 relative overflow-hidden border border-gray-800/50">
-                            <!-- Grid lines -->
                             <div class="absolute inset-0" style="background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;"></div>
-                            <!-- Candles (Mock) -->
+                            <!-- Simple CSS Chart -->
                             <div class="absolute bottom-10 left-10 w-2 h-12 bg-green-600 opacity-70"></div>
                             <div class="absolute bottom-12 left-14 w-2 h-8 bg-red-600 opacity-70"></div>
                             <div class="absolute bottom-8 left-18 w-2 h-16 bg-green-600 opacity-70"></div>
                             <div class="absolute bottom-20 left-22 w-2 h-4 bg-green-600 opacity-70"></div>
                             <div class="absolute bottom-10 left-26 w-2 h-14 bg-red-600 opacity-70"></div>
-                            <!-- Text overlay -->
                             <div class="absolute top-2 right-2 text-[10px] text-gray-600">BTC/USDT</div>
                         </div>
 
-                        <!-- Post Text -->
                         <div class="text-gray-300 text-xs leading-relaxed space-y-2 mb-3">
                             <p class="font-semibold text-white">I see a great setup for working out!</p>
                             <p>The graph shows an interesting formation. The levels look promising, and there is growth potential. Sign up for this contract, but don't forget about risk management.</p>
@@ -189,7 +210,6 @@
                             <p class="text-gray-500">Always DYOR! 🧐 #crypto #trading #DeFi</p>
                         </div>
 
-                        <!-- Interactions -->
                         <div class="flex items-center gap-2">
                             <button class="flex items-center gap-1.5 bg-red-600/10 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-600/20 transition">
                                 <i class="fa-solid fa-heart text-xs"></i>
@@ -197,37 +217,17 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Another Post (Short) -->
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-8 h-8 rounded-full overflow-hidden">
-                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover">
-                            </div>
-                            <span class="text-white text-sm font-medium">Alex Kuznetsov</span>
-                        </div>
-                        <p class="text-gray-300 text-xs mb-3">🚀 A promising setup is on the horizon! Keep your eyes peeled.</p>
-                        <div class="flex items-center gap-2">
-                            <button class="flex items-center gap-1.5 bg-gray-800 text-gray-400 px-3 py-1.5 rounded-lg">
-                                <i class="fa-regular fa-heart text-xs"></i>
-                                <span class="text-xs font-bold">0</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- PROJECTS TAB CONTENT (Hidden by default) -->
+                <!-- PROJECTS TAB -->
                 <div id="content-projects" class="hidden space-y-4">
-                    
-                    <!-- Banner -->
                     <div class="w-full h-24 rounded-xl bg-gradient-to-r from-red-900 to-red-600 flex flex-col items-center justify-center relative overflow-hidden mb-6">
                         <div class="absolute inset-0 bg-black/20"></div>
                         <h2 class="text-3xl font-bold text-white relative z-10">127</h2>
                         <p class="text-xs text-white/80 relative z-10 uppercase tracking-wide">Projects Launched</p>
                     </div>
 
-                    <!-- Project Card 1 -->
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden group">
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 rounded-full bg-orange-500 overflow-hidden border-2 border-gray-800">
@@ -243,56 +243,15 @@
                             </div>
                             <button class="text-gray-500 hover:text-white"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
-                        
                         <div class="flex gap-2 mt-4">
                             <button class="bg-red-900/30 text-red-500 text-xs px-4 py-2 rounded-lg flex-1 font-medium border border-red-900/50">Voted <i class="fa-solid fa-xmark ml-1"></i></button>
                             <button class="bg-[#1a1a1a] text-gray-400 text-xs px-4 py-2 rounded-lg font-medium">More info</button>
                         </div>
-
-                        <div class="grid grid-cols-3 gap-2 mt-3 border-t border-gray-800 pt-3">
-                            <div class="text-center">
-                                <div class="text-[9px] text-gray-500">Transactions</div>
-                                <div class="text-green-500 text-xs font-bold">+1.6M</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-[9px] text-gray-500">Volume</div>
-                                <div class="text-green-500 text-xs font-bold">+1.6M</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-[9px] text-gray-500">Holders</div>
-                                <div class="text-green-500 text-xs font-bold">+1.6M</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Project Card 2 -->
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden">
-                         <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-orange-500 overflow-hidden border-2 border-gray-800">
-                                     <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Soul" class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">Solana</span>
-                                    </div>
-                                    <h3 class="text-white font-bold text-sm mt-1">SoulVerse RPG</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Simplified for repetition -->
-                         <div class="grid grid-cols-3 gap-2 mt-3 border-t border-gray-800 pt-3">
-                            <div class="text-center"><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
-                            <div class="text-center"><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
-                            <div class="text-center"><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
-                        </div>
                     </div>
                 </div>
 
-                <!-- ACTIVITY TAB CONTENT (Hidden by default) -->
+                <!-- ACTIVITY TAB -->
                 <div id="content-activity" class="hidden space-y-3">
-                    
-                    <!-- Activity Item 1 -->
                     <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800">
                          <div class="flex items-center gap-2 mb-3">
                              <div class="w-6 h-6 rounded-full overflow-hidden">
@@ -313,146 +272,93 @@
                              <span class="text-green-500 text-xs font-bold">+120XP</span>
                          </div>
                     </div>
-
-                    <!-- Activity Item 2 -->
-                    <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800">
-                         <div class="flex items-center gap-2 mb-3">
-                             <div class="w-6 h-6 rounded-full overflow-hidden">
-                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover">
-                            </div>
-                            <span class="text-gray-300 text-xs">Alex Kuznetsov</span>
-                         </div>
-                         <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
-                             <div class="flex items-center gap-3">
-                                 <div class="w-10 h-10 bg-red-600/20 text-red-500 rounded-xl flex items-center justify-center">
-                                     <i class="fa-solid fa-rocket"></i>
-                                 </div>
-                                 <div>
-                                     <p class="text-[10px] text-gray-500">30 minutes ago</p>
-                                     <p class="text-white text-sm font-semibold">Token Created</p>
-                                 </div>
-                             </div>
-                             <span class="text-green-500 text-xs font-bold">+120XP</span>
-                         </div>
-                    </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- BOTTOM NAVIGATION -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-50 max-w-[375px] mx-auto">
-        <div class="flex justify-around items-center py-3 relative">
-            <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70">
-            
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                <img src="images/home.jpg" alt="Home" class="w-8 h-8">
-                <span class="text-xs">Home</span>
-            </a>
-            
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                <div class="relative">
-                    <img src="images/boostO.png" alt="Boost" class="w-8 h-8">
-                    <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full"></div>
-                </div>
-                <span class="text-xs">BoosT</span>
-            </a>
-            
-            <a href="colosseum.html" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 relative z-10">
-                <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8">
-                <span class="text-xs">Colosseum</span>
-            </a>
-            
-            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-            <img src="images/profileR.png" alt="Profile" class="w-8 h-8">
-            <span class="text-xs font-semibold text-red-600">Profile</span>
-        </a>
-        </div>
-    </nav>
+        <!-- NAVBAR (User Provided) -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-50 max-w-[430px] mx-auto w-full">
+            <div class="flex justify-around items-center py-3 relative">
+                <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70" onerror="this.style.display='none'">
+                
+                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <img src="images/home.jpg" alt="Home" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-house text-xl hidden mb-1"></i>
+                    <span class="text-xs">Home</span>
+                </a>
+                
+                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <div class="relative">
+                        <img src="images/boostO.png" alt="Boost" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <i class="fa-solid fa-fire text-xl hidden mb-1"></i>
+                        <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full"></div>
+                    </div>
+                    <span class="text-xs">BoosT</span>
+                </a>
+                
+                <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 relative z-10">
+                    <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-landmark text-xl hidden mb-1"></i>
+                    <span class="text-xs">Colosseum</span>
+                </a>
+                
+                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <img src="images/profileR.png" alt="Profile" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-user text-xl text-red-600 hidden mb-1"></i>
+                    <span class="text-xs font-semibold text-red-600">Profile</span>
+                </a>
+            </div>
+        </nav>
 
-        <!-- SETTINGS MODAL (Overlay 1) -->
-        <div id="settings-modal" class="modal fixed inset-0 bg-black z-30 flex flex-col overflow-hidden">
-            <!-- Header -->
+        <!-- --- MODALS --- -->
+
+        <!-- 1. SETTINGS MAIN MENU -->
+        <div id="settings-modal" class="modal fixed inset-0 bg-black z-40 flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-white">Settings</h2>
-                <button onclick="closeSettings()" class="text-gray-400 hover:text-white text-sm">Done</button>
+                <button onclick="closeModal('settings-modal')" class="text-gray-400 hover:text-white text-sm">Done</button>
             </div>
-
-            <!-- Search -->
             <div class="px-4 mb-6">
                 <div class="relative">
                     <input type="text" placeholder="Search settings" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
                 </div>
             </div>
-
-            <!-- Menu Items -->
-            <div class="flex-1 overflow-y-auto px-4 space-y-1">
-                <!-- Profile Settings Item -->
-                <button onclick="openProfileEdit()" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
-                    <div class="flex items-center gap-4 text-white">
-                        <i class="fa-regular fa-user w-6 text-center"></i>
-                        <span>Profile settings</span>
-                    </div>
+            <div class="flex-1 overflow-y-auto px-4 space-y-1 pb-32">
+                <button onclick="openModal('profile-edit-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                    <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-user w-6 text-center"></i><span>Profile settings</span></div>
                 </button>
-
-                <button class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
-                    <div class="flex items-center gap-4 text-white">
-                        <i class="fa-solid fa-rocket w-6 text-center"></i>
-                        <span>Launched projects</span>
-                    </div>
+                <button onclick="openModal('launched-projects-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                    <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-rocket w-6 text-center"></i><span>Launched projects</span></div>
                 </button>
-
-                <button class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
-                    <div class="flex items-center gap-4 text-white">
-                        <i class="fa-solid fa-shield-halved w-6 text-center"></i>
-                        <span>Privacy & Security</span>
-                    </div>
+                <button onclick="openModal('privacy-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                    <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-shield-halved w-6 text-center"></i><span>Privacy & Security</span></div>
                 </button>
-
-                <button class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
-                    <div class="flex items-center gap-4 text-white">
-                        <i class="fa-solid fa-dollar-sign w-6 text-center"></i>
-                        <span>Finance & Referrals</span>
-                    </div>
+                <button onclick="openModal('finance-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                    <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-dollar-sign w-6 text-center"></i><span>Finance & Referrals</span></div>
                 </button>
-
-                <button class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
-                    <div class="flex items-center gap-4 text-white">
-                        <i class="fa-regular fa-circle-question w-6 text-center"></i>
-                        <span>FAQ & Support</span>
-                    </div>
+                <button onclick="openModal('faq-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                    <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-circle-question w-6 text-center"></i><span>FAQ & Support</span></div>
                 </button>
-            </div>
-
-            <!-- Admin Panel Button -->
-            <div class="p-4 pb-8">
-                <button class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-user-gear"></i>
-                    </div>
-                    <span class="font-medium">Admin Panel</span>
-                </button>
+                <div class="pt-6">
+                    <button class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-user-gear"></i></div><span class="font-medium">Admin Panel</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- EDIT PROFILE MODAL (Overlay 2) -->
-        <div id="profile-edit-modal" class="modal fixed inset-0 bg-black z-40 flex flex-col overflow-hidden">
-            <!-- Header -->
+        <!-- 2. PROFILE EDIT MODAL -->
+        <div id="profile-edit-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <button onclick="closeProfileEdit()" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="closeModal('profile-edit-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
                     <h2 class="text-xl font-bold text-white ml-2">Profile settings</h2>
                 </div>
-                <button onclick="saveProfile()" class="text-white hover:text-red-500 transition">
-                    <i class="fa-solid fa-check text-xl"></i>
-                </button>
+                <button onclick="closeModal('profile-edit-modal')" class="text-white hover:text-red-500 transition"><i class="fa-solid fa-check text-xl"></i></button>
             </div>
-
-            <!-- Form Content -->
             <div class="flex-1 overflow-y-auto px-4 pb-8">
-                
-                <!-- Image Upload -->
                 <div class="flex justify-center mb-8 mt-4">
                     <div class="relative">
                         <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a1a1a]">
@@ -466,52 +372,365 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Inputs -->
                 <div class="space-y-5">
-                    <div>
-                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your name</label>
-                        <input type="text" value="Alex Kuznetsov" class="w-full input-dark text-white py-3 px-4 rounded-2xl placeholder-gray-600">
-                    </div>
-
-                    <div>
-                        <input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl placeholder-gray-600">
-                    </div>
-
-                    <div>
-                        <label class="block text-gray-400 text-sm mb-2 ml-1">Bio</label>
-                        <div class="relative">
-                            <textarea placeholder="Tell something about yourself" class="w-full input-dark text-white py-3 px-4 rounded-2xl placeholder-gray-600 h-32 resize-none"></textarea>
-                            <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
-                        </div>
-                    </div>
-
+                    <div><label class="block text-gray-400 text-sm mb-2 ml-1">Your name</label><input type="text" value="Alex Kuznetsov" class="w-full input-dark text-white py-3 px-4 rounded-2xl"></div>
+                    <div><input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl"></div>
+                    <div><label class="block text-gray-400 text-sm mb-2 ml-1">Bio</label><textarea placeholder="Tell something about yourself" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-32 resize-none"></textarea></div>
                     <div>
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Your role</label>
-                        <div class="relative">
-                            <div class="w-full input-dark py-3 px-4 rounded-2xl flex justify-between items-center">
-                                <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">TEAM LEAD</span>
-                                <i class="fa-solid fa-chevron-down text-white text-xs"></i>
-                            </div>
+                        <div class="w-full input-dark py-3 px-4 rounded-2xl flex justify-between items-center">
+                            <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">TEAM LEAD</span>
+                            <i class="fa-solid fa-chevron-down text-white text-xs"></i>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Your social media</label>
                         <div class="space-y-3">
-                            <div class="relative">
-                                <i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-xl"></i>
-                                <input type="text" placeholder="Your Telegram channel link" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full placeholder-gray-600 text-right text-xs">
-                            </div>
-                            <div class="relative">
-                                <i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-xl"></i>
-                                <input type="text" placeholder="Your Telegram channel link" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full placeholder-gray-600 text-right text-xs">
-                            </div>
-                             <div class="relative">
-                                <i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-xl"></i>
-                                <input type="text" placeholder="Your Telegram channel link" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full placeholder-gray-600 text-right text-xs">
+                            <div class="relative"><i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your Telegram" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
+                            <div class="relative"><i class="fa-solid fa-envelope absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your Email" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
+                            <div class="relative"><i class="fa-brands fa-x-twitter absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your X (Twitter)" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LAUNCHED PROJECTS MODAL -->
+        <div id="launched-projects-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('launched-projects-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Your projects</h2>
+            </div>
+            <div class="px-4 mb-4">
+                <div class="relative">
+                    <input type="text" placeholder="Find your project" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
+                </div>
+            </div>
+            <!-- Table Container with Horizontal Scroll -->
+            <div class="flex-1 overflow-y-auto px-4 pb-24">
+                <div class="overflow-x-auto pb-4">
+                    <table class="w-full min-w-[800px] text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#111] text-white text-xs border-b border-gray-800">
+                                <th class="p-3 rounded-tl-xl">#</th>
+                                <th class="p-3">Project</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Network</th>
+                                <th class="p-3">Contract</th>
+                                <th class="p-3">Total votes</th>
+                                <th class="p-3">Growth 24h</th>
+                                <th class="p-3 rounded-tr-xl">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs">
+                            <!-- Row 1 -->
+                            <tr class="border-b border-gray-800 hover:bg-white/5">
+                                <td class="p-3 text-white font-bold">1</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500">
+                                        <div><div class="text-white font-bold">John Davidson</div><div class="text-[10px] text-gray-500">0x742d...5e8f</div></div>
+                                    </div>
+                                </td>
+                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected <i class="fa-solid fa-ban"></i></span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full text-[10px] font-bold">Ethereum</span></td>
+                                <td class="p-3 text-gray-500 font-mono">0x742d...5e8f <i class="fa-regular fa-copy"></i></td>
+                                <td class="p-3 text-white font-bold">15,234</td>
+                                <td class="p-3 text-green-500 font-bold">+123.45%</td>
+                                <td class="p-3 flex gap-2 text-white text-sm">
+                                    <i class="fa-brands fa-telegram"></i>
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                    <i class="fa-regular fa-eye"></i>
+                                </td>
+                            </tr>
+                             <!-- Row 2 (Duplicate for demo) -->
+                             <tr class="border-b border-gray-800 hover:bg-white/5">
+                                <td class="p-3 text-white font-bold">1</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500">
+                                        <div><div class="text-white font-bold">John Davidson</div><div class="text-[10px] text-gray-500">0x742d...5e8f</div></div>
+                                    </div>
+                                </td>
+                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected <i class="fa-solid fa-ban"></i></span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full text-[10px] font-bold">Ethereum</span></td>
+                                <td class="p-3 text-gray-500 font-mono">0x742d...5e8f <i class="fa-regular fa-copy"></i></td>
+                                <td class="p-3 text-white font-bold">15,234</td>
+                                <td class="p-3 text-green-500 font-bold">+123.45%</td>
+                                <td class="p-3 flex gap-2 text-white text-sm">
+                                    <i class="fa-brands fa-telegram"></i>
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                    <i class="fa-regular fa-eye"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="w-full mt-4 bg-red-600 text-white py-3 rounded-2xl font-bold text-lg hover:bg-red-700 transition">Publish project +</button>
+            </div>
+        </div>
+
+        <!-- 4. PRIVACY & SECURITY MODAL -->
+        <div id="privacy-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('privacy-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Privacy & Security</h2>
+            </div>
+            <div class="flex-1 px-4 pt-4">
+                <p class="text-white text-sm mb-3">Set financial password</p>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <input type="password" value="1234444435cgdfg" class="w-full input-dark text-white py-3 px-4 rounded-full pr-10">
+                        <i class="fa-regular fa-eye absolute right-4 top-3.5 text-white"></i>
+                    </div>
+                    <input type="password" placeholder="Repeat the password" class="w-full input-dark text-white py-3 px-4 rounded-full placeholder-gray-700">
+                    <button onclick="closeModal('privacy-modal')" class="w-full bg-[#1a1a1a] text-gray-400 py-3 rounded-full font-medium mt-6 hover:bg-gray-800 transition">Confirm financial password</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. FINANCE & REFERRALS MODAL -->
+        <div id="finance-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('finance-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Finance & Referrals</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-24">
+                <h3 class="text-white mb-3">Your wallets</h3>
+                <div class="space-y-2 mb-4">
+                    <!-- Wallet 1 -->
+                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div>
+                            <div><div class="text-white font-bold text-sm">Phantom wallet</div><div class="text-[10px] text-gray-500">0x742d...5e8f <i class="fa-regular fa-copy"></i></div></div>
+                        </div>
+                        <button class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                    <!-- Wallet 2 -->
+                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div>
+                            <div><div class="text-white font-bold text-sm">Phantom wallet</div><div class="text-[10px] text-gray-500">0x742d...5e8f <i class="fa-regular fa-copy"></i></div></div>
+                        </div>
+                        <button class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                </div>
+                
+                <button onclick="openWalletModal()" class="w-full bg-red-600 text-white py-3 rounded-full font-bold mb-6 hover:bg-red-700 transition">Connect wallet</button>
+
+                <h3 class="text-white mb-3">Invite your friends and earn commissions</h3>
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-6 flex flex-col items-center mb-6">
+                    <button class="w-full bg-red-600 text-white py-2 rounded-lg font-bold mb-3 flex items-center justify-center gap-2">Copy Referral Link <i class="fa-regular fa-copy"></i></button>
+                    <div class="text-[10px] bg-[#1a1a1a] text-gray-500 px-3 py-1 rounded-full mb-4">https://t.me/boostx?ref=12345BTX</div>
+                    <div class="text-xs text-gray-400 mb-3">or scan QR-code</div>
+                    <div class="bg-white p-2 rounded-lg">
+                         <!-- Mock QR -->
+                         <div class="w-32 h-32 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example')] bg-contain"></div>
+                    </div>
+                </div>
+
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-4 mb-6 text-center relative overflow-hidden">
+                     <div class="text-gray-400 text-xs mb-1">You've done a great job, and now you have:</div>
+                     <div class="bg-gradient-to-r from-red-900 to-red-600 rounded-xl py-4 relative z-10">
+                         <span class="text-4xl font-bold text-white">1234</span>
+                         <span class="text-white text-sm block leading-tight">active<br>referrals</span>
+                     </div>
+                     <div class="flex justify-between items-center mt-3">
+                         <span class="bg-[#1a1a1a] text-gray-500 text-[10px] px-2 py-1 rounded">Your total income:</span>
+                         <span class="text-green-500 font-bold text-lg">1,124.34$</span>
+                     </div>
+                </div>
+
+                <!-- Referrals List -->
+                <h3 class="text-white mb-3">Your referrals</h3>
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center mb-4">
+                    <i class="fa-regular fa-face-sad-tear text-4xl text-white mb-2"></i>
+                    <p class="text-gray-400 text-xs">You don't have any referrals yet<br>Share your referral link to get referrals data</p>
+                </div>
+
+                 <!-- Referrals Table (Horizontal Scroll) -->
+                 <div class="relative mb-4">
+                    <input type="text" placeholder="Find your referral" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
+                </div>
+                 <div class="overflow-x-auto pb-4">
+                    <table class="w-full min-w-[700px] text-left text-xs text-white">
+                        <thead class="text-gray-400 border-b border-gray-800 bg-[#111]">
+                            <tr><th class="p-3">#</th><th class="p-3">Referral</th><th class="p-3">Date</th><th class="p-3">Projects</th><th class="p-3">Votes</th><th class="p-3">Activity</th><th class="p-3">Income</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800 hover:bg-white/5">
+                                <td class="p-3 font-bold">1</td>
+                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div><div>John</div><div class="text-gray-500 text-[9px]">0x...5e8f</div></div></td>
+                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-gray-400">17 hours ago</td><td class="p-3 text-green-500 font-bold">+12345$</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-white/5">
+                                <td class="p-3 font-bold">1</td>
+                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div><div>John</div><div class="text-gray-500 text-[9px]">0x...5e8f</div></div></td>
+                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-gray-400">17 hours ago</td><td class="p-3 text-green-500 font-bold">+12345$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- CONNECT WALLET MODAL (Slide Up) -->
+        <div id="wallet-modal" class="modal-slide-up fixed inset-0 z-[100] flex items-end justify-center hidden">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWalletModal()"></div>
+            <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-red-900/30">
+                <h3 class="text-white text-2xl font-bold text-center mb-2">Connect your wallet</h3>
+                <p class="text-gray-400 text-center text-sm mb-8">Choose a wallet provider below to securely link your account and start using BoosTX.</p>
+                
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <!-- Metamask -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
+                        <i class="fa-solid fa-shapes text-gray-800 text-5xl absolute opacity-20"></i>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-12 h-12 relative z-10" alt="Metamask">
+                    </button>
+                    <!-- Trust Wallet -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
+                         <i class="fa-solid fa-shield-halved text-blue-600 text-5xl absolute opacity-10"></i>
+                         <i class="fa-solid fa-shield-halved text-blue-500 text-4xl relative z-10"></i>
+                    </button>
+                    <!-- Phantom -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
+                        <i class="fa-solid fa-ghost text-purple-400 text-4xl relative z-10"></i>
+                    </button>
+                    <!-- Coinbase -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
+                         <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center relative z-10"><div class="w-6 h-6 bg-white rounded"></div></div>
+                    </button>
+                    <!-- WalletConnect -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
+                         <i class="fa-solid fa-bolt text-blue-400 text-4xl relative z-10"></i>
+                    </button>
+                    <!-- More -->
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex flex-wrap content-center justify-center gap-1 p-4 hover:bg-white/5 transition">
+                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. FAQ & SUPPORT MODAL -->
+        <div id="faq-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('faq-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">FAQ & Support</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-24">
+                <h3 class="text-gray-300 mb-4">FAQ about the BoosTX</h3>
+                
+                <div class="space-y-3 mb-8">
+                    <!-- FAQ Item 1 -->
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                        <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
+                            <span class="text-white text-sm font-bold pr-4">How does your platform differ from regular boosting?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
+                        </button>
+                        <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
+                            We don't do blind cheating. Our platform combines smart algorithms and a vibrant community. Boosts strategically increase visibility, and contests identify real leaders through votes.
+                        </div>
+                    </div>
+                     <!-- FAQ Item 2 -->
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                        <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
+                            <span class="text-white text-sm font-bold pr-4">My token is brand new, is it suitable?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
+                        </button>
+                         <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
+                            Yes, absolutely! We are designed for new projects to gain initial traction and visibility.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 3 -->
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                        <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
+                            <span class="text-white text-sm font-bold pr-4">Which networks do you support?</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
+                        </button>
+                        <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
+                            Currently working with Solana, BSC, Ethereum, Arbitrum, Base, and Tron.
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-gray-400 text-xs text-center mb-4">If you still have any questions, please contact our support team:</p>
+                
+                <div class="space-y-3">
+                    <button onclick="openModal('support-form-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-[#222] transition">Support team</button>
+                    <button onclick="openModal('tickets-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-[#222] transition">Tickets list</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6.1 SUPPORT FORM MODAL -->
+        <div id="support-form-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('support-form-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Support</h2>
+            </div>
+            <div class="flex-1 px-4 pt-4">
+                <h3 class="text-white text-lg mb-4">How can we help you?</h3>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Subject of the request" class="w-full input-dark text-white py-3 px-4 rounded-2xl placeholder-gray-600">
+                    <div class="relative">
+                        <textarea placeholder="Tell us about your problem" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-64 resize-none placeholder-gray-600"></textarea>
+                        <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 1000</span>
+                    </div>
+                    <button class="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg mt-4 hover:bg-red-700 transition">Send an appeal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6.2 TICKETS LIST MODAL -->
+        <div id="tickets-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('tickets-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Tickets list</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-3">
+                <!-- Ticket 1 -->
+                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500">
+                            <div>
+                                <div class="text-white text-sm">John Davidson</div>
+                                <div class="text-[10px] text-gray-500">#TK-2847</div>
                             </div>
                         </div>
+                        <span class="text-[10px] text-gray-400">2 min</span>
+                    </div>
+                    <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
+                    <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now, but the transaction is...</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-dollar-sign text-[8px]"></i> Finance</span>
+                        <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
+                    </div>
+                </div>
+                <!-- Ticket 2 (Duplicate) -->
+                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500">
+                            <div>
+                                <div class="text-white text-sm">John Davidson</div>
+                                <div class="text-[10px] text-gray-500">#TK-2847</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-gray-400">2 min</span>
+                    </div>
+                    <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
+                    <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now, but the transaction is...</p>
+                    <div class="flex justify-between items-center">
+                        <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-dollar-sign text-[8px]"></i> Finance</span>
+                        <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
                     </div>
                 </div>
             </div>
@@ -520,58 +739,62 @@
     </div>
 
     <script>
-        // Tab Switching Logic
+        // --- TAB LOGIC ---
         function switchTab(tabName) {
-            // Hide all contents
             document.getElementById('content-wall').classList.add('hidden');
             document.getElementById('content-projects').classList.add('hidden');
             document.getElementById('content-activity').classList.add('hidden');
-            
-            // Show target content
             document.getElementById('content-' + tabName).classList.remove('hidden');
 
-            // Reset all tab styles
-            const tabs = ['wall', 'projects', 'activity'];
-            tabs.forEach(t => {
+            ['wall', 'projects', 'activity'].forEach(t => {
                 const btn = document.getElementById('tab-' + t);
                 const icon = btn.querySelector('i');
-                
                 btn.classList.remove('text-white', 'border-red-600');
                 btn.classList.add('text-gray-500', 'border-transparent');
-                
-                if(icon) {
-                    icon.classList.remove('text-red-500'); // Optional: reset icon color if needed
-                }
+                if(icon) icon.classList.remove('text-red-500');
             });
 
-            // Active Tab Style
             const activeBtn = document.getElementById('tab-' + tabName);
             activeBtn.classList.remove('text-gray-500', 'border-transparent');
             activeBtn.classList.add('text-white', 'border-red-600');
         }
 
-        // Settings Modal Logic
-        function openSettings() {
-            document.getElementById('settings-modal').classList.add('active');
+        // --- MODAL SYSTEM ---
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
         }
 
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.remove('active');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
-        // Profile Edit Modal Logic
-        function openProfileEdit() {
-            document.getElementById('profile-edit-modal').classList.add('active');
+        // Wallet Modal specific
+        function openWalletModal() {
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.remove('hidden');
+            // slight delay to allow display:block to render before adding active class for transition
+            setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        function closeProfileEdit() {
-            document.getElementById('profile-edit-modal').classList.remove('active');
+        function closeWalletModal() {
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // "Save" Logic (Just closes the modal for demo)
-        function saveProfile() {
-            // Here you would handle form submission
-            closeProfileEdit();
+        // --- FAQ ACCORDION ---
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.rotate-icon');
+            
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('open');
+            } else {
+                // Close others if needed (optional)
+                content.classList.add('open');
+                icon.classList.add('open');
+            }
         }
     </script>
 </body>
