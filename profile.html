@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Crypto Boost Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* === GLOBAL SETTINGS === */
         body {
-            background-color: #111;
+            background-color: #111; /* Dark background for desktop */
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
@@ -20,105 +21,147 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevent body scroll */
+            overflow: hidden;
+            color-scheme: dark;
         }
 
-        /* Mobile App Container */
+        /* === APP CONTAINER (THE PHONE) === */
         #app-container {
             background-color: #000;
-            height: 100%;
             width: 100%;
-            max-width: 430px; /* Mobile width constraint */
+            height: 100%;
             position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            overflow: hidden;
+            z-index: 10;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+        /* === DESKTOP SPECIFIC STYLES (THE PHONE LOOK) === */
+        @media (min-width: 480px) {
+            #app-container {
+                max-width: 410px; /* iPhone Pro Max width approx */
+                max-height: 850px; /* Limit height to look like a phone */
+                height: 90vh; /* Take up 90% of screen height */
+                border-radius: 40px; /* Rounded corners like a modern phone */
+                box-shadow: 
+                    0 0 0 12px #1a1a1a, /* Inner bezel imitation */
+                    0 0 0 14px #333, /* Outer bezel imitation */
+                    0 50px 100px -20px rgba(0,0,0,0.8); /* Deep shadow */
+                border: 1px solid #333;
+                /* Hardware Acceleration for container */
+                transform: translateZ(0); 
+            }
+            
+            /* Add a dynamic light reflection on the "screen" */
+            #app-container::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0; height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                z-index: 999;
+                pointer-events: none;
+            }
         }
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 2px;
-        }
+
+        /* Scrollbar Hiding but functional */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* === HIGH PERFORMANCE ANIMATIONS === */
         
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Modal Transitions */
+        /* Modal Transitions - GPU Accelerated */
         .modal {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(100%);
-            z-index: 50; /* Base modal z-index */
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            transform: translate3d(100%, 0, 0); /* translate3d forces GPU usage */
+            z-index: 60;
+            will-change: transform;
         }
-        .modal.active {
-            transform: translateX(0);
-        }
+        .modal.active { transform: translate3d(0, 0, 0); }
         
-        /* Slide Up Modal (Wallet) */
+        /* Slide Up Modal */
         .modal-slide-up {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: translate3d(0, 100%, 0);
             z-index: 100;
+            will-change: transform;
         }
-        .modal-slide-up.active {
-            transform: translateY(0);
-        }
+        .modal-slide-up.active { transform: translate3d(0, 0, 0); }
 
         .input-dark {
             background-color: #0a0a0a;
             border: 1px solid #222;
-        }
-        .input-dark:focus {
-            border-color: #dc2626;
             outline: none;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input-dark:focus { 
+            border-color: #dc2626; 
+            background-color: #0f0f0f;
         }
 
-        /* FAQ Accordion Animation */
+        /* Checkbox Custom Style */
+        .custom-checkbox input:checked + div {
+            background-color: #dc2626;
+            border-color: #dc2626;
+        }
+        .custom-checkbox input:checked + div svg {
+            display: block;
+        }
+
+        /* Toast Animations */
+        @keyframes slideInRight { 
+            from { transform: translate3d(100%, 0, 0); opacity: 0; } 
+            to { transform: translate3d(0, 0, 0); opacity: 1; } 
+        }
+        @keyframes fadeOut { 
+            from { opacity: 1; } 
+            to { opacity: 0; } 
+        }
+        .toast { animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast.hiding { animation: fadeOut 0.3s ease-in forwards; }
+
+        /* Chart Animation */
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawChart 2.5s ease-out forwards;
+        }
+        @keyframes drawChart { to { stroke-dashoffset: 0; } }
+        
+        .chart-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 
+            0% { r: 3; opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 
+            50% { r: 5; opacity: 0.7; box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 
+            100% { r: 3; opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } 
+        }
+
+        /* Accordion */
         .accordion-content {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
+            max-height: 0; overflow: hidden; opacity: 0;
+            will-change: max-height, opacity;
         }
-        .accordion-content.open {
-            max-height: 500px; /* Arbitrary large height */
-            opacity: 1;
-        }
-        .rotate-icon {
-            transition: transform 0.3s ease;
-        }
-        .rotate-icon.open {
-            transform: rotate(180deg);
-        }
+        .accordion-content.open { max-height: 500px; opacity: 1; }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotate-icon.open { transform: rotate(180deg); }
+
+        /* Fade In for content */
+        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Smooth Tap Highlight Removal */
+        * { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
 
     <div id="app-container">
         
-        <!-- MAIN CONTENT AREA (Scrollable) -->
         <div class="flex-1 overflow-y-auto pb-24 relative no-scrollbar" id="main-scroll">
             
-            <!-- Header Section -->
             <div class="relative bg-gradient-to-b from-red-900/40 via-black to-black pt-4 px-4 pb-6">
-                
-                <!-- Top Bar -->
                 <div class="flex justify-end mb-4">
-                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition">
-                        <!-- Hexagon Icon -->
+                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition active:scale-95 transform duration-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -126,108 +169,95 @@
                     </button>
                 </div>
 
-                <!-- Profile Info -->
                 <div class="flex flex-col items-center">
-                    <div class="relative mb-3">
-                        <div class="w-24 h-24 rounded-full border-2 border-white/10 overflow-hidden bg-gray-800 flex items-center justify-center relative">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="absolute inset-0 w-full h-full object-cover" alt="Avatar">
+                    <div class="relative mb-3 group">
+                        <div class="w-24 h-24 rounded-full border-2 border-white/10 overflow-hidden bg-gray-800 flex items-center justify-center relative transition-transform duration-300 group-hover:scale-105">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="absolute inset-0 w-full h-full object-cover">
                         </div>
-                        <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black"></div>
+                        <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
                     </div>
-
                     <div class="flex items-center gap-2 mb-1">
                         <h1 class="text-2xl font-bold text-white">Alex Kuznetsov</h1>
                         <i class="fa-solid fa-certificate text-red-600"></i>
                     </div>
-
                     <div class="mb-3">
-                        <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Team Lead</span>
+                        <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-[0_0_10px_rgba(220,38,38,0.5)]">Team Lead</span>
                     </div>
-                    
                     <p class="text-gray-400 text-xs mb-6">CryptoBoost Solutions</p>
 
-                    <!-- Social Icons -->
                     <div class="flex gap-4 mb-2">
-                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5">
-                            <i class="fa-brands fa-telegram text-xl"></i>
-                        </button>
-                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5">
-                            <i class="fa-solid fa-envelope text-xl"></i>
-                        </button>
-                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5">
-                            <i class="fa-brands fa-x-twitter text-xl"></i>
-                        </button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-brands fa-telegram text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-solid fa-envelope text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-brands fa-x-twitter text-xl"></i></button>
                     </div>
                 </div>
             </div>
 
-            <!-- TABS Navigation -->
-            <div class="flex w-full border-b border-gray-800 px-4 sticky top-0 bg-black/95 backdrop-blur-sm z-20">
-                <button onclick="switchTab('wall')" id="tab-wall" class="flex-1 py-3 text-center text-sm font-medium text-white border-b-2 border-red-600 flex items-center justify-center gap-2 transition-colors">
+            <div class="flex w-full border-b border-gray-800 px-4 sticky top-0 bg-black/95 backdrop-blur-md z-20 select-none">
+                <button onclick="switchTab('wall')" id="tab-wall" class="flex-1 py-3 text-center text-sm font-medium text-white border-b-2 border-red-600 flex items-center justify-center gap-2 transition-all duration-300">
                     Wall <i class="fa-regular fa-newspaper text-xs"></i>
                 </button>
-                <button onclick="switchTab('projects')" id="tab-projects" class="flex-1 py-3 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-2 hover:text-gray-300 transition-colors">
+                <button onclick="switchTab('projects')" id="tab-projects" class="flex-1 py-3 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-2 hover:text-gray-300 transition-all duration-300">
                     Projects <i class="fa-solid fa-rocket text-xs"></i>
                 </button>
-                <button onclick="switchTab('activity')" id="tab-activity" class="flex-1 py-3 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-2 hover:text-gray-300 transition-colors">
+                <button onclick="switchTab('activity')" id="tab-activity" class="flex-1 py-3 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-2 hover:text-gray-300 transition-all duration-300">
                     Activity <i class="fa-solid fa-fire text-xs"></i>
                 </button>
             </div>
 
-            <!-- CONTENT SECTIONS -->
-            <div class="p-4">
+            <div id="swipe-area" class="p-4 min-h-[400px]">
                 
                 <div class="relative mb-6">
-                    <input type="text" placeholder="Search..." class="w-full bg-[#0a0a0a] text-gray-300 text-sm py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-red-600 focus:outline-none transition-colors">
+                    <input type="text" placeholder="Search..." class="w-full bg-[#0a0a0a] text-gray-300 text-sm py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-red-600 focus:outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(220,38,38,0.2)]">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-gray-500"></i>
                 </div>
 
-                <!-- WALL TAB -->
                 <div id="content-wall" class="space-y-4 animate-fade-in">
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 transition-all hover:border-gray-700">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-8 h-8 rounded-full overflow-hidden">
-                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover">
-                            </div>
+                            <div class="w-8 h-8 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
                             <span class="text-white text-sm font-medium">Alex Kuznetsov</span>
                         </div>
 
-                        <div class="w-full h-40 bg-[#080808] rounded-lg mb-4 relative overflow-hidden border border-gray-800/50">
-                            <div class="absolute inset-0" style="background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;"></div>
-                            <!-- Simple CSS Chart -->
-                            <div class="absolute bottom-10 left-10 w-2 h-12 bg-green-600 opacity-70"></div>
-                            <div class="absolute bottom-12 left-14 w-2 h-8 bg-red-600 opacity-70"></div>
-                            <div class="absolute bottom-8 left-18 w-2 h-16 bg-green-600 opacity-70"></div>
-                            <div class="absolute bottom-20 left-22 w-2 h-4 bg-green-600 opacity-70"></div>
-                            <div class="absolute bottom-10 left-26 w-2 h-14 bg-red-600 opacity-70"></div>
-                            <div class="absolute top-2 right-2 text-[10px] text-gray-600">BTC/USDT</div>
+                        <div class="w-full h-48 bg-[#080808] rounded-lg mb-4 relative overflow-hidden border border-gray-800/50 p-2">
+                            <svg viewBox="0 0 300 100" class="w-full h-full" preserveAspectRatio="none">
+                                <line x1="0" y1="25" x2="300" y2="25" stroke="#222" stroke-width="1" />
+                                <line x1="0" y1="50" x2="300" y2="50" stroke="#222" stroke-width="1" />
+                                <line x1="0" y1="75" x2="300" y2="75" stroke="#222" stroke-width="1" />
+                                <defs>
+                                    <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="rgba(220, 38, 38, 0.3)"/>
+                                        <stop offset="100%" stop-color="rgba(220, 38, 38, 0)"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0,80 C20,75 40,90 60,60 S100,20 140,50 S200,90 240,40 S280,10 300,30 V100 H0 Z" fill="url(#chartGradient)" />
+                                <path d="M0,80 C20,75 40,90 60,60 S100,20 140,50 S200,90 240,40 S280,10 300,30" fill="none" stroke="#dc2626" stroke-width="2" class="chart-line" />
+                                <circle cx="300" cy="30" r="3" fill="#fff" class="chart-pulse" />
+                            </svg>
+                            <div class="absolute top-2 right-2 text-[10px] text-gray-500">BTC/USDT</div>
                         </div>
 
                         <div class="text-gray-300 text-xs leading-relaxed space-y-2 mb-3">
                             <p class="font-semibold text-white">I see a great setup for working out!</p>
-                            <p>The graph shows an interesting formation. The levels look promising, and there is growth potential. Sign up for this contract, but don't forget about risk management.</p>
-                            <p class="font-mono text-[10px] bg-gray-800 p-1.5 rounded text-gray-400 break-all select-all">CA: TXm9K3PqJ8vN2hL6wRpYt4sD9fGcE1bVnH</p>
+                            <p>The graph shows an interesting formation. The levels look promising. Sign up for this contract, but don't forget about risk management.</p>
+                            <p class="font-mono text-[10px] bg-gray-800 p-1.5 rounded text-gray-400 break-all select-all hover:text-white transition cursor-pointer">CA: TXm9K3PqJ8vN2hL6wRpYt4sD9fGcE1bVnH</p>
                             <p class="text-gray-500">Always DYOR! 🧐 #crypto #trading #DeFi</p>
                         </div>
-
                         <div class="flex items-center gap-2">
-                            <button class="flex items-center gap-1.5 bg-red-600/10 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-600/20 transition">
-                                <i class="fa-solid fa-heart text-xs"></i>
-                                <span class="text-xs font-bold">444</span>
+                            <button class="flex items-center gap-1.5 bg-red-600/10 text-red-500 px-3 py-1.5 rounded-lg active:scale-95 transition">
+                                <i class="fa-solid fa-heart text-xs"></i> <span class="text-xs font-bold">444</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROJECTS TAB -->
-                <div id="content-projects" class="hidden space-y-4">
-                    <div class="w-full h-24 rounded-xl bg-gradient-to-r from-red-900 to-red-600 flex flex-col items-center justify-center relative overflow-hidden mb-6">
+                <div id="content-projects" class="hidden space-y-4 animate-fade-in">
+                    <div class="w-full h-24 rounded-xl bg-gradient-to-r from-red-900 to-red-600 flex flex-col items-center justify-center relative overflow-hidden mb-6 shadow-lg shadow-red-900/20">
                         <div class="absolute inset-0 bg-black/20"></div>
                         <h2 class="text-3xl font-bold text-white relative z-10">127</h2>
                         <p class="text-xs text-white/80 relative z-10 uppercase tracking-wide">Projects Launched</p>
                     </div>
-
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden">
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden transition-all hover:border-gray-600">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 rounded-full bg-orange-500 overflow-hidden border-2 border-gray-800">
@@ -245,25 +275,25 @@
                         </div>
                         <div class="flex gap-2 mt-4">
                             <button class="bg-red-900/30 text-red-500 text-xs px-4 py-2 rounded-lg flex-1 font-medium border border-red-900/50">Voted <i class="fa-solid fa-xmark ml-1"></i></button>
-                            <button class="bg-[#1a1a1a] text-gray-400 text-xs px-4 py-2 rounded-lg font-medium">More info</button>
+                            <button class="bg-[#1a1a1a] text-gray-400 text-xs px-4 py-2 rounded-lg font-medium hover:bg-[#222] transition">More info</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-3 border-t border-gray-800 pt-3">
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Transactions</div><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Volume</div><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Holders</div><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ACTIVITY TAB -->
-                <div id="content-activity" class="hidden space-y-3">
-                    <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800">
+                <div id="content-activity" class="hidden space-y-3 animate-fade-in">
+                    <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
                          <div class="flex items-center gap-2 mb-3">
-                             <div class="w-6 h-6 rounded-full overflow-hidden">
-                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover">
-                            </div>
+                             <div class="w-6 h-6 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
                             <span class="text-gray-300 text-xs">Alex Kuznetsov</span>
                          </div>
                          <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
                              <div class="flex items-center gap-3">
-                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white">
-                                     <i class="fa-regular fa-heart"></i>
-                                 </div>
+                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><i class="fa-regular fa-heart"></i></div>
                                  <div>
                                      <p class="text-[10px] text-gray-500">30 minutes ago</p>
                                      <p class="text-white text-sm font-semibold">Voted for CryptoMoon</p>
@@ -277,476 +307,384 @@
             </div>
         </div>
 
-        <!-- NAVBAR (User Provided) -->
-        <nav class="absolute bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-50 max-w-[430px] mx-auto w-full">
-            <div class="flex justify-around items-center py-3 relative">
+        <nav class="absolute bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-gray-900 z-50 w-full h-[70px]">
+            <div class="flex justify-around items-center h-full relative pb-2">
                 <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70" onerror="this.style.display='none'">
                 
-                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                    <img src="images/home.jpg" alt="Home" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                    <i class="fa-solid fa-house text-xl hidden mb-1"></i>
-                    <span class="text-xs">Home</span>
+                <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors z-10 group">
+                    <img src="images/home.jpg" class="w-7 h-7 group-hover:scale-110 transition duration-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-house text-xl hidden mb-0.5 group-hover:text-red-500 transition"></i>
+                    <span class="text-[10px]">Home</span>
                 </a>
-                
-                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                    <div class="relative">
-                        <img src="images/boostO.png" alt="Boost" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <i class="fa-solid fa-fire text-xl hidden mb-1"></i>
-                        <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full"></div>
+                <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors z-10 group">
+                    <div class="relative group-hover:scale-110 transition duration-200">
+                        <img src="images/boostO.png" class="w-7 h-7" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <i class="fa-solid fa-fire text-xl hidden mb-0.5 group-hover:text-red-500 transition"></i>
+                        <div class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-600 rounded-full"></div>
                     </div>
-                    <span class="text-xs">BoosT</span>
+                    <span class="text-[10px]">BoosT</span>
                 </a>
-                
-                <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 relative z-10">
-                    <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                    <i class="fa-solid fa-landmark text-xl hidden mb-1"></i>
-                    <span class="text-xs">Colosseum</span>
+                <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors z-10 group">
+                    <img src="images/colosseum.jpg" class="w-7 h-7 group-hover:scale-110 transition duration-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-house text-xl hidden mb-0.5 group-hover:text-red-500 transition"></i>
+                    <span class="text-[10px]">Colosseum</span>
                 </a>
-                
-                <a href="#" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                    <img src="images/profileR.png" alt="Profile" class="w-8 h-8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                    <i class="fa-solid fa-user text-xl text-red-600 hidden mb-1"></i>
-                    <span class="text-xs font-semibold text-red-600">Profile</span>
+                <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors z-10 group">
+                    <img src="images/profileR.png" class="w-7 h-7 group-hover:scale-110 transition duration-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <i class="fa-solid fa-user text-xl text-red-600 hidden mb-0.5"></i>
+                    <span class="text-[10px] font-semibold text-red-600">Profile</span>
                 </a>
             </div>
         </nav>
 
-        <!-- --- MODALS --- -->
-
-        <!-- 1. SETTINGS MAIN MENU -->
-        <div id="settings-modal" class="modal fixed inset-0 bg-black z-40 flex flex-col overflow-hidden">
+        <div id="settings-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-white">Settings</h2>
                 <button onclick="closeModal('settings-modal')" class="text-gray-400 hover:text-white text-sm">Done</button>
             </div>
             <div class="px-4 mb-6">
                 <div class="relative">
-                    <input type="text" placeholder="Search settings" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
+                    <input type="text" placeholder="Search settings" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none transition-all">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto px-4 space-y-1 pb-32">
-                <button onclick="openModal('profile-edit-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                <button onclick="openModal('profile-edit-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-user w-6 text-center"></i><span>Profile settings</span></div>
                 </button>
-                <button onclick="openModal('launched-projects-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                <button onclick="openModal('launched-projects-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-rocket w-6 text-center"></i><span>Launched projects</span></div>
                 </button>
-                <button onclick="openModal('privacy-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                <button onclick="openModal('privacy-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-shield-halved w-6 text-center"></i><span>Privacy & Security</span></div>
                 </button>
-                <button onclick="openModal('finance-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                <button onclick="openModal('finance-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-dollar-sign w-6 text-center"></i><span>Finance & Referrals</span></div>
                 </button>
-                <button onclick="openModal('faq-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition">
+                <button onclick="openModal('faq-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-circle-question w-6 text-center"></i><span>FAQ & Support</span></div>
                 </button>
                 <div class="pt-6">
-                    <button class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition">
+                    <button class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition shadow-lg shadow-red-900/30 active:scale-[0.98]">
                         <div class="flex items-center gap-2"><i class="fa-solid fa-user-gear"></i></div><span class="font-medium">Admin Panel</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- 2. PROFILE EDIT MODAL -->
-        <div id="profile-edit-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex justify-between items-center">
+        <div id="profile-edit-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
+             <div class="px-4 pt-6 pb-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <button onclick="closeModal('profile-edit-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="closeModal('profile-edit-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                     <h2 class="text-xl font-bold text-white ml-2">Profile settings</h2>
                 </div>
                 <button onclick="closeModal('profile-edit-modal')" class="text-white hover:text-red-500 transition"><i class="fa-solid fa-check text-xl"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto px-4 pb-8">
-                <div class="flex justify-center mb-8 mt-4">
+                 <div class="flex justify-center mb-8 mt-4">
                     <div class="relative">
                         <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a1a1a]">
                              <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover opacity-60">
                         </div>
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-10 h-8 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center">
+                            <button class="w-10 h-8 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center hover:bg-white/30 transition">
                                 <i class="fa-solid fa-image text-white text-sm"></i>
                                 <i class="fa-solid fa-plus text-white text-[8px] ml-0.5 -mt-2"></i>
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="space-y-5">
+                 <div class="space-y-5">
                     <div><label class="block text-gray-400 text-sm mb-2 ml-1">Your name</label><input type="text" value="Alex Kuznetsov" class="w-full input-dark text-white py-3 px-4 rounded-2xl"></div>
                     <div><input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl"></div>
                     <div><label class="block text-gray-400 text-sm mb-2 ml-1">Bio</label><textarea placeholder="Tell something about yourself" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-32 resize-none"></textarea></div>
-                    <div>
-                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your role</label>
-                        <div class="w-full input-dark py-3 px-4 rounded-2xl flex justify-between items-center">
-                            <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">TEAM LEAD</span>
-                            <i class="fa-solid fa-chevron-down text-white text-xs"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your social media</label>
-                        <div class="space-y-3">
-                            <div class="relative"><i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your Telegram" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
-                            <div class="relative"><i class="fa-solid fa-envelope absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your Email" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
-                            <div class="relative"><i class="fa-brands fa-x-twitter absolute left-4 top-3.5 text-white text-xl"></i><input type="text" placeholder="Your X (Twitter)" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-full text-right text-xs"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. LAUNCHED PROJECTS MODAL -->
-        <div id="launched-projects-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+        <div id="launched-projects-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('launched-projects-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="closeModal('launched-projects-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Your projects</h2>
             </div>
-            <div class="px-4 mb-4">
-                <div class="relative">
-                    <input type="text" placeholder="Find your project" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
-                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
-                </div>
-            </div>
-            <!-- Table Container with Horizontal Scroll -->
             <div class="flex-1 overflow-y-auto px-4 pb-24">
-                <div class="overflow-x-auto pb-4">
+                 <div class="overflow-x-auto pb-4">
                     <table class="w-full min-w-[800px] text-left border-collapse">
                         <thead>
                             <tr class="bg-[#111] text-white text-xs border-b border-gray-800">
-                                <th class="p-3 rounded-tl-xl">#</th>
-                                <th class="p-3">Project</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Network</th>
-                                <th class="p-3">Contract</th>
-                                <th class="p-3">Total votes</th>
-                                <th class="p-3">Growth 24h</th>
-                                <th class="p-3 rounded-tr-xl">Actions</th>
+                                <th class="p-3">#</th><th class="p-3">Project</th><th class="p-3">Status</th><th class="p-3">Network</th><th class="p-3">Contract</th><th class="p-3">Total votes</th><th class="p-3">Growth 24h</th><th class="p-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="text-xs">
-                            <!-- Row 1 -->
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
+                            <tr class="border-b border-gray-800 hover:bg-white/5 transition">
                                 <td class="p-3 text-white font-bold">1</td>
-                                <td class="p-3">
-                                    <div class="flex items-center gap-2">
-                                        <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500">
-                                        <div><div class="text-white font-bold">John Davidson</div><div class="text-[10px] text-gray-500">0x742d...5e8f</div></div>
-                                    </div>
-                                </td>
-                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected <i class="fa-solid fa-ban"></i></span></td>
-                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full text-[10px] font-bold">Ethereum</span></td>
-                                <td class="p-3 text-gray-500 font-mono">0x742d...5e8f <i class="fa-regular fa-copy"></i></td>
-                                <td class="p-3 text-white font-bold">15,234</td>
-                                <td class="p-3 text-green-500 font-bold">+123.45%</td>
-                                <td class="p-3 flex gap-2 text-white text-sm">
-                                    <i class="fa-brands fa-telegram"></i>
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                    <i class="fa-regular fa-eye"></i>
-                                </td>
-                            </tr>
-                             <!-- Row 2 (Duplicate for demo) -->
-                             <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 text-white font-bold">1</td>
-                                <td class="p-3">
-                                    <div class="flex items-center gap-2">
-                                        <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500">
-                                        <div><div class="text-white font-bold">John Davidson</div><div class="text-[10px] text-gray-500">0x742d...5e8f</div></div>
-                                    </div>
-                                </td>
-                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected <i class="fa-solid fa-ban"></i></span></td>
-                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full text-[10px] font-bold">Ethereum</span></td>
-                                <td class="p-3 text-gray-500 font-mono">0x742d...5e8f <i class="fa-regular fa-copy"></i></td>
-                                <td class="p-3 text-white font-bold">15,234</td>
-                                <td class="p-3 text-green-500 font-bold">+123.45%</td>
-                                <td class="p-3 flex gap-2 text-white text-sm">
-                                    <i class="fa-brands fa-telegram"></i>
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                    <i class="fa-regular fa-eye"></i>
-                                </td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500"><div class="text-white">John Davidson</div></div></td>
+                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Ethereum</span></td>
+                                <td class="p-3 text-gray-500">0x...5e8f</td>
+                                <td class="p-3 text-white">15,234</td>
+                                <td class="p-3 text-green-500">+123.45%</td>
+                                <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <button class="w-full mt-4 bg-red-600 text-white py-3 rounded-2xl font-bold text-lg hover:bg-red-700 transition">Publish project +</button>
+                <button onclick="openModal('rules-modal')" class="w-full mt-4 bg-red-600 text-white py-3 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg shadow-red-900/30">Publish project +</button>
             </div>
         </div>
 
-        <!-- 4. PRIVACY & SECURITY MODAL -->
-        <div id="privacy-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+        <div id="rules-modal" class="modal fixed inset-0 bg-black z-[70] flex flex-col overflow-hidden">
+             <div class="px-4 pt-6 pb-4 text-center">
+                 <h2 class="text-xl font-bold text-white">The Colosseum Rules</h2>
+             </div>
+             <div class="flex-1 overflow-y-auto px-6 text-gray-400 text-xs space-y-3 pb-4">
+                 <p>Regulations on the "Best Token" contest...</p>
+                 <p>1. General provisions: These Regulations define the procedure...</p>
+                 <p>2. Terms: Fill out an application...</p>
+                 <div class="pt-4 flex items-center gap-3">
+                     <label class="custom-checkbox relative flex items-center cursor-pointer">
+                         <input type="checkbox" id="rules-check" class="peer sr-only" onchange="toggleRulesButton()">
+                         <div class="w-5 h-5 border-2 border-gray-600 rounded transition-colors flex items-center justify-center">
+                             <svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                         </div>
+                     </label>
+                     <span class="text-white text-xs">I have read the rules of the "The Colosseum" section and agree with them.</span>
+                 </div>
+             </div>
+             <div class="p-4 pb-8">
+                 <button id="rules-continue-btn" onclick="openModal('publish-form-modal')" disabled class="w-full bg-[#1a1a1a] text-gray-500 py-4 rounded-2xl font-bold text-lg transition-colors">Continue</button>
+             </div>
+        </div>
+
+        <div id="publish-form-modal" class="modal fixed inset-0 bg-black z-[80] flex flex-col overflow-hidden">
+             <div class="px-4 pt-6 pb-4 text-center relative">
+                 <h2 class="text-xl font-bold text-white">Publish your project</h2>
+             </div>
+             <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-4">
+                 <div class="flex flex-col items-center gap-2">
+                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20"><i class="fa-solid fa-image text-white text-2xl"></i></div>
+                     <span class="text-gray-500 text-xs">Set up avatar</span>
+                 </div>
+                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner"><i class="fa-solid fa-image text-white text-3xl"></i></div>
+                 <div class="text-center text-gray-500 text-xs mb-4">Set up banner (ratio 3:1)</div>
+
+                 <input type="text" placeholder="Enter name" class="w-full input-dark text-white py-3 px-4 rounded-2xl">
+                 
+                 <div class="flex gap-2">
+                     <div class="bg-white text-black px-3 py-3 rounded-2xl flex items-center gap-2 font-bold text-sm" id="selected-network-display"><i class="fa-brands fa-ethereum"></i> Ethereum</div>
+                     <button onclick="openModal('network-select-modal')" class="flex-1 input-dark py-3 px-4 rounded-2xl text-gray-500 text-sm flex items-center justify-between">
+                         <span id="token-standard">ERC20</span> <i class="fa-solid fa-chevron-down"></i>
+                     </button>
+                 </div>
+
+                 <input type="text" placeholder="Contract address" class="w-full input-dark text-white py-3 px-4 rounded-2xl text-xs">
+                 
+                 <div class="relative"><i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="Telegram channel link" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 <div class="relative"><i class="fa-solid fa-globe absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 <div class="relative"><i class="fa-brands fa-x-twitter absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="https://x.com" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 
+                 <div class="relative">
+                     <textarea placeholder="My project description" class="w-full input-dark text-white p-4 rounded-2xl h-24 resize-none text-xs"></textarea>
+                     <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
+                 </div>
+                 
+                 <button onclick="finishPublish()" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg shadow-red-900/30">Continue</button>
+             </div>
+        </div>
+
+        <div id="network-select-modal" class="modal-slide-up fixed inset-0 z-[90] flex items-end justify-center hidden">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('network-select-modal'); setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300)"></div>
+            <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-gray-800">
+                <h3 class="text-white text-xl font-bold text-center mb-6">Select Network</h3>
+                <div class="space-y-4 mb-6">
+                    <button onclick="selectNetwork('Ethereum', 'ERC20', 'fa-brands fa-ethereum')" class="w-full flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl transition">
+                        <i class="fa-brands fa-ethereum text-2xl text-gray-400 w-8 text-center"></i>
+                        <div class="text-left">
+                            <div class="text-white font-bold">Ethereum</div>
+                            <div class="text-gray-500 text-xs">ERC20</div>
+                        </div>
+                    </button>
+                    <button onclick="selectNetwork('Solana', 'SPL', 'fa-solid fa-wind')" class="w-full flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl transition">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-teal-400 flex items-center justify-center text-white text-xs font-bold">S</div>
+                        <div class="text-left">
+                            <div class="text-white font-bold">Solana</div>
+                            <div class="text-gray-500 text-xs">SPL</div>
+                        </div>
+                    </button>
+                     <button onclick="selectNetwork('TON', 'Jetton', 'fa-solid fa-diamond')" class="w-full flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl transition">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white"><i class="fa-regular fa-gem"></i></div>
+                        <div class="text-left">
+                            <div class="text-white font-bold">TON</div>
+                            <div class="text-gray-500 text-xs">Jetton</div>
+                        </div>
+                    </button>
+                    <button onclick="selectNetwork('Bitcoin', 'BRC20', 'fa-brands fa-bitcoin')" class="w-full flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl transition">
+                        <i class="fa-brands fa-bitcoin text-2xl text-orange-500 w-8 text-center"></i>
+                        <div class="text-left">
+                            <div class="text-white font-bold">Bitcoin</div>
+                            <div class="text-gray-500 text-xs">BRC20</div>
+                        </div>
+                    </button>
+                    <button onclick="selectNetwork('BNB Chain', 'BEP20', 'fa-solid fa-cube')" class="w-full flex items-center gap-4 p-2 hover:bg-white/5 rounded-xl transition">
+                        <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold text-xs">BNB</div>
+                        <div class="text-left">
+                            <div class="text-white font-bold">BNB Chain</div>
+                            <div class="text-gray-500 text-xs">BEP20</div>
+                        </div>
+                    </button>
+                </div>
+                <button onclick="closeModal('network-select-modal'); setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300)" class="w-full text-gray-500 py-4 text-center hover:text-white">Cancel</button>
+            </div>
+        </div>
+
+        <div id="privacy-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('privacy-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="closeModal('privacy-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Privacy & Security</h2>
             </div>
             <div class="flex-1 px-4 pt-4">
                 <p class="text-white text-sm mb-3">Set financial password</p>
                 <div class="space-y-4">
                     <div class="relative">
-                        <input type="password" value="1234444435cgdfg" class="w-full input-dark text-white py-3 px-4 rounded-full pr-10">
-                        <i class="fa-regular fa-eye absolute right-4 top-3.5 text-white"></i>
+                        <input type="password" id="fin-pass" value="1234444435cgdfg" class="w-full input-dark text-white py-3 px-4 rounded-full pr-10" oninput="checkPass()">
+                        <button onclick="togglePass('fin-pass')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
                     </div>
-                    <input type="password" placeholder="Repeat the password" class="w-full input-dark text-white py-3 px-4 rounded-full placeholder-gray-700">
-                    <button onclick="closeModal('privacy-modal')" class="w-full bg-[#1a1a1a] text-gray-400 py-3 rounded-full font-medium mt-6 hover:bg-gray-800 transition">Confirm financial password</button>
+                    <input type="password" placeholder="Repeat the password" class="w-full input-dark text-white py-3 px-4 rounded-full">
+                    <button id="btn-confirm-pass" class="w-full bg-[#1a1a1a] text-gray-400 py-3 rounded-full font-medium mt-6 transition-colors">Confirm financial password</button>
                 </div>
             </div>
         </div>
 
-        <!-- 5. FINANCE & REFERRALS MODAL -->
-        <div id="finance-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+        <div id="finance-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('finance-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="closeModal('finance-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Finance & Referrals</h2>
             </div>
             <div class="flex-1 overflow-y-auto px-4 pb-24">
                 <h3 class="text-white mb-3">Your wallets</h3>
                 <div class="space-y-2 mb-4">
-                    <!-- Wallet 1 -->
                     <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div>
-                            <div><div class="text-white font-bold text-sm">Phantom wallet</div><div class="text-[10px] text-gray-500">0x742d...5e8f <i class="fa-regular fa-copy"></i></div></div>
-                        </div>
-                        <button class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rotate"></i></button>
-                    </div>
-                    <!-- Wallet 2 -->
-                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div>
-                            <div><div class="text-white font-bold text-sm">Phantom wallet</div><div class="text-[10px] text-gray-500">0x742d...5e8f <i class="fa-regular fa-copy"></i></div></div>
-                        </div>
-                        <button class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-rotate"></i></button>
+                         <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div><div class="text-white text-sm">Phantom wallet</div></div>
                     </div>
                 </div>
-                
                 <button onclick="openWalletModal()" class="w-full bg-red-600 text-white py-3 rounded-full font-bold mb-6 hover:bg-red-700 transition">Connect wallet</button>
 
-                <h3 class="text-white mb-3">Invite your friends and earn commissions</h3>
+                <h3 class="text-white mb-3">Invite your friends</h3>
                 <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-6 flex flex-col items-center mb-6">
-                    <button class="w-full bg-red-600 text-white py-2 rounded-lg font-bold mb-3 flex items-center justify-center gap-2">Copy Referral Link <i class="fa-regular fa-copy"></i></button>
+                    <button onclick="copyLink()" class="w-full bg-red-600 text-white py-2 rounded-lg font-bold mb-3 flex items-center justify-center gap-2 hover:bg-red-700 transition">Copy Referral Link <i class="fa-regular fa-copy"></i></button>
                     <div class="text-[10px] bg-[#1a1a1a] text-gray-500 px-3 py-1 rounded-full mb-4">https://t.me/boostx?ref=12345BTX</div>
-                    <div class="text-xs text-gray-400 mb-3">or scan QR-code</div>
-                    <div class="bg-white p-2 rounded-lg">
-                         <!-- Mock QR -->
-                         <div class="w-32 h-32 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example')] bg-contain"></div>
-                    </div>
+                    <div class="bg-white p-2 rounded-lg"><div class="w-32 h-32 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example')] bg-contain"></div></div>
                 </div>
-
-                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-4 mb-6 text-center relative overflow-hidden">
-                     <div class="text-gray-400 text-xs mb-1">You've done a great job, and now you have:</div>
-                     <div class="bg-gradient-to-r from-red-900 to-red-600 rounded-xl py-4 relative z-10">
-                         <span class="text-4xl font-bold text-white">1234</span>
-                         <span class="text-white text-sm block leading-tight">active<br>referrals</span>
-                     </div>
-                     <div class="flex justify-between items-center mt-3">
-                         <span class="bg-[#1a1a1a] text-gray-500 text-[10px] px-2 py-1 rounded">Your total income:</span>
-                         <span class="text-green-500 font-bold text-lg">1,124.34$</span>
-                     </div>
-                </div>
-
-                <!-- Referrals List -->
-                <h3 class="text-white mb-3">Your referrals</h3>
-                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center mb-4">
-                    <i class="fa-regular fa-face-sad-tear text-4xl text-white mb-2"></i>
-                    <p class="text-gray-400 text-xs">You don't have any referrals yet<br>Share your referral link to get referrals data</p>
-                </div>
-
-                 <!-- Referrals Table (Horizontal Scroll) -->
-                 <div class="relative mb-4">
-                    <input type="text" placeholder="Find your referral" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none">
-                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
-                </div>
+                 <h3 class="text-white mb-3">Your referrals</h3>
                  <div class="overflow-x-auto pb-4">
                     <table class="w-full min-w-[700px] text-left text-xs text-white">
                         <thead class="text-gray-400 border-b border-gray-800 bg-[#111]">
-                            <tr><th class="p-3">#</th><th class="p-3">Referral</th><th class="p-3">Date</th><th class="p-3">Projects</th><th class="p-3">Votes</th><th class="p-3">Activity</th><th class="p-3">Income</th></tr>
+                            <tr><th class="p-3">#</th><th class="p-3">Referral</th><th class="p-3">Date</th><th class="p-3">Projects</th><th class="p-3">Votes</th><th class="p-3">Income</th></tr>
                         </thead>
                         <tbody>
                             <tr class="border-b border-gray-800 hover:bg-white/5">
                                 <td class="p-3 font-bold">1</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div><div>John</div><div class="text-gray-500 text-[9px]">0x...5e8f</div></div></td>
-                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-gray-400">17 hours ago</td><td class="p-3 text-green-500 font-bold">+12345$</td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 font-bold">1</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div><div>John</div><div class="text-gray-500 text-[9px]">0x...5e8f</div></div></td>
-                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-gray-400">17 hours ago</td><td class="p-3 text-green-500 font-bold">+12345$</td>
+                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div>John</div></td>
+                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-green-500 font-bold">+12345$</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
-        
-        <!-- CONNECT WALLET MODAL (Slide Up) -->
-        <div id="wallet-modal" class="modal-slide-up fixed inset-0 z-[100] flex items-end justify-center hidden">
+
+         <div id="wallet-modal" class="modal-slide-up fixed inset-0 z-[100] flex items-end justify-center hidden">
             <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWalletModal()"></div>
             <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-red-900/30">
                 <h3 class="text-white text-2xl font-bold text-center mb-2">Connect your wallet</h3>
-                <p class="text-gray-400 text-center text-sm mb-8">Choose a wallet provider below to securely link your account and start using BoosTX.</p>
-                
-                <div class="grid grid-cols-3 gap-4 mb-8">
-                    <!-- Metamask -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
-                        <i class="fa-solid fa-shapes text-gray-800 text-5xl absolute opacity-20"></i>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-12 h-12 relative z-10" alt="Metamask">
-                    </button>
-                    <!-- Trust Wallet -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
-                         <i class="fa-solid fa-shield-halved text-blue-600 text-5xl absolute opacity-10"></i>
-                         <i class="fa-solid fa-shield-halved text-blue-500 text-4xl relative z-10"></i>
-                    </button>
-                    <!-- Phantom -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
-                        <i class="fa-solid fa-ghost text-purple-400 text-4xl relative z-10"></i>
-                    </button>
-                    <!-- Coinbase -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
-                         <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center relative z-10"><div class="w-6 h-6 bg-white rounded"></div></div>
-                    </button>
-                    <!-- WalletConnect -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition group relative overflow-hidden">
-                         <i class="fa-solid fa-bolt text-blue-400 text-4xl relative z-10"></i>
-                    </button>
-                    <!-- More -->
-                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex flex-wrap content-center justify-center gap-1 p-4 hover:bg-white/5 transition">
-                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    </button>
+                <div class="grid grid-cols-3 gap-4 mb-8 mt-6">
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-12 h-12"></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><i class="fa-solid fa-shield-halved text-blue-500 text-4xl"></i></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><i class="fa-solid fa-ghost text-purple-400 text-4xl"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- 6. FAQ & SUPPORT MODAL -->
-        <div id="faq-modal" class="modal fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+        <div id="faq-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('faq-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="closeModal('faq-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">FAQ & Support</h2>
             </div>
             <div class="flex-1 overflow-y-auto px-4 pb-24">
                 <h3 class="text-gray-300 mb-4">FAQ about the BoosTX</h3>
-                
                 <div class="space-y-3 mb-8">
-                    <!-- FAQ Item 1 -->
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
                         <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
-                            <span class="text-white text-sm font-bold pr-4">How does your platform differ from regular boosting?</span>
+                            <span class="text-white text-sm font-bold pr-4">How does it work?</span>
                             <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
                         </button>
-                        <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
-                            We don't do blind cheating. Our platform combines smart algorithms and a vibrant community. Boosts strategically increase visibility, and contests identify real leaders through votes.
-                        </div>
-                    </div>
-                     <!-- FAQ Item 2 -->
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                        <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
-                            <span class="text-white text-sm font-bold pr-4">My token is brand new, is it suitable?</span>
-                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
-                        </button>
-                         <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
-                            Yes, absolutely! We are designed for new projects to gain initial traction and visibility.
-                        </div>
-                    </div>
-                    <!-- FAQ Item 3 -->
-                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                        <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
-                            <span class="text-white text-sm font-bold pr-4">Which networks do you support?</span>
-                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
-                        </button>
-                        <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">
-                            Currently working with Solana, BSC, Ethereum, Arbitrum, Base, and Tron.
-                        </div>
+                        <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">Simple. You boost, we promote.</div>
                     </div>
                 </div>
-
-                <p class="text-gray-400 text-xs text-center mb-4">If you still have any questions, please contact our support team:</p>
-                
                 <div class="space-y-3">
-                    <button onclick="openModal('support-form-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-[#222] transition">Support team</button>
-                    <button onclick="openModal('tickets-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-[#222] transition">Tickets list</button>
+                    <button onclick="openModal('support-form-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-white/5 transition">Support team</button>
+                    <button onclick="openModal('tickets-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-white/5 transition">Tickets list</button>
                 </div>
             </div>
         </div>
 
-        <!-- 6.1 SUPPORT FORM MODAL -->
-        <div id="support-form-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('support-form-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+         <div id="support-form-modal" class="modal fixed inset-0 bg-black z-[70] flex flex-col overflow-hidden">
+             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="closeModal('support-form-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Support</h2>
             </div>
-            <div class="flex-1 px-4 pt-4">
+             <div class="flex-1 px-4 pt-4">
                 <h3 class="text-white text-lg mb-4">How can we help you?</h3>
-                <div class="space-y-4">
-                    <input type="text" placeholder="Subject of the request" class="w-full input-dark text-white py-3 px-4 rounded-2xl placeholder-gray-600">
-                    <div class="relative">
-                        <textarea placeholder="Tell us about your problem" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-64 resize-none placeholder-gray-600"></textarea>
-                        <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 1000</span>
-                    </div>
-                    <button class="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg mt-4 hover:bg-red-700 transition">Send an appeal</button>
+                 <div class="space-y-4">
+                    <input type="text" placeholder="Subject" class="w-full input-dark text-white py-3 px-4 rounded-2xl">
+                    <textarea placeholder="Tell us about your problem" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-64 resize-none"></textarea>
+                    <button onclick="sendSupport()" class="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg mt-4 hover:bg-red-700 transition">Send an appeal</button>
                 </div>
-            </div>
+             </div>
+             <div id="support-success" class="absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500 z-[80]">
+                 <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4"><i class="fa-solid fa-check text-white text-3xl"></i></div>
+                 <h3 class="text-white text-xl font-bold">Message Sent!</h3>
+             </div>
         </div>
 
-        <!-- 6.2 TICKETS LIST MODAL -->
-        <div id="tickets-modal" class="modal fixed inset-0 bg-black z-[60] flex flex-col overflow-hidden">
+        <div id="tickets-modal" class="modal fixed inset-0 bg-black z-[70] flex flex-col overflow-hidden">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('tickets-modal')" class="text-white text-xl"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="closeModal('tickets-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Tickets list</h2>
             </div>
             <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-3">
-                <!-- Ticket 1 -->
-                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-2">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500">
-                            <div>
-                                <div class="text-white text-sm">John Davidson</div>
-                                <div class="text-[10px] text-gray-500">#TK-2847</div>
-                            </div>
-                        </div>
-                        <span class="text-[10px] text-gray-400">2 min</span>
-                    </div>
+                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 hover:border-gray-700 transition">
+                    <div class="flex justify-between items-start mb-2"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500"><div><div class="text-white text-sm">John Davidson</div><div class="text-[10px] text-gray-500">#TK-2847</div></div></div><span class="text-[10px] text-gray-400">2 min</span></div>
                     <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
-                    <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now, but the transaction is...</p>
-                    <div class="flex justify-between items-center">
-                        <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-dollar-sign text-[8px]"></i> Finance</span>
-                        <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
-                    </div>
-                </div>
-                <!-- Ticket 2 (Duplicate) -->
-                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-2">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500">
-                            <div>
-                                <div class="text-white text-sm">John Davidson</div>
-                                <div class="text-[10px] text-gray-500">#TK-2847</div>
-                            </div>
-                        </div>
-                        <span class="text-[10px] text-gray-400">2 min</span>
-                    </div>
-                    <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
-                    <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now, but the transaction is...</p>
-                    <div class="flex justify-between items-center">
+                    <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now...</p>
+                     <div class="flex justify-between items-center">
                         <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-dollar-sign text-[8px]"></i> Finance</span>
                         <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div id="toast" class="fixed top-5 right-5 bg-white text-black px-4 py-2 rounded-lg shadow-lg font-bold text-sm z-[200] hidden">
+            Copied to clipboard!
         </div>
 
     </div>
 
     <script>
-        // --- TAB LOGIC ---
+        // --- TABS & SWIPE ---
+        let startX = 0;
+        const swipeArea = document.getElementById('swipe-area');
+        const tabs = ['wall', 'projects', 'activity'];
+        let currentTabIndex = 0;
+
         function switchTab(tabName) {
             document.getElementById('content-wall').classList.add('hidden');
             document.getElementById('content-projects').classList.add('hidden');
             document.getElementById('content-activity').classList.add('hidden');
             document.getElementById('content-' + tabName).classList.remove('hidden');
 
-            ['wall', 'projects', 'activity'].forEach(t => {
+            tabs.forEach(t => {
                 const btn = document.getElementById('tab-' + t);
                 const icon = btn.querySelector('i');
                 btn.classList.remove('text-white', 'border-red-600');
@@ -757,43 +695,132 @@
             const activeBtn = document.getElementById('tab-' + tabName);
             activeBtn.classList.remove('text-gray-500', 'border-transparent');
             activeBtn.classList.add('text-white', 'border-red-600');
+            
+            currentTabIndex = tabs.indexOf(tabName);
         }
 
-        // --- MODAL SYSTEM ---
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+        swipeArea.addEventListener('touchstart', e => startX = e.changedTouches[0].screenX, {passive: true});
+        swipeArea.addEventListener('touchend', e => {
+            const endX = e.changedTouches[0].screenX;
+            if (startX - endX > 50) { if (currentTabIndex < tabs.length - 1) switchTab(tabs[currentTabIndex + 1]); } 
+            else if (endX - startX > 50) { if (currentTabIndex > 0) switchTab(tabs[currentTabIndex - 1]); }
+        });
+
+        // --- MODALS ---
+        function openModal(id) { 
+            const m = document.getElementById(id);
+            m.classList.remove('hidden'); // Just in case
+            // Small delay to allow display:block to apply before transform
+            setTimeout(()=>m.classList.add('active'), 10);
+        }
+        function closeModal(id) { 
+            const m = document.getElementById(id);
+            m.classList.remove('active'); 
+            // Wait for animation to finish before hiding
+            setTimeout(()=>m.classList.add('hidden'), 350);
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Wallet Modal specific
-        function openWalletModal() {
+        // --- WALLET MODAL (Slide Up) ---
+         function openWalletModal() {
             const modal = document.getElementById('wallet-modal');
             modal.classList.remove('hidden');
-            // slight delay to allow display:block to render before adding active class for transition
             setTimeout(() => modal.classList.add('active'), 10);
         }
-
         function closeWalletModal() {
             const modal = document.getElementById('wallet-modal');
             modal.classList.remove('active');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // --- FAQ ACCORDION ---
+        // --- NETWORK SELECT LOGIC ---
+        function selectNetwork(name, standard, iconClass) {
+            const display = document.getElementById('selected-network-display');
+            const standardDisplay = document.getElementById('token-standard');
+            
+            display.innerHTML = `<i class="${iconClass}"></i> ${name}`;
+            standardDisplay.innerText = standard;
+            
+            closeModal('network-select-modal');
+            setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300);
+        }
+
+        // --- PUBLISH FLOW ---
+        function toggleRulesButton() {
+            const chk = document.getElementById('rules-check');
+            const btn = document.getElementById('rules-continue-btn');
+            if(chk.checked) {
+                btn.disabled = false;
+                btn.classList.remove('bg-[#1a1a1a]', 'text-gray-500');
+                btn.classList.add('bg-red-600', 'text-white');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-[#1a1a1a]', 'text-gray-500');
+                btn.classList.remove('bg-red-600', 'text-white');
+            }
+        }
+        function finishPublish() {
+            closeModal('publish-form-modal');
+            closeModal('rules-modal');
+            closeModal('launched-projects-modal');
+            closeModal('settings-modal');
+            switchTab('projects');
+        }
+
+        // --- PRIVACY PASS ---
+        function togglePass(id) {
+            const inp = document.getElementById(id);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+        function checkPass() {
+            const val = document.getElementById('fin-pass').value;
+            const btn = document.getElementById('btn-confirm-pass');
+            if(val.length > 0) {
+                btn.classList.remove('bg-[#1a1a1a]', 'text-gray-400');
+                btn.classList.add('bg-red-600', 'text-white');
+            } else {
+                btn.classList.add('bg-[#1a1a1a]', 'text-gray-400');
+                btn.classList.remove('bg-red-600', 'text-white');
+            }
+        }
+        checkPass();
+
+        // --- SUPPORT SEND ---
+        function sendSupport() {
+            const overlay = document.getElementById('support-success');
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                closeModal('support-form-modal');
+            }, 2000);
+        }
+
+        // --- COPY LINK ---
+        function copyLink() {
+            const link = "https://t.me/boostx?ref=12345BTX";
+            navigator.clipboard.writeText(link).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.remove('hidden');
+                toast.classList.add('toast');
+                setTimeout(() => {
+                    toast.classList.add('hiding');
+                    setTimeout(() => {
+                        toast.classList.remove('toast', 'hiding');
+                        toast.classList.add('hidden');
+                    }, 300);
+                }, 3000);
+            });
+        }
+        
+        // --- FAQ ---
         function toggleAccordion(button) {
             const content = button.nextElementSibling;
             const icon = button.querySelector('.rotate-icon');
-            
             if (content.classList.contains('open')) {
-                content.classList.remove('open');
-                icon.classList.remove('open');
+                content.classList.remove('open'); icon.classList.remove('open');
             } else {
-                // Close others if needed (optional)
-                content.classList.add('open');
-                icon.classList.add('open');
+                content.classList.add('open'); icon.classList.add('open');
             }
         }
     </script>
