@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Crypto Boost Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
@@ -35,7 +35,7 @@
         
         /* Modal Transitions */
         .modal {
-            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             transform: translate3d(100%, 0, 0);
             z-index: 60;
             will-change: transform;
@@ -44,7 +44,7 @@
         
         /* Slide Up Modal */
         .modal-slide-up {
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             transform: translate3d(0, 100%, 0);
             z-index: 100;
             will-change: transform;
@@ -53,7 +53,7 @@
 
         /* Blur Modal */
         .modal-blur {
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
             opacity: 0;
             pointer-events: none;
             z-index: 110;
@@ -132,21 +132,25 @@
 <body>
 
     <!-- App Container -->
-    <div id="app-container" class="w-full max-w-[375px] bg-black h-screen flex flex-col overflow-hidden relative shadow-2xl">
+    <div id="app-container" class="w-full max-w-[375px] bg-black h-screen flex flex-col overflow-hidden relative shadow-2xl border-x border-[#111]">
         
-        <div class="flex-1 overflow-y-auto pb-28 relative no-scrollbar" id="main-scroll">
+        <!-- Main Scroll Area -->
+        <div class="flex-1 overflow-y-auto pb-32 relative no-scrollbar" id="main-scroll">
             
+            <!-- Header Section -->
             <div class="relative bg-gradient-to-b from-red-900/40 via-black to-black pt-4 px-4 pb-6">
-                <div class="flex justify-end mb-4">
-                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition active:scale-95 transform duration-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                
+                <!-- Settings Button -->
+                <div class="flex justify-end mb-4 sticky top-0 z-30 pt-2">
+                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition active:scale-95 transform duration-100 bg-black/40 rounded-full p-2 backdrop-blur-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </button>
                 </div>
 
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center -mt-8">
                     <div class="relative mb-3 group">
                         <div class="w-24 h-24 rounded-full border-2 border-white/10 overflow-hidden bg-gray-800 flex items-center justify-center relative transition-transform duration-300 group-hover:scale-105">
                             <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="absolute inset-0 w-full h-full object-cover">
@@ -163,17 +167,16 @@
                     <p class="text-gray-400 text-xs mb-6">CryptoBoost Solutions</p>
 
                     <div class="flex gap-4 mb-2">
-                                <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-brands fa-telegram text-xl"></i></button>
-                                <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-solid fa-envelope text-xl"></i></button>
-                                <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200">
-                                <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-current">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                            </svg>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-brands fa-telegram text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-solid fa-envelope text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- Tabs -->
             <div class="flex w-full border-b border-gray-800 px-4 sticky top-0 bg-black/95 backdrop-blur-md z-20 select-none">
                 <button onclick="switchTab('wall')" id="tab-wall" class="flex-1 py-3 text-center text-sm font-medium text-white border-b-2 border-red-600 flex items-center justify-center gap-2 transition-all duration-300">
                     Wall <i class="fa-regular fa-newspaper text-xs"></i>
@@ -188,18 +191,19 @@
 
             <div id="swipe-area" class="p-4 min-h-[400px]">
                 
+                <!-- Search -->
                 <div class="relative mb-6">
                     <input type="text" placeholder="Search..." class="w-full bg-[#0a0a0a] text-gray-300 text-sm py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-red-600 focus:outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(220,38,38,0.2)]">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-gray-500"></i>
                 </div>
 
+                <!-- Wall Content -->
                 <div id="content-wall" class="space-y-4 animate-fade-in">
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 transition-all hover:border-gray-700">
                         <div class="flex items-center gap-3 mb-3">
                             <div class="w-8 h-8 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
                             <span class="text-white text-sm font-medium">Alex Kuznetsov</span>
                         </div>
-
                         <div class="w-full h-48 bg-[#080808] rounded-lg mb-4 relative overflow-hidden border border-gray-800/50 p-2">
                             <svg viewBox="0 0 300 100" class="w-full h-full" preserveAspectRatio="none">
                                 <line x1="0" y1="25" x2="300" y2="25" stroke="#222" stroke-width="1" />
@@ -217,27 +221,26 @@
                             </svg>
                             <div class="absolute top-2 right-2 text-[10px] text-gray-500">BTC/USDT</div>
                         </div>
-
                         <div class="text-gray-300 text-xs leading-relaxed space-y-2 mb-3">
                             <p class="font-semibold text-white">I see a great setup for working out!</p>
-                            <p>The graph shows an interesting formation. The levels look promising. Sign up for this contract, but don't forget about risk management.</p>
-                            <p class="font-mono text-[10px] bg-gray-800 p-1.5 rounded text-gray-400 break-all select-all hover:text-white transition cursor-pointer">CA: TXm9K3PqJ8vN2hL6wRpYt4sD9fGcE1bVnH</p>
-                            <p class="text-gray-500">Always DYOR! 🧐 #crypto #trading #DeFi</p>
+                            <p>The graph shows an interesting formation. The levels look promising.</p>
+                            <p class="font-mono text-[10px] bg-gray-800 p-1.5 rounded text-gray-400 break-all select-all cursor-pointer">CA: TXm9K3PqJ8vN2hL6wRpYt4sD9fGcE1bVnH</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button class="flex items-center gap-1.5 bg-red-600/10 text-red-500 px-3 py-1.5 rounded-lg active:scale-95 transition">
-                                <i class="fa-solid fa-heart text-xs"></i> <span class="text-xs font-bold">444</span>
-                            </button>
+                            <button class="flex items-center gap-1.5 bg-red-600/10 text-red-500 px-3 py-1.5 rounded-lg active:scale-95 transition"><i class="fa-solid fa-heart text-xs"></i> <span class="text-xs font-bold">444</span></button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Projects Content -->
                 <div id="content-projects" class="hidden space-y-4 animate-fade-in">
                     <div class="w-full h-24 rounded-xl bg-gradient-to-r from-red-900 to-red-600 flex flex-col items-center justify-center relative overflow-hidden mb-6 shadow-lg shadow-red-900/20">
                         <div class="absolute inset-0 bg-black/20"></div>
                         <h2 class="text-3xl font-bold text-white relative z-10">127</h2>
                         <p class="text-xs text-white/80 relative z-10 uppercase tracking-wide">Projects Launched</p>
                     </div>
+                    
+                    <!-- Project 1 -->
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden transition-all hover:border-gray-600">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-3">
@@ -245,9 +248,7 @@
                                      <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-full h-full object-cover">
                                 </div>
                                 <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">Solana</span>
-                                    </div>
+                                    <div class="flex items-center gap-2"><span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">Solana</span></div>
                                     <h3 class="text-white font-bold text-sm mt-1">SoulVerse RPG</h3>
                                     <p class="text-gray-500 text-[10px] truncate w-32">CA: 0x34...a86</p>
                                 </div>
@@ -264,34 +265,61 @@
                             <div class="text-center"><div class="text-[9px] text-gray-500">Holders</div><div class="text-green-500 text-xs font-bold">+1.6M</div></div>
                         </div>
                     </div>
+
+                    <!-- Project 2 -->
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden transition-all hover:border-gray-600">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-orange-500 overflow-hidden border-2 border-gray-800">
-                                     <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-full h-full object-cover">
+                                <div class="w-12 h-12 rounded-full bg-blue-500 overflow-hidden border-2 border-gray-800">
+                                     <img src="https://api.dicebear.com/9.x/bottts/svg?seed=DeFi" class="w-full h-full object-cover">
                                 </div>
                                 <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">BTC</span>
-                                    </div>
-                                    <h3 class="text-white font-bold text-sm mt-1">SayHello PNG</h3>
-                                    <p class="text-gray-500 text-[10px] truncate w-32">CA: 1x14...c12</p>
+                                    <div class="flex items-center gap-2"><span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">Ethereum</span></div>
+                                    <h3 class="text-white font-bold text-sm mt-1">DeFi Hub</h3>
+                                    <p class="text-gray-500 text-[10px] truncate w-32">CA: 0x8b...2d9</p>
                                 </div>
                             </div>
                             <button class="text-gray-500 hover:text-white"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
                         <div class="flex gap-2 mt-4">
-                            <button class="bg-red-900/30 text-red-500 text-xs px-4 py-2 rounded-lg flex-1 font-medium border border-red-900/50">Voted <i class="fa-solid fa-xmark ml-1"></i></button>
+                            <button class="bg-green-900/30 text-green-500 text-xs px-4 py-2 rounded-lg flex-1 font-medium border border-green-900/50">Voted <i class="fa-solid fa-check ml-1"></i></button>
                             <button onclick="openModal('project-info-modal'); initChart();" class="bg-[#1a1a1a] text-gray-400 text-xs px-4 py-2 rounded-lg font-medium hover:bg-[#222] transition">More info</button>
                         </div>
                         <div class="grid grid-cols-3 gap-2 mt-3 border-t border-gray-800 pt-3">
-                            <div class="text-center"><div class="text-[9px] text-gray-500">Transactions</div><div class="text-green-500 text-xs font-bold">+1.7M</div></div>
-                            <div class="text-center"><div class="text-[9px] text-gray-500">Volume</div><div class="text-green-500 text-xs font-bold">+1.1M</div></div>
-                            <div class="text-center"><div class="text-[9px] text-gray-500">Holders</div><div class="text-green-500 text-xs font-bold">+1.02M</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Transactions</div><div class="text-green-500 text-xs font-bold">+500K</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Volume</div><div class="text-green-500 text-xs font-bold">+8.4M</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Holders</div><div class="text-green-500 text-xs font-bold">+2.1K</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 relative overflow-hidden transition-all hover:border-gray-600">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-purple-500 overflow-hidden border-2 border-gray-800">
+                                     <img src="https://api.dicebear.com/9.x/bottts/svg?seed=Game" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2"><span class="bg-white/10 text-white text-[10px] px-1.5 py-0.5 rounded">Polygon</span></div>
+                                    <h3 class="text-white font-bold text-sm mt-1">GameFi Zone</h3>
+                                    <p class="text-gray-500 text-[10px] truncate w-32">CA: 0x1a...7f4</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-500 hover:text-white"><i class="fa-solid fa-share-nodes"></i></button>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button class="bg-red-600 text-white text-xs px-4 py-2 rounded-lg flex-1 font-medium">Vote</button>
+                            <button onclick="openModal('project-info-modal'); initChart();" class="bg-[#1a1a1a] text-gray-400 text-xs px-4 py-2 rounded-lg font-medium hover:bg-[#222] transition">More info</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-3 border-t border-gray-800 pt-3">
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Transactions</div><div class="text-green-500 text-xs font-bold">+120K</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Volume</div><div class="text-green-500 text-xs font-bold">+1.2M</div></div>
+                            <div class="text-center"><div class="text-[9px] text-gray-500">Holders</div><div class="text-green-500 text-xs font-bold">+900</div></div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Activity Content -->
                 <div id="content-activity" class="hidden space-y-3 animate-fade-in">
                     <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
                          <div class="flex items-center gap-2 mb-3">
@@ -302,13 +330,14 @@
                              <div class="flex items-center gap-3">
                                  <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><i class="fa-regular fa-heart"></i></div>
                                  <div>
-                                     <p class="text-[10px] text-gray-500">20 minutes ago</p>
+                                     <p class="text-[10px] text-gray-500">30 minutes ago</p>
                                      <p class="text-white text-sm font-semibold">Voted for CryptoMoon</p>
                                  </div>
                              </div>
                              <span class="text-green-500 text-xs font-bold">+120XP</span>
                          </div>
                     </div>
+                    
                     <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
                          <div class="flex items-center gap-2 mb-3">
                              <div class="w-6 h-6 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
@@ -316,45 +345,30 @@
                          </div>
                          <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
                              <div class="flex items-center gap-3">
-                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><i class="fa-regular fa-heart"></i></div>
+                                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-user-plus"></i></div>
                                  <div>
-                                     <p class="text-[10px] text-gray-500">30 minutes ago</p>
-                                     <p class="text-white text-sm font-semibold">Voted for Token Trove</p>
+                                     <p class="text-[10px] text-gray-500">2 hours ago</p>
+                                     <p class="text-white text-sm font-semibold">Followed DeFi Hub</p>
                                  </div>
                              </div>
-                             <span class="text-green-500 text-xs font-bold">+90XP</span>
+                             <span class="text-green-500 text-xs font-bold">+50XP</span>
                          </div>
                     </div>
+
                     <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
                          <div class="flex items-center gap-2 mb-3">
                              <div class="w-6 h-6 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
-                            <span class="text-gray-300 text-xs">AltCrypto Moon</span>
+                            <span class="text-gray-300 text-xs">Alex Kuznetsov</span>
                          </div>
                          <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
                              <div class="flex items-center gap-3">
-                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><img src="images/Transactions.png"></div>
+                                 <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-rocket"></i></div>
                                  <div>
-                                     <p class="text-[10px] text-gray-500">50 minutes ago</p>
-                                     <p class="text-white text-sm font-semibold">Voted for Block Solve</p>
+                                     <p class="text-[10px] text-gray-500">5 hours ago</p>
+                                     <p class="text-white text-sm font-semibold">Published New Project</p>
                                  </div>
                              </div>
-                             <span class="text-green-500 text-xs font-bold">+20XP</span>
-                         </div>
-                    </div>
-                    <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
-                         <div class="flex items-center gap-2 mb-3">
-                             <div class="w-6 h-6 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
-                            <span class="text-gray-300 text-xs">Protocol Pulse</span>
-                         </div>
-                         <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
-                             <div class="flex items-center gap-3">
-                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><i class="fa-regular fa-heart"></i></div>
-                                 <div>
-                                     <p class="text-[10px] text-gray-500">60 minutes ago</p>
-                                     <p class="text-white text-sm font-semibold">Voted for Ledger Grid</p>
-                                 </div>
-                             </div>
-                             <span class="text-green-500 text-xs font-bold">+160XP</span>
+                             <span class="text-green-500 text-xs font-bold">+500XP</span>
                          </div>
                     </div>
                 </div>
@@ -362,8 +376,8 @@
             </div>
         </div>
 
-        <!-- Navbar - Fixed at bottom (Matching "First" page) -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-50 max-w-[375px] mx-auto">
+        <!-- Navbar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-40 max-w-[375px] mx-auto">
             <div class="flex justify-around items-center py-3 relative">
                 <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70" onerror="this.style.display='none'">
                 
@@ -371,7 +385,6 @@
                     <img src="images/home.jpg" alt="Home" class="w-8 h-8">
                     <span class="text-xs">Home</span>
                 </a>
-                
                 <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
                     <div class="relative">
                         <img src="images/boostO.png" alt="Boost" class="w-8 h-8">
@@ -379,12 +392,10 @@
                     </div>
                     <span class="text-xs">BoosT</span>
                 </a>
-                
                 <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
                     <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8">
                     <span class="text-xs">Colosseum</span>
                 </a>
-                
                 <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 relative z-10">
                     <img src="images/profileR.png" alt="Profile" class="w-8 h-8">
                     <span class="text-xs font-semibold text-red-600">Profile</span>
@@ -392,22 +403,24 @@
             </div>
         </nav>
 
-        <!-- Modals (Absolute Positioned inside App Container) -->
-        <div id="settings-modal" class="modal absolute inset-0 bg-black z-50 flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex justify-between items-center">
+        <!-- === MODALS === -->
+        
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[60]">
+            <div class="px-4 pt-6 pb-4 flex justify-between items-center sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <div class="flex items-center gap-2">
                     <button onclick="closeModal('settings-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-arrow-left"></i></button>
                     <h2 class="text-2xl font-bold text-white">Settings</h2>
                 </div>
                 <button onclick="closeModal('settings-modal')" class="text-gray-400 hover:text-white text-sm">Done</button>
             </div>
-            <div class="px-4 mb-6">
+            <div class="px-4 mb-6 mt-4">
                 <div class="relative">
                     <input type="text" placeholder="Search settings" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none transition-all">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 space-y-1 pb-32">
+            <div class="flex-1 overflow-y-auto px-4 space-y-1 pb-32 no-scrollbar">
                 <button onclick="openModal('profile-edit-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-user w-6 text-center"></i><span>Profile settings</span></div>
                 </button>
@@ -431,8 +444,9 @@
             </div>
         </div>
 
-        <div id="profile-edit-modal" class="modal absolute inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex justify-between items-center">
+        <!-- Profile Edit Modal -->
+        <div id="profile-edit-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex justify-between items-center sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <div class="flex items-center gap-2">
                     <button onclick="closeModal('profile-edit-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                     <h2 class="text-xl font-bold text-white ml-2">Profile settings</h2>
@@ -440,15 +454,15 @@
                 <button onclick="closeModal('profile-edit-modal')" class="text-white hover:text-red-500 transition"><i class="fa-solid fa-check text-xl"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto px-4 pb-8">
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
                 <div class="flex justify-center mb-8 mt-4">
                     <div class="relative">
                         <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a1a1a]">
                             <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover opacity-60">
                         </div>
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition p-3">
-                                <img src="images/upload.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fa-solid fa-plus text-white\'></i>'">
+                            <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition p-3 overflow-hidden">
+                                <img src="images/upload.png" class="w-full h-full object-contain">
                             </button>
                         </div>
                     </div>
@@ -459,10 +473,7 @@
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Your name</label>
                         <input type="text" value="Alex Kuznetsov" class="w-full input-dark text-white py-3 px-4 rounded-2xl border border-gray-800 bg-transparent">
                     </div>
-                    <div>
-                        <input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl border border-gray-800 bg-transparent">
-                    </div>
-
+                    <div><input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl border border-gray-800 bg-transparent"></div>
                     <div>
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Bio</label>
                         <div class="relative">
@@ -470,7 +481,6 @@
                             <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Your role</label>
                         <button class="w-full input-dark text-white py-3 px-4 rounded-2xl flex justify-between items-center border border-gray-800 bg-transparent">
@@ -478,40 +488,34 @@
                             <i class="fa-solid fa-chevron-down text-gray-400 text-sm"></i>
                         </button>
                     </div>
-
                     <div>
                         <label class="block text-gray-400 text-sm mb-2 ml-1">Your social media</label>
                         <div class="space-y-3">
-                            
                             <div class="relative group">
                                 <i class="fa-brands fa-telegram absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
                                 <input type="text" placeholder="Your Telegram channel link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
                             </div>
-
                             <div class="relative group">
-                                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white pointer-events-none">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-                                </div>
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white pointer-events-none"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></div>
                                 <input type="text" placeholder="Your X link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
                             </div>
-
                             <div class="relative group">
                                 <i class="fa-solid fa-globe absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
                                 <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="launched-projects-modal" class="modal absolute inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+        <!-- Launched Projects Modal -->
+        <div id="launched-projects-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <button onclick="closeModal('launched-projects-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Your projects</h2>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 pb-24">
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
                  <div class="overflow-x-auto pb-4">
                     <table class="w-full min-w-[800px] text-left border-collapse">
                         <thead>
@@ -525,29 +529,29 @@
                                 <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500"><div class="text-white">John Davidson</div></div></td>
                                 <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected</span></td>
                                 <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Ethereum</span></td>
-                                <td class="p-3 text-gray-500">2c...4q1r</td>
-                                <td class="p-3 text-white">9,276</td>
-                                <td class="p-3 text-green-500">+81.16%</td>
+                                <td class="p-3 text-gray-500">0x...5e8f</td>
+                                <td class="p-3 text-white">15,234</td>
+                                <td class="p-3 text-green-500">+123.45%</td>
                                 <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
                             </tr>
                             <tr class="border-b border-gray-800 hover:bg-white/5 transition">
-                                <td class="p-3 text-white font-bold">1</td>
-                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500"><div class="text-white">Aisha Francis</div></div></td>
-                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Approved</span></td>
-                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Ethereum</span></td>
-                                <td class="p-3 text-gray-500">0x...8g27</td>
-                                <td class="p-3 text-white">17,389</td>
-                                <td class="p-3 text-green-500">+93.12%</td>
+                                <td class="p-3 text-white font-bold">2</td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/bottts/svg?seed=AI" class="w-8 h-8 rounded-full bg-blue-500"><div class="text-white">CryptoAI</div></div></td>
+                                <td class="p-3"><span class="border border-green-500 text-green-500 px-2 py-1 rounded-full text-[10px]">Active</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Solana</span></td>
+                                <td class="p-3 text-gray-500">0x...a1b2</td>
+                                <td class="p-3 text-white">4,500</td>
+                                <td class="p-3 text-green-500">+12.5%</td>
                                 <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
                             </tr>
                             <tr class="border-b border-gray-800 hover:bg-white/5 transition">
-                                <td class="p-3 text-white font-bold">1</td>
-                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500"><div class="text-white">Franklin Sierra</div></div></td>
-                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected</span></td>
-                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Ethereum</span></td>
-                                <td class="p-3 text-gray-500">0x...6e4g</td>
-                                <td class="p-3 text-white">12,205</td>
-                                <td class="p-3 text-green-500">+111.35%</td>
+                                <td class="p-3 text-white font-bold">3</td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/bottts/svg?seed=NFT" class="w-8 h-8 rounded-full bg-purple-500"><div class="text-white">NFT World</div></div></td>
+                                <td class="p-3"><span class="border border-yellow-500 text-yellow-500 px-2 py-1 rounded-full text-[10px]">Pending</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Polygon</span></td>
+                                <td class="p-3 text-gray-500">0x...9c4d</td>
+                                <td class="p-3 text-white">0</td>
+                                <td class="p-3 text-gray-500">0%</td>
                                 <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
                             </tr>
                         </tbody>
@@ -557,39 +561,103 @@
             </div>
         </div>
 
-        <div id="rules-modal" class="modal absolute inset-0 bg-black z-[70] flex flex-col overflow-hidden">
-             <div class="px-4 pt-6 pb-4 text-center">
+        <!-- Rules Modal (Fixed Content Structure) -->
+        <div id="rules-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+             <div class="px-4 pt-6 pb-4 text-center sticky top-0 bg-black z-10">
                  <h2 class="text-xl font-bold text-white">The Colosseum Rules</h2>
              </div>
-             <div class="flex-1 overflow-y-auto px-6 text-gray-400 text-xs space-y-3 pb-4">
-                 <p>Regulations on the "Best Token" contest...</p>
-                 <p>1. General provisions: These Regulations define the procedure...</p>
-                 <p>2. Terms: Fill out an application...</p>
-                 <div class="pt-4 flex items-center gap-3">
+             
+             <div class="flex-1 overflow-y-auto px-6 pb-4 no-scrollbar text-gray-300 text-xs space-y-4">
+                
+                <div>
+                    <h3 class="font-bold text-white mb-2">1. General provisions</h3>
+                    <p class="mb-1">1.1. These Regulations define the procedure and conditions of the contest (hereinafter referred to as the Contest).</p>
+                    <p>1.2. The organizer of the Contest is Boost (X) (hereinafter referred to as the Organizer).</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-2">2. Terms of participation</h3>
+                    <p class="mb-1">2.1. To participate, you must fill out an application for the participation of the token in the voting:</p>
+                    <ul class="list-disc pl-4 mb-2 space-y-1">
+                        <li>Specify the correct ticker and contract address;</li>
+                        <li>Upload the project's logo and banner;</li>
+                        <li>Fill in the project description;</li>
+                        <li>Provide a valid contact for communication: Telegram or Twitter;</li>
+                        <li>Wait for the token to be approved for participation: Share a link to vote.</li>
+                    </ul>
+                    
+                    <p class="mb-1">2.2. Token Admission Criteria:</p>
+                    <ul class="list-disc pl-4 mb-2 space-y-1">
+                        <li>The token must be launched on the mainnet;</li>
+                        <li>The token must have liquidity on one of the exchanges or DEX;</li>
+                        <li>The token should not have any risk indicators for users.</li>
+                    </ul>
+
+                    <p>2.3. The Organizer reserves the right to reject the application for participation without explanation in case of violation of these Rules.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-2">3. The order of the Competition</h3>
+                    <p class="mb-2">3.1. The competition is held in three stages:</p>
+                    <ul class="list-disc pl-4 mb-2 space-y-1">
+                        <li><span class="text-white font-medium">Stage 1. Submission:</span> applications submitted daily...</li>
+                        <li><span class="text-white font-medium">Stage 2. Voting:</span> from Start to End Date.</li>
+                        <li><span class="text-white font-medium">Stage 3. Results:</span> no later than 6 hours after voting ends.</li>
+                    </ul>
+                    <p>3.2. All accepted tokens are published in the voting list on the official page of the Contest.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-2">4. Voting</h3>
+                    <p class="mb-1">4.1. Voting is open and public.</p>
+                    <p class="mb-1">4.2. Each user has the right to cast one vote for one token they like within 24 hours.</p>
+                    <p class="mb-1">4.3. The use of bots, scripts, and the creation of fake accounts to cheat votes is strictly prohibited.</p>
+                    <p>4.4. The Organizer has the right to cancel votes and disqualify the participant in case of violations.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-2">5. Determining the winners</h3>
+                    <p class="mb-1">5.1. The winners are determined based on the rating based on the number of votes.</p>
+                    <p>5.2. Prize pool: [description of bonuses].</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-2">7. Final provisions</h3>
+                    <p>7.1. By participating in the Contest, the user agrees to these Rules and undertakes to provide reliable contact information for communication.</p>
+                </div>
+
+                <div class="pt-2 flex items-start gap-3">
                      <label class="custom-checkbox relative flex items-center cursor-pointer">
                          <input type="checkbox" id="rules-check" class="peer sr-only" onchange="toggleRulesButton()">
-                         <div class="w-5 h-5 border-2 border-gray-600 rounded transition-colors flex items-center justify-center">
+                         <div class="w-5 h-5 border-2 border-gray-600 rounded transition-colors flex items-center justify-center mt-0.5">
                              <svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                          </div>
                      </label>
-                     <span class="text-white text-xs">I have read the rules of the "The Colosseum" section and agree with them.</span>
+                     <span class="text-white text-xs leading-tight">I have read the rules of the "The Colosseum" section and agree with them.</span>
                  </div>
              </div>
-             <div class="p-4 pb-8">
+             
+             <div class="p-4 pb-8 bg-black sticky bottom-0 border-t border-gray-900/50">
                  <button id="rules-continue-btn" onclick="openModal('publish-form-modal')" disabled class="w-full bg-[#1a1a1a] text-gray-500 py-4 rounded-2xl font-bold text-lg transition-colors">Continue</button>
              </div>
         </div>
 
-        <div id="publish-form-modal" class="modal absolute inset-0 bg-black z-[80] flex flex-col overflow-hidden">
-             <div class="px-4 pt-6 pb-4 text-center relative">
+        <!-- Publish Form Modal -->
+        <div id="publish-form-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[90]">
+             <div class="px-4 pt-6 pb-4 text-center relative sticky top-0 bg-black z-10">
                  <h2 class="text-xl font-bold text-white">Publish your project</h2>
+                 <button onclick="closeModal('publish-form-modal')" class="absolute right-4 top-6 text-white"><i class="fa-solid fa-xmark"></i></button>
              </div>
-             <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-4">
+             <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-4 no-scrollbar">
                  <div class="flex flex-col items-center gap-2">
-                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20"><i class="fa-solid fa-image text-white text-2xl"></i></div>
+                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 overflow-hidden p-4">
+                         <img src="images/upload.png" class="w-full h-full object-contain">
+                     </div>
                      <span class="text-gray-500 text-xs">Set up avatar</span>
                  </div>
-                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner"><i class="fa-solid fa-image text-white text-3xl"></i></div>
+                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner overflow-hidden p-8">
+                     <img src="images/upload.png" class="w-12 h-12 object-contain">
+                 </div>
                  <div class="text-center text-gray-500 text-xs mb-4">Set up banner (ratio 3:1)</div>
 
                  <input type="text" placeholder="Enter name" class="w-full input-dark text-white py-3 px-4 rounded-2xl">
@@ -616,7 +684,212 @@
              </div>
         </div>
 
-        <div id="network-select-modal" class="modal-slide-up absolute inset-0 z-[90] flex items-end justify-center hidden">
+        <!-- Finance & Referrals Modal (UPDATED TABLE) -->
+        <div id="finance-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <button onclick="closeModal('finance-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Finance & Referrals</h2>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                <h3 class="text-white text-sm font-medium mb-3 mt-4">Your wallets</h3>
+                
+                <!-- Wallet 1 -->
+                <div class="bg-[#0f0f0f] rounded-3xl p-4 mb-3 flex items-center justify-between border border-gray-800">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-[#7C75FA]/20 flex items-center justify-center">
+                            <i class="fa-solid fa-ghost text-[#7C75FA] text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-sm">Phantom wallet</div>
+                            <div class="text-gray-500 text-[10px] flex items-center gap-1">0x742d.....5e8f <i class="fa-regular fa-copy"></i></div>
+                        </div>
+                    </div>
+                    <button class="w-10 h-10 bg-red-600/20 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white transition">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+
+                <!-- Wallet 2 -->
+                <div class="bg-[#0f0f0f] rounded-3xl p-4 mb-6 flex items-center justify-between border border-gray-800">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-[#7C75FA]/20 flex items-center justify-center">
+                            <i class="fa-solid fa-ghost text-[#7C75FA] text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-sm">Phantom wallet</div>
+                            <div class="text-gray-500 text-[10px] flex items-center gap-1">0x742d.....5e8f <i class="fa-regular fa-copy"></i></div>
+                        </div>
+                    </div>
+                    <button class="w-10 h-10 bg-red-600/20 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white transition">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+
+                <button onclick="openWalletModal()" class="w-full bg-red-600 text-white py-3.5 rounded-2xl font-bold mb-8 hover:bg-red-700 transition shadow-[0_0_20px_rgba(220,38,38,0.3)]">Connect wallet</button>
+
+                <h3 class="text-white text-sm mb-4">Invite your friends and earn commissions</h3>
+                
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-3xl p-6 flex flex-col items-center mb-8">
+                    <button onclick="copyLink()" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold mb-4 flex items-center justify-center gap-2 hover:bg-red-700 transition">Copy Referral Link <i class="fa-regular fa-copy"></i></button>
+                    
+                    <div class="text-[10px] text-gray-500 mb-2">https://t.me/boostx?ref=12345BTX</div>
+                    <div class="text-[10px] text-gray-500 mb-4">or scan QR-code</div>
+                    
+                    <div class="bg-white p-3 rounded-2xl">
+                        <div class="w-32 h-32 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example')] bg-contain"></div>
+                    </div>
+                </div>
+
+                <div class="text-white text-sm mb-4">You've done a great job, and now you have:</div>
+
+                <!-- Stats Card -->
+                <div class="w-full bg-gradient-to-r from-[#DC2626] to-[#991b1b] rounded-3xl p-6 relative overflow-hidden mb-8 shadow-[0_10px_30px_rgba(220,38,38,0.3)]">
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-6xl font-bold text-white">1234</span>
+                        <div class="flex flex-col text-white text-sm leading-tight">
+                            <span>active</span>
+                            <span>referrals</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-between items-end text-white/80 text-[10px]">
+                        <span>Your total income:</span>
+                        <span class="text-green-300 text-lg font-bold">1,124.34$</span>
+                    </div>
+                </div>
+
+                <div class="text-center text-gray-500 text-[10px] mb-6">You can view the full list of referrals below</div>
+
+                <h3 class="text-white text-sm mb-4">Your referrals</h3>
+
+                <!-- No Referrals Placeholder -->
+                <div class="flex flex-col items-center justify-center py-8 mb-6">
+                    <img src="images/sad-fire.png" alt="No referrals" class="w-16 h-16 mb-3 opacity-80 grayscale">
+                    <p class="text-gray-500 text-[10px]">You don't have any referrals yet</p>
+                    <p class="text-gray-500 text-[10px]">Share your referral link to get referrals data</p>
+                </div>
+
+                <!-- Search -->
+                <div class="relative mb-4">
+                    <input type="text" placeholder="Find your referral" class="w-full bg-transparent text-gray-300 text-xs py-3 border-b border-gray-800 focus:border-red-600 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute right-0 top-3 text-white"></i>
+                </div>
+
+                <!-- Table with Horizontal Scroll -->
+                <div class="overflow-x-auto no-scrollbar pb-4">
+                    <table class="w-full min-w-[1000px] text-left text-xs border-collapse">
+                        <thead class="bg-[#151515] text-gray-400 font-medium text-[10px]">
+                            <tr>
+                                <th class="p-3 rounded-l-lg">#</th>
+                                <th class="p-3">Referral</th>
+                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 text-center">Network</th>
+                                <th class="p-3">Wallet</th>
+                                <th class="p-3 text-right">Total Income</th>
+                                <th class="p-3 text-right">Income 24h</th>
+                                <th class="p-3 text-right">Income 7d</th>
+                                <th class="p-3 text-right">Growth</th>
+                                <th class="p-3 text-center">Socials</th>
+                                <th class="p-3 text-center rounded-r-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-white text-[11px]">
+                            <!-- Row 1 -->
+                            <tr class="border-b border-gray-800/50 hover:bg-white/5 transition">
+                                <td class="p-3">1</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div>
+                                        <div>
+                                            <div class="font-bold">John Davidson</div>
+                                            <div class="text-[9px] text-gray-500">ID: 8472</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center"><span class="border border-green-500 text-green-500 px-2 py-0.5 rounded-full text-[9px]">Active</span></td>
+                                <td class="p-3 text-center"><span class="bg-white text-black px-2 py-0.5 rounded-full font-bold text-[9px]">Ethereum</span></td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-1 text-gray-400 font-mono">0x742d...5e8f <i class="fa-regular fa-copy cursor-pointer hover:text-white"></i></div>
+                                </td>
+                                <td class="p-3 text-right font-bold">15,234$</td>
+                                <td class="p-3 text-right text-green-500 font-bold">+2,543$ <i class="fa-solid fa-arrow-trend-up"></i></td>
+                                <td class="p-3 text-right text-red-500 font-bold">-1,200$ <i class="fa-solid fa-arrow-trend-down"></i></td>
+                                <td class="p-3 text-right text-green-500 font-bold">+123.45%</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex justify-center gap-2 text-gray-400">
+                                        <i class="fa-brands fa-telegram hover:text-white cursor-pointer"></i>
+                                        <i class="fa-brands fa-x-twitter hover:text-white cursor-pointer"></i>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center text-gray-400 hover:text-white cursor-pointer"><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+                            
+                            <!-- Row 2 -->
+                            <tr class="border-b border-gray-800/50 hover:bg-white/5 transition">
+                                <td class="p-3">2</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-blue-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alice" class="w-full h-full object-cover"></div>
+                                        <div>
+                                            <div class="font-bold">Alice Cooper</div>
+                                            <div class="text-[9px] text-gray-500">ID: 9921</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center"><span class="border border-red-500 text-red-500 px-2 py-0.5 rounded-full text-[9px]">Inactive</span></td>
+                                <td class="p-3 text-center"><span class="bg-white text-black px-2 py-0.5 rounded-full font-bold text-[9px]">Solana</span></td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-1 text-gray-400 font-mono">0x8a1b...3c4d <i class="fa-regular fa-copy cursor-pointer hover:text-white"></i></div>
+                                </td>
+                                <td class="p-3 text-right font-bold">5,100$</td>
+                                <td class="p-3 text-right text-red-500 font-bold">-50$ <i class="fa-solid fa-arrow-trend-down"></i></td>
+                                <td class="p-3 text-right text-red-500 font-bold">-200$ <i class="fa-solid fa-arrow-trend-down"></i></td>
+                                <td class="p-3 text-right text-red-500 font-bold">-2.5%</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex justify-center gap-2 text-gray-400">
+                                        <i class="fa-brands fa-telegram hover:text-white cursor-pointer"></i>
+                                        <i class="fa-brands fa-x-twitter hover:text-white cursor-pointer"></i>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center text-gray-400 hover:text-white cursor-pointer"><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+
+                            <!-- Row 3 -->
+                            <tr class="border-b border-gray-800/50 hover:bg-white/5 transition">
+                                <td class="p-3">3</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-purple-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Bob" class="w-full h-full object-cover"></div>
+                                        <div>
+                                            <div class="font-bold">Bob Smith</div>
+                                            <div class="text-[9px] text-gray-500">ID: 1123</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center"><span class="border border-green-500 text-green-500 px-2 py-0.5 rounded-full text-[9px]">Active</span></td>
+                                <td class="p-3 text-center"><span class="bg-white text-black px-2 py-0.5 rounded-full font-bold text-[9px]">Polygon</span></td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-1 text-gray-400 font-mono">0x12ab...98xy <i class="fa-regular fa-copy cursor-pointer hover:text-white"></i></div>
+                                </td>
+                                <td class="p-3 text-right font-bold">8,450$</td>
+                                <td class="p-3 text-right text-green-500 font-bold">+300$ <i class="fa-solid fa-arrow-trend-up"></i></td>
+                                <td class="p-3 text-right text-green-500 font-bold">+1,100$ <i class="fa-solid fa-arrow-trend-up"></i></td>
+                                <td class="p-3 text-right text-green-500 font-bold">+15.2%</td>
+                                <td class="p-3 text-center">
+                                    <div class="flex justify-center gap-2 text-gray-400">
+                                        <i class="fa-brands fa-telegram hover:text-white cursor-pointer"></i>
+                                        <i class="fa-brands fa-x-twitter hover:text-white cursor-pointer"></i>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-center text-gray-400 hover:text-white cursor-pointer"><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="network-select-modal" class="modal-slide-up absolute inset-0 z-[100] flex items-end justify-center hidden">
             <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('network-select-modal'); setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300)"></div>
             <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-gray-800">
                 <h3 class="text-white text-xl font-bold text-center mb-6">Select Network</h3>
@@ -661,8 +934,8 @@
             </div>
         </div>
 
-        <div id="privacy-modal" class="modal absolute inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+        <div id="privacy-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <button onclick="closeModal('privacy-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Privacy & Security</h2>
             </div>
@@ -676,67 +949,6 @@
                     <input type="password" placeholder="Repeat the password" class="w-full input-dark text-white py-3 px-4 rounded-full">
                     <button id="btn-confirm-pass" onclick="closeModal('privacy-modal'); openModal('settings-modal');" class="w-full bg-[#1a1a1a] text-gray-400 py-3 rounded-full font-medium mt-6 transition-colors">Confirm financial password</button>
                 </div>
-            </div>
-        </div>
-
-        <div id="finance-modal" class="modal absolute inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
-                <button onclick="closeModal('finance-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
-                <h2 class="text-xl font-bold text-white ml-2">Finance & Referrals</h2>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto px-4 pb-24">
-                <h3 class="text-white mb-3">Your wallets</h3>
-                <div class="space-y-2 mb-4">
-                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-purple-400"><i class="fa-solid fa-ghost"></i></div><div class="text-white text-sm">Phantom wallet</div></div>
-                        <div class="text-green-500 text-xs">Connected</div>
-                    </div>
-                     <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-[#1a1a1a] flex items-center justify-center text-orange-400"><i class="fa-solid fa-wallet"></i></div><div class="text-white text-sm">MetaMask</div></div>
-                         <div class="text-gray-500 text-xs">Not connected</div>
-                    </div>
-                </div>
-                <button onclick="openWalletModal()" class="w-full bg-red-600 text-white py-3 rounded-full font-bold mb-6 hover:bg-red-700 transition">Connect wallet</button>
-
-                <h3 class="text-white mb-3">Invite your friends</h3>
-                <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-6 flex flex-col items-center mb-6">
-                    <button onclick="copyLink()" class="w-full bg-red-600 text-white py-2 rounded-lg font-bold mb-3 flex items-center justify-center gap-2 hover:bg-red-700 transition">Copy Referral Link <i class="fa-regular fa-copy"></i></button>
-                    <div class="text-[10px] bg-[#1a1a1a] text-gray-500 px-3 py-1 rounded-full mb-4">https://t.me/boostx?ref=12345BTX</div>
-                    <div class="bg-white p-2 rounded-lg"><div class="w-32 h-32 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example')] bg-contain"></div></div>
-                </div>
-
-                <h3 class="text-white mb-3">Your referrals</h3>
-                <div class="overflow-x-auto pb-4">
-                    <table class="w-full min-w-[700px] text-left text-xs text-white">
-                        <thead class="text-gray-400 border-b border-gray-800 bg-[#111]">
-                            <tr><th class="p-3">#</th><th class="p-3">Referral</th><th class="p-3">Date</th><th class="p-3">Projects</th><th class="p-3">Votes</th><th class="p-3">Income</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 font-bold">1</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full bg-orange-500"> <div>John</div></td>
-                                <td class="p-3">14.11.2025</td><td class="p-3">17</td><td class="p-3">117</td><td class="p-3 text-green-500 font-bold">+12345$</td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 font-bold">2</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alice" class="w-6 h-6 rounded-full bg-blue-500"> <div>Alice</div></td>
-                                <td class="p-3">15.11.2025</td><td class="p-3">5</td><td class="p-3">45</td><td class="p-3 text-green-500 font-bold">+5200$</td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 font-bold">3</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Michael" class="w-6 h-6 rounded-full bg-yellow-500"> <div>Michael</div></td>
-                                <td class="p-3">16.11.2025</td><td class="p-3">22</td><td class="p-3">189</td><td class="p-3 text-green-500 font-bold">+8790$</td>
-                            </tr>
-                            <tr class="border-b border-gray-800 hover:bg-white/5">
-                                <td class="p-3 font-bold">4</td>
-                                <td class="p-3 flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Sara" class="w-6 h-6 rounded-full bg-red-500"> <div>Sara</div></td>
-                                <td class="p-3">17.11.2025</td><td class="p-3">9</td><td class="p-3">72</td><td class="p-3 text-green-500 font-bold">+3100$</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
             </div>
         </div>
 
@@ -755,13 +967,13 @@
             </div>
         </div>
 
-        <div id="faq-modal" class="modal absolute inset-0 bg-black z-[60] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+        <div id="faq-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <button onclick="closeModal('faq-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">FAQ & Support</h2>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 pb-24">
-                <h3 class="text-gray-300 mb-4">FAQ about the BoosTX</h3>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                <h3 class="text-gray-300 mb-4 mt-4">FAQ about the BoosTX</h3>
                 <div class="space-y-3 mb-8">
                     <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
                         <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
@@ -778,8 +990,8 @@
             </div>
         </div>
 
-         <div id="support-form-modal" class="modal absolute inset-0 bg-black z-[70] flex flex-col overflow-hidden">
-             <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+         <div id="support-form-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+             <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10">
                 <button onclick="closeModal('support-form-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Support</h2>
             </div>
@@ -797,12 +1009,13 @@
              </div>
         </div>
 
-        <div id="tickets-modal" class="modal absolute inset-0 bg-black z-[70] flex flex-col overflow-hidden">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+        <div id="tickets-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <button onclick="closeModal('tickets-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
                 <h2 class="text-xl font-bold text-white ml-2">Tickets list</h2>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-3">
+            <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-3 no-scrollbar pt-4">
+                <!-- Ticket 1 -->
                 <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 hover:border-gray-700 transition">
                     <div class="flex justify-between items-start mb-2"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500"><div><div class="text-white text-sm">John Davidson</div><div class="text-[10px] text-gray-500">#TK-2847</div></div></div><span class="text-[10px] text-gray-400">2 min</span></div>
                     <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
@@ -812,18 +1025,37 @@
                         <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
                     </div>
                 </div>
+                <!-- Ticket 2 -->
+                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 hover:border-gray-700 transition">
+                    <div class="flex justify-between items-start mb-2"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alice" class="w-8 h-8 rounded-full bg-blue-500"><div><div class="text-white text-sm">Alice Cooper</div><div class="text-[10px] text-gray-500">#TK-2899</div></div></div><span class="text-[10px] text-gray-400">1 hour</span></div>
+                    <div class="text-white text-sm font-medium mb-1">Theme: Account Verification</div>
+                    <p class="text-gray-500 text-xs mb-3">My KYC documents are pending for over a week...</p>
+                     <div class="flex justify-between items-center">
+                        <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-shield-halved text-[8px]"></i> Security</span>
+                        <span class="bg-yellow-900/50 text-yellow-400 text-[10px] px-3 py-1 rounded-full border border-yellow-900">Pending</span>
+                    </div>
+                </div>
+                <!-- Ticket 3 -->
+                <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 hover:border-gray-700 transition">
+                    <div class="flex justify-between items-start mb-2"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Bob" class="w-8 h-8 rounded-full bg-green-500"><div><div class="text-white text-sm">Bob Smith</div><div class="text-[10px] text-gray-500">#TK-2901</div></div></div><span class="text-[10px] text-gray-400">3 hours</span></div>
+                    <div class="text-white text-sm font-medium mb-1">Theme: Bug Report</div>
+                    <p class="text-gray-500 text-xs mb-3">Found a glitch in the referral system calculation...</p>
+                     <div class="flex justify-between items-center">
+                        <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-bug text-[8px]"></i> Technical</span>
+                        <span class="bg-blue-900/50 text-blue-400 text-[10px] px-3 py-1 rounded-full border border-blue-900">In Progress</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="project-info-modal" class="modal absolute inset-0 bg-black z-[70] flex flex-col overflow-hidden">
+        <div id="project-info-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
             <div class="relative h-full w-full flex flex-col">
                 <div class="w-full h-48 relative">
                      <div class="w-full h-full bg-gradient-to-b from-orange-400 to-black relative overflow-hidden">
                          <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="absolute top-10 left-1/2 transform -translate-x-1/2 w-64 h-64 object-cover">
                          <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                      </div>
-                     <br>   
-                     <br>
+                     
                      <div class="absolute top-4 left-0 right-0 px-4 flex justify-between items-center z-10">
                          <div class="bg-green-900/80 border border-green-500/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1">
                              The application has been approved <i class="fa-solid fa-circle-check"></i>
@@ -902,23 +1134,21 @@
             </div>
         </div>
 
-        <div id="project-edit-modal" class="modal absolute inset-0 bg-black z-[80] flex flex-col overflow-hidden">
-             <div class="px-4 pt-6 pb-4 text-center relative">
+        <div id="project-edit-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+             <div class="px-4 pt-6 pb-4 text-center relative sticky top-0 bg-black z-10">
                  <button onclick="closeModal('project-edit-modal')" class="absolute left-4 top-6 text-white text-xl hover:text-gray-300"><i class="fa-solid fa-chevron-left"></i></button>
                  <h2 class="text-xl font-bold text-white">Edit your project</h2>
              </div>
-             <div class="flex-1 overflow-y-auto px-4 pb-8 space-y-4">
+             <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-4 no-scrollbar">
                  <div class="flex flex-col items-center gap-2">
-                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 relative">
-                         <i class="fa-solid fa-image text-white text-2xl"></i>
-                         <i class="fa-solid fa-plus absolute bottom-5 right-5 text-white text-[10px]"></i>
+                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 relative overflow-hidden p-4">
+                         <img src="images/upload.png" class="w-full h-full object-contain">
                      </div>
                      <span class="text-gray-500 text-[10px]">Set up avatar</span>
                  </div>
                  
-                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner relative">
-                     <i class="fa-solid fa-image text-white text-3xl"></i>
-                     <i class="fa-solid fa-plus absolute text-white text-xs ml-6 mt-2"></i>
+                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner relative overflow-hidden p-8">
+                     <img src="images/upload.png" class="w-12 h-12 object-contain">
                  </div>
                  <div class="text-center text-gray-500 text-[10px] mb-4">Set up banner (ratio 3:1)</div>
 
