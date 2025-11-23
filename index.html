@@ -113,7 +113,8 @@
                     <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70">
                     <div class="relative p-6 z-10">
                         <h2 class="text-2xl font-bold text-white mb-3">Standard booster</h2>
-                        <p class="text-gray-400 text-sm mb-6 max-w-[70%]">
+                        <!-- UPDATED: text-gray-300 for better visibility -->
+                        <p class="text-gray-300 text-sm mb-6 max-w-[80%]">
                             A basic booster package that automatically improves your blockchain project's core metrics.
                         </p>
                         <button onclick="handleButtonClick(this, goToChoosePageStandard)" 
@@ -127,7 +128,8 @@
                     <img src="images/boosters-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70">
                     <div class="relative p-6 z-10">
                         <h2 class="text-2xl font-bold text-white mb-3">Advanced booster</h2>
-                        <p class="text-gray-400 text-sm mb-6 max-w-[70%]">
+                        <!-- UPDATED: text-gray-300 for better visibility -->
+                        <p class="text-gray-300 text-sm mb-6 max-w-[80%]">
                             An advanced enhancement package that gives you complete control over the growth dynamics of your project.
                         </p>
                         <button onclick="handleButtonClick(this, goToSetupPage)" 
@@ -141,7 +143,14 @@
 
         <main id="choosePage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Choose your boost type</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('mainPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Choose your boost type</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -210,7 +219,14 @@
 
         <main id="tariffPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Choose your tariff</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('choosePage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Choose your tariff</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -254,7 +270,14 @@
 
         <main id="contractPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Fill in the contract details</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('tariffPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Contract details</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -297,7 +320,14 @@
 
         <main id="checkOrderPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Check your order</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('contractPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Check your order</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -365,7 +395,14 @@
 
         <main id="paymentPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Your payment method</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('checkOrderPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Your payment method</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -419,7 +456,14 @@
 
         <main id="transferPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-4">
-                <h1 class="text-xl font-bold text-white mb-4">Transfer your crypto</h1>
+                <div class="flex items-center mb-4">
+                    <button onclick="showPage('paymentPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold text-white">Transfer your crypto</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-4">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -470,7 +514,14 @@
 
         <main id="setupPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8 overflow-y-auto">
-                <h1 class="text-2xl font-bold text-white mb-6">Set up your boost</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('mainPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Set up your boost</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -588,7 +639,14 @@
 
         <main id="advancedContractPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Fill in the contract details</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('setupPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Contract details</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -630,7 +688,14 @@
 
         <main id="advancedCheckOrderPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Check your order</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('advancedContractPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Check your order</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -706,7 +771,14 @@
 
         <main id="advancedPaymentPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-8">
-                <h1 class="text-2xl font-bold text-white mb-6">Your payment method</h1>
+                <div class="flex items-center mb-6">
+                    <button onclick="showPage('advancedCheckOrderPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Your payment method</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-8">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
@@ -759,7 +831,14 @@
 
         <main id="advancedTransferPage" class="min-h-screen bg-boost-dark hidden pb-20">
             <div class="p-4 pt-4">
-                <h1 class="text-xl font-bold text-white mb-4">Transfer your crypto</h1>
+                <div class="flex items-center mb-4">
+                    <button onclick="showPage('advancedPaymentPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold text-white">Transfer your crypto</h1>
+                </div>
                 
                 <div class="flex gap-2 mb-4">
                     <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
