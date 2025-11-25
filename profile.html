@@ -3,12 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Boost Profile</title>
+    <title>Crypto Boost Profile & Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E50914', 
+                            black: '#000000',
+                            dark: '#0F0F0F',
+                            gray: '#1A1A1A'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         /* === GLOBAL SETTINGS === */
         body {
@@ -125,6 +145,25 @@
         /* Fade In */
         .animate-fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Admin Dashboard Specifics */
+        .admin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .admin-scroll::-webkit-scrollbar-track { background: #000; }
+        .admin-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .admin-scroll::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        .admin-sidebar-item { transition: all 0.2s; border-left: 3px solid transparent; }
+        .admin-sidebar-item:hover { background-color: rgba(255,255,255,0.05); color: white; }
+        .admin-sidebar-item.active { background-color: #E50914; color: white; border-left-color: white; }
+
+        /* Smooth Chart Curve for Admin */
+        .admin-chart-path {
+            fill: url(#adminChartGradient);
+            stroke: #4ade80;
+            stroke-width: 3;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 4px rgba(74, 222, 128, 0.5));
+        }
 
         * { -webkit-tap-highlight-color: transparent; }
     </style>
@@ -437,7 +476,7 @@
                     <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-circle-question w-6 text-center"></i><span>FAQ & Support</span></div>
                 </button>
                 <div class="pt-6">
-                    <button class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition shadow-lg shadow-red-900/30 active:scale-[0.98]">
+                    <button onclick="openAdminPanel()" class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition shadow-lg shadow-red-900/30 active:scale-[0.98]">
                         <div class="flex items-center gap-2"><i class="fa-solid fa-user-gear"></i></div><span class="font-medium">Admin Panel</span>
                     </button>
                 </div>
@@ -1056,8 +1095,8 @@
                          <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                      </div>
                      
-                     <div class="absolute top-4 left-0 right-0 px-4 flex justify-between items-center z-10">
-                         <div class="bg-green-900/80 border border-green-500/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                     <div class="absolute top-4 left-0 right-0 px-4 flex justify-between items-center z-10 mr-2">
+                         <div class="bg-green-700/80 border border-green-300/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1 pr-4">
                              The application has been approved <i class="fa-solid fa-circle-check"></i>
                          </div>
                          <button onclick="openModal('project-edit-modal')" class="text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition backdrop-blur-sm">
@@ -1209,6 +1248,257 @@
             Copied to clipboard!
         </div>
 
+    </div>
+
+    <!-- ADMIN DASHBOARD OVERLAY -->
+    <div id="admin-dashboard" class="hidden fixed inset-0 w-full h-full bg-black z-[200] text-white flex font-sans overflow-hidden">
+        
+        <aside class="w-64 border-r border-[#1a1a1a] flex flex-col bg-black">
+            <div class="p-6 flex items-center gap-3 border-b border-[#1a1a1a]">
+                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-white"><i class="fa-solid fa-bars"></i></div>
+                <h1 class="text-xl font-bold">Users</h1>
+            </div>
+            
+            <nav class="flex-1 py-4 space-y-1">
+                <a href="#" class="flex items-center gap-4 px-6 py-3 bg-[#E50914] text-white border-l-4 border-white">
+                    <i class="fa-solid fa-chart-simple w-5 text-center"></i> <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-regular fa-user w-5 text-center"></i> <span>Users</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-regular fa-folder w-5 text-center"></i> <span>Projects</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-users-line w-5 text-center"></i> <span>Referrals</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-rocket w-5 text-center"></i> <span>Boosters</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-link w-5 text-center"></i> <span>Chains</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-dollar-sign w-5 text-center"></i> <span>Finance</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-gear w-5 text-center"></i> <span>Team managment</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-6 py-3 text-gray-400 hover:bg-white/5 hover:text-white transition admin-sidebar-item">
+                    <i class="fa-solid fa-ticket w-5 text-center"></i> <span>Support tickets</span>
+                </a>
+            </nav>
+
+            <div class="p-6 border-t border-[#1a1a1a]">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full border border-gray-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-user"></i></div>
+                    <span class="text-sm text-gray-400">Your role: CEO</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-black">
+            <header class="h-16 border-b border-[#1a1a1a] flex items-center px-8">
+                <div class="relative w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" placeholder="Find Any Things" class="w-full bg-black border border-[#333] rounded-full py-2 pl-10 pr-4 text-sm text-white focus:border-red-600 outline-none">
+                </div>
+                <div class="ml-auto flex items-center gap-4">
+                     <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-8 admin-scroll">
+                <h2 class="text-3xl font-bold mb-6">Overview</h2>
+
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div class="bg-[#0b0b0b] rounded-2xl p-5 border border-[#1a1a1a] relative group">
+                        <div class="text-gray-400 text-xs mb-1">Users today</div>
+                        <div class="text-3xl font-bold text-white mb-1">+508</div>
+                        <div class="text-gray-500 text-[10px] mb-4">New registrations</div>
+                        <div class="text-green-500 text-xs font-bold mb-4">+12,3%</div>
+                        <button class="bg-[#E50914] text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-1">View more <i class="fa-solid fa-arrow-right"></i></button>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-end gap-1 h-12 opacity-50">
+                            <div class="w-1.5 bg-red-900/50 h-[40%] rounded-t"></div>
+                            <div class="w-1.5 bg-red-900/50 h-[70%] rounded-t"></div>
+                            <div class="w-1.5 bg-red-600 h-[100%] rounded-t"></div>
+                            <div class="w-1.5 bg-red-900/50 h-[60%] rounded-t"></div>
+                        </div>
+                    </div>
+                    <div class="bg-[#0b0b0b] rounded-2xl p-5 border border-[#1a1a1a] relative">
+                         <div class="text-gray-400 text-xs mb-1">All users</div>
+                        <div class="text-3xl font-bold text-white mb-1">12,508</div>
+                        <div class="text-gray-500 text-[10px] mb-4">Total number</div>
+                        <div class="text-green-500 text-xs font-bold mb-4">+12,3%</div>
+                        <button class="bg-[#1a1a1a] text-gray-400 text-[10px] font-bold px-4 py-2 rounded-lg hover:text-white transition flex items-center gap-1">View all users <i class="fa-solid fa-arrow-right"></i></button>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-end gap-1 h-12 opacity-50"><div class="w-1.5 bg-red-900/50 h-[40%] rounded-t"></div><div class="w-1.5 bg-red-900/50 h-[70%] rounded-t"></div><div class="w-1.5 bg-red-600 h-[100%] rounded-t"></div><div class="w-1.5 bg-red-900/50 h-[60%] rounded-t"></div></div>
+                    </div>
+                     <div class="bg-[#0b0b0b] rounded-2xl p-5 border border-[#1a1a1a] relative">
+                         <div class="text-gray-400 text-xs mb-1">Active users</div>
+                        <div class="text-3xl font-bold text-white mb-1">1,508</div>
+                        <div class="text-gray-500 text-[10px] mb-4">Active users now</div>
+                        <div class="text-green-500 text-xs font-bold mb-4">+12,3%</div>
+                        <button class="bg-[#1a1a1a] text-gray-400 text-[10px] font-bold px-4 py-2 rounded-lg hover:text-white transition flex items-center gap-1">View more <i class="fa-solid fa-arrow-right"></i></button>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-end gap-1 h-12 opacity-50"><div class="w-1.5 bg-red-900/50 h-[40%] rounded-t"></div><div class="w-1.5 bg-red-900/50 h-[70%] rounded-t"></div><div class="w-1.5 bg-red-600 h-[100%] rounded-t"></div><div class="w-1.5 bg-red-900/50 h-[60%] rounded-t"></div></div>
+                    </div>
+                     <div class="bg-[#0b0b0b] rounded-2xl p-5 border border-[#1a1a1a] relative">
+                         <div class="text-gray-400 text-xs mb-1">Finance</div>
+                        <div class="text-2xl font-bold text-green-500 mb-1">+12,304$</div>
+                        <div class="text-gray-500 text-[10px] mb-4">Amount of orders in USD today</div>
+                        <div class="text-green-500 text-xs font-bold mb-4">+12,3%</div>
+                        <button class="bg-[#1a1a1a] text-gray-400 text-[10px] font-bold px-4 py-2 rounded-lg hover:text-white transition flex items-center gap-1">View more <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="col-span-2 bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a] h-[400px] relative">
+                         <div class="flex justify-between items-center mb-4">
+                             <h3 class="text-lg font-medium text-white">Overview chart</h3>
+                             <div class="flex bg-[#111] rounded-lg p-1 gap-1">
+                                 <button class="px-3 py-1 text-[10px] text-gray-500 rounded hover:text-white">1 day</button>
+                                 <button class="px-3 py-1 text-[10px] bg-red-600 text-white rounded font-bold">1 week</button>
+                                 <button class="px-3 py-1 text-[10px] text-gray-500 rounded hover:text-white">1 month</button>
+                                 <button class="px-3 py-1 text-[10px] text-gray-500 rounded hover:text-white">1 year</button>
+                             </div>
+                         </div>
+                         
+                         <div class="w-full h-64 relative mt-8">
+                             <div class="absolute inset-0 flex flex-col justify-between text-[10px] text-gray-600 font-mono">
+                                 <div class="border-b border-[#222] w-full pb-1">2005</div>
+                                 <div class="border-b border-[#222] w-full pb-1">1604</div>
+                                 <div class="border-b border-[#222] w-full pb-1">1203</div>
+                                 <div class="border-b border-[#222] w-full pb-1">802</div>
+                                 <div class="border-b border-[#222] w-full pb-1">401</div>
+                                 <div class="border-b border-[#222] w-full pb-1">0</div>
+                             </div>
+                             
+                             <svg viewBox="0 0 800 300" class="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                                 <defs>
+                                     <linearGradient id="adminChartGradient" x1="0" x2="0" y1="0" y2="1">
+                                         <stop offset="0%" stop-color="rgba(74, 222, 128, 0.2)"/>
+                                         <stop offset="100%" stop-color="rgba(74, 222, 128, 0)"/>
+                                     </linearGradient>
+                                 </defs>
+                                 <path d="M0,280 C100,280 150,200 200,250 C250,300 300,200 400,250 C500,300 600,250 800,200" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.5"/>
+                                 <path d="M0,290 C150,290 200,280 300,270 C400,260 500,200 600,150 C700,100 800,50" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.6"/>
+                                 <path d="M0,300 L0,290 C100,290 300,290 400,280 C500,200 550,150 600,100 C650,50 750,0 800,50 V300 Z" class="admin-chart-path" stroke="none"/>
+                                 <path d="M0,290 C100,290 300,290 400,280 C500,200 550,150 600,100 C650,50 750,0 800,50" fill="none" stroke="#4ade80" stroke-width="3" />
+                                 
+                                 <circle cx="600" cy="100" r="4" fill="#fff" stroke="#4ade80" stroke-width="2" />
+                                 <circle cx="600" cy="150" r="4" fill="#fff" stroke="#ef4444" stroke-width="2" />
+                             </svg>
+
+                             <div class="absolute top-[80px] left-[580px] bg-[#1a1a1a]/90 backdrop-blur border border-gray-700 p-3 rounded-lg text-[10px] w-40 shadow-xl z-10">
+                                 <div class="text-gray-400 mb-1">30 November 2025, Thursday</div>
+                                 <div class="flex items-center gap-1 text-red-400 mb-0.5"><div class="w-1.5 h-1.5 rounded-full bg-red-500"></div> All users: 620</div>
+                                 <div class="flex items-center gap-1 text-blue-400 mb-0.5"><div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Active users: 620</div>
+                                 <div class="flex items-center gap-1 text-green-400 font-bold"><div class="w-1.5 h-1.5 rounded-full bg-green-500"></div> Orders in $: 12,3K$</div>
+                             </div>
+                         </div>
+                         
+                         <div class="flex justify-center gap-4 mt-4 text-[10px] text-gray-500">
+                             <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-red-500"></div> All users</div>
+                             <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Active users</div>
+                             <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-yellow-500"></div> Users today</div>
+                             <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-green-500"></div> Orders amount in $</div>
+                         </div>
+                    </div>
+
+                    <div class="col-span-1 bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a] h-[400px] flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                             <h3 class="text-lg font-medium text-white">Best referrers today</h3>
+                        </div>
+                        <div class="flex-1 overflow-y-auto pr-2 admin-scroll space-y-3">
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-yellow-500 text-black font-bold px-1.5 py-0.5 rounded text-[10px]">#1</span>
+                                    <div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div>
+                                    <span class="font-bold text-white">John Davidson <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-500"></i></span>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-gray-500 text-[9px]">Ref code: 5FSOFNB</span>
+                                    <span class="text-white font-bold">+117 refs</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-3"><span class="bg-yellow-500 text-black font-bold px-1.5 py-0.5 rounded text-[10px]">#1</span><div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div><span class="font-bold text-white">John Davidson <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-500"></i></span></div><div class="flex flex-col items-end"><span class="text-gray-500 text-[9px]">Ref code: 5FSOFNB</span><span class="text-white font-bold">+117 refs</span></div></div>
+                             <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-3"><span class="bg-yellow-500 text-black font-bold px-1.5 py-0.5 rounded text-[10px]">#1</span><div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div><span class="font-bold text-white">John Davidson <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-500"></i></span></div><div class="flex flex-col items-end"><span class="text-gray-500 text-[9px]">Ref code: 5FSOFNB</span><span class="text-white font-bold">+117 refs</span></div></div>
+                             <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-3"><span class="bg-yellow-500 text-black font-bold px-1.5 py-0.5 rounded text-[10px]">#1</span><div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div><span class="font-bold text-white">John Davidson <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-500"></i></span></div><div class="flex flex-col items-end"><span class="text-gray-500 text-[9px]">Ref code: 5FSOFNB</span><span class="text-white font-bold">+117 refs</span></div></div>
+                             <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-3"><span class="bg-yellow-500 text-black font-bold px-1.5 py-0.5 rounded text-[10px]">#1</span><div class="w-8 h-8 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div><span class="font-bold text-white">John Davidson <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-500"></i></span></div><div class="flex flex-col items-end"><span class="text-gray-500 text-[9px]">Ref code: 5FSOFNB</span><span class="text-white font-bold">+117 refs</span></div></div>
+                        </div>
+                        <button class="mt-4 bg-[#1a1a1a] text-gray-400 text-xs font-bold py-3 rounded-xl hover:text-white hover:bg-[#222] transition w-full">View all referrers <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 pb-6">
+                    <div class="bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a]">
+                        <h3 class="text-lg font-medium text-white mb-6">Financial statistics</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-[#1a1a1a]">
+                                <span class="text-gray-500 text-sm">Turnover per week</span>
+                                <span class="text-white font-bold text-lg">+12,304$</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#1a1a1a]">
+                                <span class="text-gray-500 text-sm">Monthly turnover</span>
+                                <span class="text-white font-bold text-lg">+12,304$</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#1a1a1a]">
+                                <span class="text-gray-500 text-sm">Payments to referrals</span>
+                                <span class="text-white font-bold text-lg">12,304$</span>
+                            </div>
+                             <div class="flex justify-between items-center py-3">
+                                <span class="text-gray-500 text-sm">Total income</span>
+                                <span class="text-green-500 font-bold text-xl">+12,304$</span>
+                            </div>
+                        </div>
+                         <button class="mt-4 bg-[#1a1a1a] text-gray-400 text-xs font-bold px-4 py-2 rounded-lg hover:text-white transition">View more <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+
+                    <div class="bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a]">
+                        <div class="flex justify-between items-center mb-6">
+                             <h3 class="text-lg font-medium text-white">Top projects today</h3>
+                             <span class="text-gray-500 text-xs">Votes</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                     <div class="w-10 h-10 rounded-full bg-orange-600 overflow-hidden border border-orange-400"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Moon" class="w-full h-full object-cover"></div>
+                                     <div>
+                                         <div class="text-sm font-bold text-white">MoonRocket Token <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-gray-500"></i></div>
+                                         <div class="text-[10px] text-gray-500">Holders: <span class="text-white">15,425</span> Transactions: <span class="text-white">15,425</span></div>
+                                         <div class="text-[10px] text-gray-500">Volume: <span class="text-white">15,425</span></div>
+                                     </div>
+                                </div>
+                                <div class="text-white font-bold text-sm">123,456</div>
+                            </div>
+                             <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                     <div class="w-10 h-10 rounded-full bg-orange-600 overflow-hidden border border-orange-400"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Sun" class="w-full h-full object-cover"></div>
+                                     <div>
+                                         <div class="text-sm font-bold text-white">MoonRocket Token <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-gray-500"></i></div>
+                                         <div class="text-[10px] text-gray-500">Holders: <span class="text-white">15,425</span> Transactions: <span class="text-white">15,425</span></div>
+                                         <div class="text-[10px] text-gray-500">Volume: <span class="text-white">15,425</span></div>
+                                     </div>
+                                </div>
+                                <div class="text-white font-bold text-sm">123,456</div>
+                            </div>
+                             <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                     <div class="w-10 h-10 rounded-full bg-orange-600 overflow-hidden border border-orange-400"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Star" class="w-full h-full object-cover"></div>
+                                     <div>
+                                         <div class="text-sm font-bold text-white">MoonRocket Token <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-gray-500"></i></div>
+                                         <div class="text-[10px] text-gray-500">Holders: <span class="text-white">15,425</span> Transactions: <span class="text-white">15,425</span></div>
+                                         <div class="text-[10px] text-gray-500">Volume: <span class="text-white">15,425</span></div>
+                                     </div>
+                                </div>
+                                <div class="text-white font-bold text-sm">123,456</div>
+                            </div>
+                        </div>
+                        <button class="mt-6 bg-[#1a1a1a] text-gray-400 text-xs font-bold px-4 py-2 rounded-lg hover:text-white transition flex items-center gap-1">View all projects <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
 
     <script>
@@ -1370,6 +1660,19 @@
             } else {
                 content.classList.add('open'); icon.classList.add('open');
             }
+        }
+
+        // --- ADMIN PANEL LOGIC ---
+        function openAdminPanel() {
+            const panel = document.getElementById('admin-dashboard');
+            panel.classList.remove('hidden');
+            // Close mobile settings modal if open
+            closeModal('settings-modal');
+        }
+
+        function closeAdminPanel() {
+            const panel = document.getElementById('admin-dashboard');
+            panel.classList.add('hidden');
         }
 
         // --- CHART INIT ---
