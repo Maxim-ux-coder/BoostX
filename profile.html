@@ -228,7 +228,7 @@
                 </button>
             </div>
 
-            <div id="swipe-area" class="p-4 min-h-[400px]">
+            <div id="content-area" class="p-4 min-h-[400px]">
                 
                 <!-- Search -->
                 <div class="relative mb-6">
@@ -475,7 +475,7 @@
                 <button onclick="openModal('faq-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
                     <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-circle-question w-6 text-center"></i><span>FAQ & Support</span></div>
                 </button>
-                <div class="pt-6">
+                <div class="pt-6 hidden md:block">
                     <button onclick="openAdminPanel()" class="w-full bg-red-600 text-white py-4 rounded-2xl flex items-center justify-between px-6 hover:bg-red-700 transition shadow-lg shadow-red-900/30 active:scale-[0.98]">
                         <div class="flex items-center gap-2"><i class="fa-solid fa-user-gear"></i></div><span class="font-medium">Admin Panel</span>
                     </button>
@@ -540,7 +540,7 @@
                             </div>
                             <div class="relative group">
                                 <i class="fa-solid fa-globe absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
-                                <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
+                                                                <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
                             </div>
                         </div>
                     </div>
@@ -600,7 +600,7 @@
             </div>
         </div>
 
-        <!-- Rules Modal (Fixed Content Structure) -->
+        <!-- Rules Modal -->
         <div id="rules-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
              <div class="px-4 pt-6 pb-4 text-center sticky top-0 bg-black z-10">
                  <h2 class="text-xl font-bold text-white">The Colosseum Rules</h2>
@@ -723,7 +723,7 @@
              </div>
         </div>
 
-        <!-- Finance & Referrals Modal (UPDATED TABLE) -->
+        <!-- Finance & Referrals Modal -->
         <div id="finance-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
             <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
                 <button onclick="closeModal('finance-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
@@ -1095,11 +1095,13 @@
                          <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                      </div>
                      
-                     <div class="absolute top-4 left-0 right-0 px-4 flex justify-between items-center z-10 mr-2">
+                     <!-- FIXED: Added padding-left so back button doesn't cover text -->
+                     <div class="absolute top-4 left-0 right-0 pl-16 px-4 flex justify-between items-center z-10 mr-2">
                          <div class="bg-green-700/80 border border-green-300/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1 pr-4">
                              The application has been approved <i class="fa-solid fa-circle-check"></i>
                          </div>
-                         <button onclick="openModal('project-edit-modal')" class="text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition backdrop-blur-sm">
+                         <!-- FIXED: Made button a perfect circle -->
+                         <button onclick="openModal('project-edit-modal')" class="text-white bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm shadow-lg">
                              <i class="fa-solid fa-gear"></i>
                          </button>
                      </div>
@@ -1503,8 +1505,7 @@
 
     <script>
         // --- TABS & SWIPE ---
-        let startX = 0;
-        const swipeArea = document.getElementById('swipe-area');
+        // const swipeArea = document.getElementById('swipe-area'); // SWIPE REMOVED
         const tabs = ['wall', 'projects', 'activity'];
         let currentTabIndex = 0;
 
@@ -1528,13 +1529,6 @@
             
             currentTabIndex = tabs.indexOf(tabName);
         }
-
-        swipeArea.addEventListener('touchstart', e => startX = e.changedTouches[0].screenX, {passive: true});
-        swipeArea.addEventListener('touchend', e => {
-            const endX = e.changedTouches[0].screenX;
-            if (startX - endX > 50) { if (currentTabIndex < tabs.length - 1) switchTab(tabs[currentTabIndex + 1]); } 
-            else if (endX - startX > 50) { if (currentTabIndex > 0) switchTab(tabs[currentTabIndex - 1]); }
-        });
 
         // --- MODALS (Slide) ---
         function openModal(id) { 
@@ -1702,3 +1696,5 @@
     </script>
 </body>
 </html>
+
+
