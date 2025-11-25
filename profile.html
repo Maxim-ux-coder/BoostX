@@ -165,6 +165,22 @@
             filter: drop-shadow(0 0 4px rgba(74, 222, 128, 0.5));
         }
 
+        /* Checkbox for Admin Table */
+        .admin-checkbox:checked {
+            background-color: white;
+            border-color: white;
+        }
+        .admin-checkbox:checked::after {
+            content: '\2714';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            font-size: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
         * { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
@@ -540,7 +556,7 @@
                             </div>
                             <div class="relative group">
                                 <i class="fa-solid fa-globe absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
-                                                                <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
+                                <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
                             </div>
                         </div>
                     </div>
@@ -992,7 +1008,7 @@
         </div>
 
          <div id="wallet-modal" class="modal-slide-up absolute inset-0 z-[100] flex items-end justify-center hidden">
-            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWalletModal()"></div>
+            <div class="absolute inset-0 bg-black/80             backdrop-blur-sm" onclick="closeWalletModal()"></div>
             <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-red-900/30">
                 <h3 class="text-white text-2xl font-bold text-center mb-2">Connect your wallet</h3>
                 <div class="grid grid-cols-3 gap-4 mb-8 mt-6">
@@ -1095,12 +1111,10 @@
                          <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                      </div>
                      
-                     <!-- FIXED: Added padding-left so back button doesn't cover text -->
                      <div class="absolute top-4 left-0 right-0 pl-16 px-4 flex justify-between items-center z-10 mr-2">
                          <div class="bg-green-700/80 border border-green-300/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1 pr-4">
                              The application has been approved <i class="fa-solid fa-circle-check"></i>
                          </div>
-                         <!-- FIXED: Made button a perfect circle -->
                          <button onclick="openModal('project-edit-modal')" class="text-white bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm shadow-lg">
                              <i class="fa-solid fa-gear"></i>
                          </button>
@@ -1314,12 +1328,13 @@
                 <h2 class="text-3xl font-bold mb-6">Overview</h2>
 
                 <div class="grid grid-cols-4 gap-4 mb-8">
+                    <!-- USERS TODAY CARD (UPDATED BUTTON) -->
                     <div class="bg-[#0b0b0b] rounded-2xl p-5 border border-[#1a1a1a] relative group">
                         <div class="text-gray-400 text-xs mb-1">Users today</div>
                         <div class="text-3xl font-bold text-white mb-1">+508</div>
                         <div class="text-gray-500 text-[10px] mb-4">New registrations</div>
                         <div class="text-green-500 text-xs font-bold mb-4">+12,3%</div>
-                        <button class="bg-[#E50914] text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-1">View more <i class="fa-solid fa-arrow-right"></i></button>
+                        <button onclick="openBlurModal('users-today-modal')" class="bg-[#E50914] text-white text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-red-700 transition flex items-center gap-1">View more <i class="fa-solid fa-arrow-right"></i></button>
                         <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-end gap-1 h-12 opacity-50">
                             <div class="w-1.5 bg-red-900/50 h-[40%] rounded-t"></div>
                             <div class="w-1.5 bg-red-900/50 h-[70%] rounded-t"></div>
@@ -1353,7 +1368,8 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-6 mb-8">
-                    <div class="col-span-2 bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a] h-[400px] relative">
+                    <!-- CHART CONTAINER (UPDATED TOOLTIP) -->
+                    <div class="col-span-2 bg-[#0b0b0b] rounded-2xl p-6 border border-[#1a1a1a] h-[400px] relative group">
                          <div class="flex justify-between items-center mb-4">
                              <h3 class="text-lg font-medium text-white">Overview chart</h3>
                              <div class="flex bg-[#111] rounded-lg p-1 gap-1">
@@ -1390,7 +1406,8 @@
                                  <circle cx="600" cy="150" r="4" fill="#fff" stroke="#ef4444" stroke-width="2" />
                              </svg>
 
-                             <div class="absolute top-[80px] left-[580px] bg-[#1a1a1a]/90 backdrop-blur border border-gray-700 p-3 rounded-lg text-[10px] w-40 shadow-xl z-10">
+                             <!-- UPDATED TOOLTIP: Hidden by default, visible on group hover -->
+                             <div class="absolute top-[80px] left-[580px] bg-[#1a1a1a]/90 backdrop-blur border border-gray-700 p-3 rounded-lg text-[10px] w-40 shadow-xl z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                                  <div class="text-gray-400 mb-1">30 November 2025, Thursday</div>
                                  <div class="flex items-center gap-1 text-red-400 mb-0.5"><div class="w-1.5 h-1.5 rounded-full bg-red-500"></div> All users: 620</div>
                                  <div class="flex items-center gap-1 text-blue-400 mb-0.5"><div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Active users: 620</div>
@@ -1503,6 +1520,131 @@
         </main>
     </div>
 
+    <!-- USERS TODAY MODAL (NEW) -->
+    <div id="users-today-modal" class="modal-blur fixed inset-0 z-[210] flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeBlurModal('users-today-modal')"></div>
+        
+        <div class="bg-[#0b0b0b] border border-[#1a1a1a] rounded-2xl w-[800px] h-[600px] relative z-10 flex flex-col shadow-2xl overflow-hidden">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-[#1a1a1a] flex justify-between items-center bg-[#0b0b0b]">
+                <h2 class="text-xl font-bold text-white">New users list</h2>
+                <button onclick="closeBlurModal('users-today-modal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-gray-400">Mass actions:</span>
+                    <button class="bg-[#1a1a1a] text-white px-3 py-1.5 rounded hover:bg-[#222] border border-transparent hover:border-gray-700 transition">Unblock</button>
+                    <button class="bg-[#1a1a1a] text-white px-3 py-1.5 rounded hover:bg-[#222] border border-transparent hover:border-gray-700 transition">Block</button>
+                    <button class="bg-[#1a1a1a] text-white px-3 py-1.5 rounded hover:bg-[#222] border border-transparent hover:border-gray-700 transition text-red-500">Delete</button>
+                </div>
+                <div class="relative w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                    <input type="text" placeholder="Search..." class="w-full bg-[#111] border border-[#222] rounded-lg py-1.5 pl-8 pr-4 text-xs text-white focus:border-red-600 outline-none">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="flex-1 overflow-y-auto px-6 pb-4">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-[#111] text-gray-400 font-medium sticky top-0 z-10">
+                        <tr>
+                            <th class="p-3 rounded-l-lg w-10 text-center"><input type="checkbox" class="admin-checkbox w-4 h-4 bg-[#222] border border-gray-600 rounded appearance-none cursor-pointer"></th>
+                            <th class="p-3">ID</th>
+                            <th class="p-3">User</th>
+                            <th class="p-3">Email</th>
+                            <th class="p-3 rounded-r-lg text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white text-xs">
+                        <!-- Row 1 -->
+                        <tr class="border-b border-[#1a1a1a] hover:bg-white/5 transition group">
+                            <td class="p-3 text-center"><input type="checkbox" class="admin-checkbox w-4 h-4 bg-[#222] border border-gray-600 rounded appearance-none cursor-pointer"></td>
+                            <td class="p-3 text-gray-400">1.btx</td>
+                            <td class="p-3 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-orange-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-full h-full object-cover"></div>
+                                John Davidson
+                            </td>
+                            <td class="p-3 text-gray-400">john.davidson@gmail.com</td>
+                            <td class="p-3 text-right space-x-2">
+                                <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr class="border-b border-[#1a1a1a] hover:bg-white/5 transition group">
+                            <td class="p-3 text-center"><input type="checkbox" class="admin-checkbox w-4 h-4 bg-[#222] border border-gray-600 rounded appearance-none cursor-pointer"></td>
+                            <td class="p-3 text-gray-400">2.btx</td>
+                            <td class="p-3 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alice" class="w-full h-full object-cover"></div>
+                                Alice Cooper
+                            </td>
+                            <td class="p-3 text-gray-400">alice.cooper@yahoo.com</td>
+                            <td class="p-3 text-right space-x-2">
+                                <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr class="border-b border-[#1a1a1a] hover:bg-white/5 transition group">
+                            <td class="p-3 text-center"><input type="checkbox" class="admin-checkbox w-4 h-4 bg-[#222] border border-gray-600 rounded appearance-none cursor-pointer"></td>
+                            <td class="p-3 text-gray-400">3.btx</td>
+                            <td class="p-3 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-green-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Bob" class="w-full h-full object-cover"></div>
+                                Bob Smith
+                            </td>
+                            <td class="p-3 text-gray-400">bob.smith@outlook.com</td>
+                            <td class="p-3 text-right space-x-2">
+                                <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                            </td>
+                        </tr>
+                         <!-- Row 4 -->
+                        <tr class="border-b border-[#1a1a1a] hover:bg-white/5 transition group">
+                            <td class="p-3 text-center"><input type="checkbox" class="admin-checkbox w-4 h-4 bg-[#222] border border-gray-600 rounded appearance-none cursor-pointer"></td>
+                            <td class="p-3 text-gray-400">4.btx</td>
+                            <td class="p-3 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-purple-500 overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Eve" class="w-full h-full object-cover"></div>
+                                Eve Polastri
+                            </td>
+                            <td class="p-3 text-gray-400">eve.polastri@mi6.uk</td>
+                            <td class="p-3 text-right space-x-2">
+                                <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-[#1a1a1a] flex justify-between items-center bg-[#0b0b0b] text-xs text-gray-400">
+                <button class="flex items-center gap-2 hover:text-white"><i class="fa-solid fa-download"></i> Download all data</button>
+                
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span>Show Row:</span>
+                        <select class="bg-[#1a1a1a] border border-[#333] text-white rounded px-2 py-1 outline-none">
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-6 h-6 flex items-center justify-center hover:bg-[#1a1a1a] rounded"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span class="text-white font-bold">1</span>
+                        <button class="w-6 h-6 flex items-center justify-center hover:bg-[#1a1a1a] rounded text-white">2</button>
+                        <button class="w-6 h-6 flex items-center justify-center hover:bg-[#1a1a1a] rounded text-white">3</button>
+                        <span class="text-gray-600">...</span>
+                        <button class="w-6 h-6 flex items-center justify-center hover:bg-[#1a1a1a] rounded text-white">12</button>
+                        <button class="w-6 h-6 flex items-center justify-center hover:bg-[#1a1a1a] rounded"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- TABS & SWIPE ---
         // const swipeArea = document.getElementById('swipe-area'); // SWIPE REMOVED
@@ -1545,11 +1687,15 @@
         // --- MODALS (Blur/Fade) ---
         function openBlurModal(id) {
             const m = document.getElementById(id);
+            m.classList.remove('hidden'); // Ensure it's not hidden if using classList toggle
+            // Force reflow
+            void m.offsetWidth;
             m.classList.add('active');
         }
         function closeBlurModal(id) {
             const m = document.getElementById(id);
             m.classList.remove('active');
+            // Optional: add delay to hide display none if needed, but CSS pointer-events handles interaction
         }
 
         // --- WALLET MODAL (Slide Up) ---
@@ -1696,5 +1842,4 @@
     </script>
 </body>
 </html>
-
 
