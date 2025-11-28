@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Boosters</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1f2937; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        
+        /* Input number styling */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* Toggle Switch Styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #ef4444; /* Red-500 */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #ef4444; /* Red-500 */
+        }
+    </style>
+</head>
+<body class="bg-black text-white flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR (Preserved Navigation) -->
+    <aside class="w-64 bg-[#050505] border-r border-gray-800 flex-shrink-0 flex flex-col h-full">
+        <div class="p-4 flex items-center gap-3 border-b border-gray-800 h-16">
+            <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
+                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </div>
+            <span class="font-bold text-lg">Users</span>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-chart-bar text-xl"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="users.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users text-xl"></i>
+                <span>Users</span>
+            </a>
+            <a href="projects.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-folder text-xl"></i>
+                <span>Colosseum</span>
+            </a>
+            <a href="referrals.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users-three text-xl"></i>
+                <span>Referrals</span>
+            </a>
+            <!-- Active Item -->
+            <a href="boosters.html" class="flex items-center gap-3 px-4 py-3 bg-red-600 text-white shadow-lg shadow-red-900/20">
+                <i class="ph ph-rocket-launch text-xl"></i>
+                <span>Boosters</span>
+            </a>
+            <!-- Other Items -->
+            <a href="chains.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-link text-xl"></i>
+                <span>Chains</span>
+            </a>
+            <a href="finance.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-currency-dollar text-xl"></i>
+                <span>Finance</span>
+            </a>
+            <a href="team-management.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-gear text-xl"></i>
+                <span>Team management</span>
+            </a>
+            <a href="support-tickets.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-ticket text-xl"></i>
+                <span>Support tickets</span>
+            </a>
+        </nav>
+        <div class="p-4 border-t border-gray-800 text-xs text-gray-500">
+            Your role: CEO
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar bg-black p-8">
+        
+        <!-- Top Bar -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="relative w-96">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" class="bg-[#111] border border-gray-800 text-gray-300 text-sm rounded-full block w-full pl-10 p-2.5 focus:border-gray-600 focus:outline-none" placeholder="Find Any Things">
+            </div>
+        </div>
+
+        <h1 class="text-3xl font-bold mb-6 text-white">Boosters settings</h1>
+
+        <!-- Tabs for Booster Type -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <button id="tab-standard" onclick="switchTab('standard')" class="py-3 rounded-full font-medium transition-colors bg-red-600 text-white">Standart booster</button>
+            <button id="tab-advanced" onclick="switchTab('advanced')" class="py-3 rounded-full font-medium transition-colors bg-[#111] text-gray-400 hover:text-white">Advanced booster</button>
+        </div>
+
+        <!-- Chain Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6 text-xs">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-gray-400 mr-1">EVM chains</span>
+                <input type="checkbox" class="border-gray-700 rounded bg-[#111]">
+                
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-red-600/20 border border-red-600 rounded-full text-white">
+                    <div class="w-2 h-2 bg-gray-200 rounded-full"></div> Ethereum <input type="checkbox" checked class="accent-red-500">
+                </button>
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-[#111] border border-gray-800 rounded-full text-gray-400">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div> Arbitrum <input type="checkbox" class="bg-transparent border-gray-600 rounded">
+                </button>
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-[#111] border border-gray-800 rounded-full text-gray-400">
+                    <div class="w-2 h-2 bg-blue-700 rounded-full"></div> Base <input type="checkbox" class="bg-transparent border-gray-600 rounded">
+                </button>
+                 <button class="flex items-center gap-2 px-3 py-1.5 bg-[#111] border border-gray-800 rounded-full text-gray-400">
+                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div> Polygon <input type="checkbox" class="bg-transparent border-gray-600 rounded">
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-gray-400 mr-1">Other chains</span>
+                <input type="checkbox" class="border-gray-700 rounded bg-[#111]">
+
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white rounded-full border border-red-600">
+                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div> BNB <input type="checkbox" checked class="accent-white">
+                </button>
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white rounded-full border border-red-600">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div> Solana <input type="checkbox" checked class="accent-white">
+                </button>
+                <button class="flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white rounded-full border border-red-600">
+                    <div class="w-2 h-2 bg-red-300 rounded-full"></div> Tron <input type="checkbox" checked class="accent-white">
+                </button>
+            </div>
+        </div>
+
+        <!-- Ethereum Chain Header -->
+        <h2 class="text-xl text-gray-300 mb-6">Ethereum chain</h2>
+
+        <!-- CONTENT WRAPPER -->
+        <div class="bg-[#0a0a0a] border border-gray-800 rounded-xl overflow-hidden p-6">
+            
+            <!-- STANDARD BOOSTER CONTENT -->
+            <div id="content-standard">
+                <!-- Item 1: Holders -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Holders</h3>
+                            <p class="text-xs text-gray-500">Boost holders for the contract</p>
+                        </div>
+
+                        <!-- Inputs Grid -->
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                            <!-- Minimal -->
+                            <div class="flex justify-end items-center gap-3">
+                                <span class="text-gray-500 text-xs">Count: Minimal</span>
+                                <input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300">
+                            </div>
+                            <div class="flex justify-start items-center gap-3">
+                                <span class="text-gray-500 text-xs w-24 text-right">Price: Minimal</span>
+                                <div class="relative w-24">
+                                    <span class="absolute left-2 top-1 text-gray-500">$</span>
+                                    <input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300">
+                                </div>
+                            </div>
+
+                             <!-- Optimal -->
+                             <div class="flex justify-end items-center gap-3">
+                                <span class="text-gray-500 text-xs">Count: Optimal</span>
+                                <input type="number" value="10000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300">
+                            </div>
+                            <div class="flex justify-start items-center gap-3">
+                                <span class="text-gray-500 text-xs w-24 text-right">Price: Optimal</span>
+                                <div class="relative w-24">
+                                    <span class="absolute left-2 top-1 text-gray-500">$</span>
+                                    <input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300">
+                                </div>
+                            </div>
+
+                             <!-- Maximal -->
+                             <div class="flex justify-end items-center gap-3">
+                                <span class="text-gray-500 text-xs">Count: Maximal</span>
+                                <input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300">
+                            </div>
+                            <div class="flex justify-start items-center gap-3">
+                                <span class="text-gray-500 text-xs w-24 text-right">Price: Maximal</span>
+                                <div class="relative w-24">
+                                    <span class="absolute left-2 top-1 text-gray-500">$</span>
+                                    <input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300">
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Toggle -->
+                        <div class="ml-4">
+                            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 checked:border-red-600"/>
+                                <label for="toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer checked:bg-red-600"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2: Transactions -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Transactions</h3>
+                            <p class="text-xs text-gray-500">Boost transactions per contract</p>
+                        </div>
+                        <!-- Inputs Grid -->
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Minimal</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Minimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Optimal</span><input type="number" value="10000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Optimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Maximal</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Maximal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                        <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" checked id="toggle2" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle2" class="toggle-label block overflow-hidden h-5 rounded-full bg-red-600 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+
+                 <!-- Item 3: Volume -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Volume</h3>
+                            <p class="text-xs text-gray-500">Volume boost for the contract</p>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Minimal</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Minimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Optimal</span><input type="number" value="10000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Optimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Maximal</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Maximal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                        <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" checked id="toggle3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle3" class="toggle-label block overflow-hidden h-5 rounded-full bg-red-600 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+
+                 <!-- Item 4: DexScreener -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">DexScreener reactions</h3>
+                            <p class="text-xs text-gray-500">Boost reactions for the contract</p>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Minimal</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Minimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Optimal</span><input type="number" value="10000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Optimal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Maximal</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price: Maximal</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                        <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" id="toggle4" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle4" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADVANCED BOOSTER CONTENT (Hidden by default) -->
+            <div id="content-advanced" class="hidden">
+                 <!-- Item 1: Holders -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Holders</h3>
+                            <p class="text-xs text-gray-500">Boost holders for the contract</p>
+                        </div>
+
+                        <!-- Advanced Inputs Grid -->
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm items-center">
+                            <!-- Min/Max Count -->
+                            <div class="flex justify-end items-center gap-3">
+                                <span class="text-gray-500 text-xs">Count: Min</span>
+                                <input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300">
+                            </div>
+                            <div class="flex justify-start items-center gap-3">
+                                <!-- Empty cell or price logic placeholder -->
+                            </div>
+                             <div class="flex justify-end items-center gap-3">
+                                <span class="text-gray-500 text-xs">Count: Max</span>
+                                <input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300">
+                            </div>
+                             <!-- Single Price Input -->
+                            <div class="flex justify-start items-center gap-3">
+                                <span class="text-gray-500 text-xs w-24 text-right">Price per 1 quantity:</span>
+                                <div class="relative w-24">
+                                    <span class="absolute left-2 top-1 text-gray-500">$</span>
+                                    <input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toggle -->
+                        <div class="ml-4">
+                             <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" id="toggle-adv-1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle-adv-1" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Item 2: Transactions -->
+                 <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Transactions</h3>
+                            <p class="text-xs text-gray-500">Boost transactions per contract</p>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm items-center">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Min</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div></div>
+                             <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Max</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price per 1 quantity:</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                         <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" id="toggle-adv-2" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle-adv-2" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+
+                <!-- Item 3: Volume -->
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">Volume</h3>
+                            <p class="text-xs text-gray-500">Volume boost for the contract</p>
+                        </div>
+                         <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm items-center">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Min</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div></div>
+                             <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Max</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price per 1 quantity:</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                         <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" id="toggle-adv-3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle-adv-3" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+
+                <!-- Item 4: DexScreener -->
+                 <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center gap-6">
+                        <input type="checkbox" class="bg-transparent border-gray-600 rounded w-4 h-4">
+                        <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <div class="w-48">
+                            <h3 class="text-white font-medium">DexScreener reactions</h3>
+                            <p class="text-xs text-gray-500">Boost reactions for the contract</p>
+                        </div>
+                         <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm items-center">
+                            <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Min</span><input type="number" value="1000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div></div>
+                             <div class="flex justify-end items-center gap-3"><span class="text-gray-500 text-xs">Count: Max</span><input type="number" value="100000" class="bg-[#111] border border-gray-700 rounded px-2 py-1 w-24 text-right text-gray-300"></div>
+                            <div class="flex justify-start items-center gap-3"><span class="text-gray-500 text-xs w-24 text-right">Price per 1 quantity:</span><div class="relative w-24"><span class="absolute left-2 top-1 text-gray-500">$</span><input type="number" value="2.99" class="bg-[#111] border border-gray-700 rounded pl-4 pr-2 py-1 w-full text-right text-gray-300"></div></div>
+                        </div>
+                         <div class="ml-4"><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" id="toggle-adv-4" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/><label for="toggle-adv-4" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label></div></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mt-6">
+             <button class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded transition-colors">Save settings</button>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabName) {
+            const tabStandard = document.getElementById('tab-standard');
+            const tabAdvanced = document.getElementById('tab-advanced');
+            const contentStandard = document.getElementById('content-standard');
+            const contentAdvanced = document.getElementById('content-advanced');
+
+            if (tabName === 'standard') {
+                // Activate Standard Tab Style
+                tabStandard.classList.remove('bg-[#111]', 'text-gray-400', 'hover:text-white');
+                tabStandard.classList.add('bg-red-600', 'text-white');
+                
+                // Deactivate Advanced Tab Style
+                tabAdvanced.classList.remove('bg-red-600', 'text-white');
+                tabAdvanced.classList.add('bg-[#111]', 'text-gray-400', 'hover:text-white');
+
+                // Show Standard Content / Hide Advanced
+                contentStandard.classList.remove('hidden');
+                contentAdvanced.classList.add('hidden');
+            } else {
+                // Activate Advanced Tab Style
+                tabAdvanced.classList.remove('bg-[#111]', 'text-gray-400', 'hover:text-white');
+                tabAdvanced.classList.add('bg-red-600', 'text-white');
+
+                // Deactivate Standard Tab Style
+                tabStandard.classList.remove('bg-red-600', 'text-white');
+                tabStandard.classList.add('bg-[#111]', 'text-gray-400', 'hover:text-white');
+
+                // Show Advanced Content / Hide Standard
+                contentAdvanced.classList.remove('hidden');
+                contentStandard.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

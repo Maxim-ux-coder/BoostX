@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Support Tickets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#050505',
+                            800: '#0F0F0F',
+                            700: '#141414',
+                            600: '#1F1F1F',
+                        },
+                        accent: {
+                            red: '#DC2626',
+                            green: '#10B981',
+                            yellow: '#EAB308',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        
+        input[type="text"], input[type="date"], select {
+            color-scheme: dark;
+        }
+        
+        /* Chat bubble animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-anim {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white h-screen flex overflow-hidden font-sans">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 h-full flex flex-col border-r border-white/5 bg-dark-900 flex-shrink-0 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-white/5">
+            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3">
+                <i class="ph-fill ph-fire text-white"></i>
+            </div>
+            <span class="font-semibold text-lg">Admin Panel</span>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-chart-bar text-xl"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="users.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users text-xl"></i>
+                <span>Users</span>
+            </a>
+            <a href="projects.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-folder text-xl"></i>
+                <span>Colosseum</span>
+            </a>
+            <a href="referrals.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users-three text-xl"></i>
+                <span>Referrals</span>
+            </a>
+            <a href="boosters.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-rocket-launch text-xl"></i>
+                <span>Boosters</span>
+            </a>
+            <a href="chains.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-link text-xl"></i>
+                <span>Chains</span>
+            </a>
+            <a href="finance.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-currency-dollar text-xl"></i>
+                <span>Finance</span>
+            </a>
+            <a href="team-management.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-gear text-xl"></i>
+                <span>Team management</span>
+            </a>
+            <!-- Active Item -->
+             <a href="support-tickets.html" class="flex items-center gap-3 px-4 py-3 bg-red-600 text-white shadow-lg shadow-red-900/20">
+                <i class="ph ph-ticket text-xl"></i>
+                <span>Support tickets</span>
+            </a>
+        </nav>  
+        <div class="p-4 border-t border-gray-800 text-xs text-gray-500">
+            Your role: CEO
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-1 overflow-hidden relative">
+        
+        <!-- HEADER (Shared) -->
+        <header class="h-16 bg-dark-900/80 backdrop-blur-md border-b border-white/5 px-8 flex items-center justify-between z-10 relative">
+            <div class="relative w-96">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input type="text" placeholder="Find Any Things" class="w-full bg-dark-800 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-gray-300 focus:outline-none focus:border-gray-600 transition">
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="w-8 h-8 rounded-full bg-dark-800 flex items-center justify-center hover:text-white text-gray-400 transition">
+                    <i class="ph ph-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- VIEW 1: TICKETS LIST -->
+        <div id="tickets-view" class="absolute inset-0 top-16 overflow-y-auto p-8 pb-32 transition-transform duration-300">
+            
+            <h1 class="text-3xl font-bold mb-6">Ticket support</h1>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-dark-700 border border-white/5 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-1">New tickets</p>
+                    <h2 class="text-2xl font-bold text-white mb-4">12</h2>
+                    <button class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition flex items-center">View more <i class="ph ph-arrow-right ml-1"></i></button>
+                </div>
+                <div class="bg-dark-700 border border-white/5 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-1">Total tickets</p>
+                    <h2 class="text-2xl font-bold text-white mb-4">12</h2>
+                    <button class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition flex items-center">View more <i class="ph ph-arrow-right ml-1"></i></button>
+                </div>
+                <div class="bg-dark-700 border border-white/5 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-1">Resolved tickets</p>
+                    <h2 class="text-2xl font-bold text-white mb-4">12</h2>
+                    <button class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition flex items-center">View more <i class="ph ph-arrow-right ml-1"></i></button>
+                </div>
+                <div class="bg-dark-700 border border-white/5 rounded-xl p-5">
+                    <p class="text-xs text-gray-400 mb-1">Blocked tickets</p>
+                    <h2 class="text-2xl font-bold text-white mb-4">12</h2>
+                    <button class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition flex items-center">View more <i class="ph ph-arrow-right ml-1"></i></button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold">Tickets List</h2>
+                <button class="bg-accent-red text-xs px-4 py-2 rounded hover:bg-red-700 transition">All tickets</button>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-dark-700 border border-white/5 rounded-t-xl p-4 mb-0">
+                <div class="grid grid-cols-12 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">Status</label>
+                        <select class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                            <option>All Statuses</option>
+                            <option>In progress</option>
+                            <option>Waiting</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">Priority</label>
+                        <select class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                            <option>All Priorities</option>
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">Category</label>
+                        <select class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                            <option>All Categories</option>
+                            <option>Payment</option>
+                            <option>Technical</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">Operator</label>
+                        <select class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                            <option>Any Operator</option>
+                            <option>Anna</option>
+                            <option>Unassigned</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">From</label>
+                        <input type="date" class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-gray-500 mb-1 uppercase">To</label>
+                        <input type="date" class="w-full bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs text-gray-300">
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-3">
+                    <input type="text" placeholder="#T-4821, @username, payment..." class="flex-1 bg-dark-800 border border-white/10 rounded px-3 py-2 text-xs">
+                    <button class="bg-accent-red hover:bg-red-700 text-white text-xs px-6 py-2 rounded flex items-center gap-2">
+                        <i class="ph-fill ph-funnel"></i> Apply
+                    </button>
+                    <button class="bg-dark-800 hover:bg-white/5 border border-white/10 text-gray-400 hover:text-white px-3 py-2 rounded transition">
+                        <i class="ph ph-arrows-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto bg-dark-700 border-x border-b border-white/5 rounded-b-xl">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-[10px] text-gray-500 border-b border-white/5 uppercase tracking-wider">
+                            <th class="p-4 font-normal">ID</th>
+                            <th class="p-4 font-normal">Topic</th>
+                            <th class="p-4 font-normal">User</th>
+                            <th class="p-4 font-normal">Category</th>
+                            <th class="p-4 font-normal">Priority</th>
+                            <th class="p-4 font-normal">Status</th>
+                            <th class="p-4 font-normal">Created</th>
+                            <th class="p-4 font-normal">Operator</th>
+                            <th class="p-4 font-normal text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs">
+                        <!-- Ticket 1 -->
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                            <td class="p-4 font-medium text-blue-400">#T-4821</td>
+                            <td class="p-4 text-white">
+                                <span class="font-medium">Payment not received</span><br>
+                                <span class="text-gray-500">Card was charged, but...</span>
+                            </td>
+                            <td class="p-4 text-white">@solhunter<br><span class="text-gray-500 text-[10px]">ID: 10824</span></td>
+                            <td class="p-4 text-white">Payment</td>
+                            <td class="p-4"><span class="flex items-center text-accent-red gap-1"><div class="w-1.5 h-1.5 rounded-full bg-accent-red"></div> High</span></td>
+                            <td class="p-4 text-blue-400"><i class="ph ph-clock mr-1"></i> In progress</td>
+                            <td class="p-4 text-gray-400">23.11.2025<br>14:12</td>
+                            <td class="p-4 text-white">Anna<br><span class="text-gray-500 text-[10px]">Support</span></td>
+                            <td class="p-4 text-right">
+                                <button onclick="openChat('#T-4821', '@solhunter')" class="w-8 h-8 rounded bg-dark-800 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition ml-auto">
+                                    <i class="ph-fill ph-chat-dots"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Ticket 2 (The one from screenshot) -->
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                            <td class="p-4 font-medium text-blue-400">#T-4820</td>
+                            <td class="p-4 text-white">
+                                <span class="font-medium">Boosters don't start</span><br>
+                                <span class="text-gray-500">Order paid, holders not...</span>
+                            </td>
+                            <td class="p-4 text-white">@dexlover<br><span class="text-gray-500 text-[10px]">ID: 3476</span></td>
+                            <td class="p-4 text-white">Technical</td>
+                            <td class="p-4"><span class="flex items-center text-accent-yellow gap-1"><div class="w-1.5 h-1.5 rounded-full bg-accent-yellow"></div> Medium</span></td>
+                            <td class="p-4 text-accent-red">New</td>
+                            <td class="p-4 text-gray-400">23.11.2025<br>13:54</td>
+                            <td class="p-4 text-gray-500">Unassigned</td>
+                            <td class="p-4 text-right">
+                                <button onclick="openChat('#T-4820', '@dexlover')" class="w-8 h-8 rounded bg-dark-800 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition ml-auto">
+                                    <i class="ph-fill ph-chat-dots"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Ticket 3 -->
+                        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                            <td class="p-4 font-medium text-blue-400">#T-4819</td>
+                            <td class="p-4 text-white">
+                                <span class="font-medium">Referral reward missing</span><br>
+                                <span class="text-gray-500">Friend registered, no...</span>
+                            </td>
+                            <td class="p-4 text-white">@airdropking<br><span class="text-gray-500 text-[10px]">ID: 4538</span></td>
+                            <td class="p-4 text-white">Referrals</td>
+                            <td class="p-4"><span class="flex items-center text-accent-yellow gap-1"><div class="w-1.5 h-1.5 rounded-full bg-accent-yellow"></div> Medium</span></td>
+                            <td class="p-4 text-accent-yellow">Waiting</td>
+                            <td class="p-4 text-gray-400">23.11.2025<br>12:28</td>
+                            <td class="p-4 text-gray-500">None</td>
+                            <td class="p-4 text-right">
+                                <button onclick="openChat('#T-4819', '@airdropking')" class="w-8 h-8 rounded bg-dark-800 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition ml-auto">
+                                    <i class="ph-fill ph-chat-dots"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination Footer -->
+                <div class="p-4 border-t border-white/5 flex items-center justify-end gap-2 text-xs">
+                    <span class="text-gray-500 mr-2">Show</span>
+                    <select class="bg-dark-800 border border-white/10 rounded px-2 py-1 text-gray-300">
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                    <span class="text-gray-500 ml-1 mr-2">Row</span>
+                    
+                    <button class="w-6 h-6 rounded bg-dark-800 flex items-center justify-center hover:bg-white/10"><i class="ph ph-caret-left"></i></button>
+                    <button class="w-6 h-6 rounded bg-accent-red text-white flex items-center justify-center">1</button>
+                    <button class="w-6 h-6 rounded bg-dark-800 flex items-center justify-center hover:bg-white/10">2</button>
+                    <button class="w-6 h-6 rounded bg-dark-800 flex items-center justify-center hover:bg-white/10">3</button>
+                    <span class="text-gray-500">...</span>
+                    <button class="w-6 h-6 rounded bg-dark-800 flex items-center justify-center hover:bg-white/10">10</button>
+                    <button class="w-6 h-6 rounded bg-dark-800 flex items-center justify-center hover:bg-white/10"><i class="ph ph-caret-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: FULL SCREEN CHAT (Hidden by default) -->
+        <div id="chat-view" class="absolute inset-0 bg-dark-900 z-50 flex hidden">
+            
+            <!-- LEFT: Chat Area -->
+            <div class="flex-1 flex flex-col h-full border-r border-white/5">
+                
+                <!-- Chat Header -->
+                <div class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-dark-800">
+                    <div class="flex items-center gap-4">
+                        <button onclick="closeChat()" class="text-gray-400 hover:text-white transition">
+                            <i class="ph ph-arrow-left text-xl"></i>
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 id="chat-title" class="font-bold text-white text-sm">Boosters don't start</h2>
+                                <span id="chat-id" class="text-blue-400 text-sm font-medium">#T-4820</span>
+                                <span class="bg-accent-yellow/20 text-accent-yellow text-[10px] px-2 py-0.5 rounded uppercase font-bold">Medium</span>
+                            </div>
+                            <p id="chat-subtitle" class="text-xs text-gray-500">User: @dexlover • Technical</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="bg-accent-green hover:bg-green-600 text-white text-xs px-4 py-2 rounded flex items-center gap-1">
+                            <i class="ph-fill ph-check-circle"></i> Resolve
+                        </button>
+                        <button class="bg-dark-700 hover:bg-white/10 border border-white/10 text-gray-300 text-xs px-4 py-2 rounded flex items-center gap-1">
+                            <i class="ph-fill ph-prohibit"></i> Block User
+                        </button>
+                        <button class="bg-dark-700 hover:bg-white/10 border border-white/10 text-accent-red text-xs px-4 py-2 rounded flex items-center gap-1">
+                            <i class="ph-fill ph-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Container -->
+                <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-6 bg-dark-900">
+                    
+                    <!-- Msg 1 (User) -->
+                    <div>
+                        <div class="flex items-end gap-2 mb-1">
+                            <span class="text-[10px] text-gray-500">@DEXLOVER 23.11.2025 13:54</span>
+                        </div>
+                        <div class="bg-dark-700 text-gray-200 p-3 rounded-2xl rounded-tl-none inline-block max-w-[70%] text-sm">
+                            Order paid, holders not growing
+                        </div>
+                    </div>
+
+                    <!-- Msg 2 (Admin) -->
+                    <div class="flex flex-col items-end">
+                        <div class="flex items-end gap-2 mb-1">
+                            <span class="text-[10px] text-gray-500">YOU 23.11.2025 14:15</span>
+                        </div>
+                        <div class="bg-accent-red text-white p-3 rounded-2xl rounded-tr-none inline-block max-w-[70%] text-sm">
+                            Hello! I'm looking into your issue. Can you provide more details about when this happened?
+                        </div>
+                    </div>
+
+                    <!-- Msg 3 (User) -->
+                    <div>
+                        <div class="flex items-end gap-2 mb-1">
+                            <span class="text-[10px] text-gray-500">@DEXLOVER 23.11.2025 14:18</span>
+                        </div>
+                        <div class="bg-dark-700 text-gray-200 p-3 rounded-2xl rounded-tl-none inline-block max-w-[70%] text-sm">
+                            It happened about 2 hours ago. I made a payment of $100 but my balance still shows 0.
+                        </div>
+                    </div>
+
+                    <!-- Msg 4 (Admin) -->
+                    <div class="flex flex-col items-end">
+                        <div class="flex items-end gap-2 mb-1">
+                            <span class="text-[10px] text-gray-500">YOU 23.11.2025 14:20</span>
+                        </div>
+                        <div class="bg-accent-red text-white p-3 rounded-2xl rounded-tr-none inline-block max-w-[70%] text-sm">
+                            Let me check your transaction history. What payment method did you use?
+                        </div>
+                    </div>
+
+                    <!-- Msg 5 (User) -->
+                    <div>
+                        <div class="flex items-end gap-2 mb-1">
+                            <span class="text-[10px] text-gray-500">@DEXLOVER 23.11.2025 14:22</span>
+                        </div>
+                        <div class="bg-dark-700 text-gray-200 p-3 rounded-2xl rounded-tl-none inline-block max-w-[70%] text-sm">
+                            I used my Visa card ending in 4532
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Area -->
+                <div class="p-4 bg-dark-800 border-t border-white/5">
+                    <!-- Quick Replies -->
+                    <div class="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-hide">
+                        <button onclick="addQuickReply('Thank you for contacting support...')" class="whitespace-nowrap bg-dark-700 hover:bg-white/10 border border-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-lg transition">Thank you for contacting suppo...</button>
+                        <button onclick="addQuickReply('Could you please provide more details...')" class="whitespace-nowrap bg-dark-700 hover:bg-white/10 border border-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-lg transition">Could you please provide more ...</button>
+                        <button onclick="addQuickReply('Your issue has been resolved.')" class="whitespace-nowrap bg-dark-700 hover:bg-white/10 border border-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-lg transition">Your issue has been resolved...</button>
+                        <button onclick="addQuickReply('We\'ve escalated this to our technical team.')" class="whitespace-nowrap bg-dark-700 hover:bg-white/10 border border-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-lg transition">We've escalated this to our te...</button>
+                    </div>
+
+                    <div class="relative bg-dark-900 border border-white/10 rounded-xl p-2 flex items-end">
+                        <textarea id="chat-input" rows="2" placeholder="Type your response..." class="w-full bg-transparent text-sm text-white placeholder-gray-500 focus:outline-none resize-none p-2"></textarea>
+                        <button id="send-btn" class="bg-accent-red hover:bg-red-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center gap-1 mb-1 mr-1">
+                            <i class="ph-fill ph-paper-plane-right"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Sidebar Info -->
+            <div class="w-80 bg-dark-800 flex flex-col h-full border-l border-white/5 overflow-y-auto">
+                
+                <!-- User Info -->
+                <div class="p-5 border-b border-white/5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase mb-4 flex items-center gap-2">
+                        <i class="ph ph-user"></i> User Information
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Username</span>
+                            <span class="text-white font-mono">@dexlover</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">User ID</span>
+                            <span class="text-white font-mono">3476</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Email</span>
+                            <span class="text-white">user@email.com</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Registered</span>
+                            <span class="text-white">15.10.2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Details -->
+                <div class="p-5 border-b border-white/5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase mb-4 flex items-center gap-2">
+                        <i class="ph ph-info"></i> Ticket Details
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Ticket ID</span>
+                            <span class="text-blue-400 font-mono">#T-4820</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Category</span>
+                            <span class="text-white">Technical</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Priority</span>
+                            <span class="text-accent-yellow">Medium</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Status</span>
+                            <span class="text-blue-400">In progress</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Created</span>
+                            <span class="text-white">23.11.2025 13:54</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Operator</span>
+                            <span class="text-white">Unassigned</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="p-5 border-b border-white/5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase mb-4 flex items-center gap-2">
+                        <i class="ph ph-clock-counter-clockwise"></i> Recent Activity
+                    </h3>
+                    <div class="bg-dark-900 rounded-lg p-3 space-y-3">
+                        <div class="flex justify-between text-xs">
+                            <div>
+                                <p class="text-white font-medium">Made payment</p>
+                                <p class="text-gray-600">$100</p>
+                            </div>
+                            <span class="text-gray-500">2 hours ago</span>
+                        </div>
+                        <div class="border-t border-white/5"></div>
+                        <div class="flex justify-between text-xs">
+                            <div>
+                                <p class="text-white font-medium">Created order</p>
+                                <p class="text-gray-600">#8452</p>
+                            </div>
+                            <span class="text-gray-500">5 hours ago</span>
+                        </div>
+                        <div class="border-t border-white/5"></div>
+                        <div class="flex justify-between text-xs">
+                            <div>
+                                <p class="text-white font-medium">Logged in</p>
+                            </div>
+                            <span class="text-gray-500">1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Previous Tickets -->
+                 <div class="p-5">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase mb-4">Previous Tickets</h3>
+                    <div class="space-y-2">
+                        <div class="bg-dark-900 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-white/10 transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium text-white">Technical issue</span>
+                                <span class="text-[9px] text-accent-green font-bold">RESOLVED</span>
+                            </div>
+                            <span class="text-[10px] text-gray-600">#T-4215</span>
+                        </div>
+                         <div class="bg-dark-900 p-3 rounded-lg border border-white/5 cursor-pointer hover:border-white/10 transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-medium text-white">Account question</span>
+                                <span class="text-[9px] text-accent-green font-bold">RESOLVED</span>
+                            </div>
+                            <span class="text-[10px] text-gray-600">#T-3892</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const ticketsView = document.getElementById('tickets-view');
+        const chatView = document.getElementById('chat-view');
+        
+        const chatTitle = document.getElementById('chat-title');
+        const chatId = document.getElementById('chat-id');
+        const chatSubtitle = document.getElementById('chat-subtitle');
+        
+        const messagesContainer = document.getElementById('messages-container');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Function to open chat (Triggered by table buttons)
+        function openChat(id, user) {
+            // Update simple details for demo
+            chatId.innerText = id;
+            chatSubtitle.innerText = `User: ${user} • Technical`;
+            
+            // Switch views
+            ticketsView.style.transform = 'translateX(-20px)';
+            ticketsView.style.opacity = '0';
+            setTimeout(() => {
+                ticketsView.classList.add('hidden');
+                chatView.classList.remove('hidden');
+            }, 200);
+        }
+
+        // Function to close chat and go back
+        function closeChat() {
+            chatView.classList.add('hidden');
+            ticketsView.classList.remove('hidden');
+            ticketsView.style.transform = 'translateX(0)';
+            ticketsView.style.opacity = '1';
+        }
+
+        // Function to add quick reply text to input
+        function addQuickReply(text) {
+            chatInput.value = text;
+            chatInput.focus();
+        }
+
+        // Function to send message
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            const now = new Date();
+            const timeString = now.toLocaleDateString() + ' ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            // HTML for Admin Message
+            const messageHTML = `
+                <div class="flex flex-col items-end message-anim">
+                    <div class="flex items-end gap-2 mb-1">
+                        <span class="text-[10px] text-gray-500">YOU ${timeString}</span>
+                    </div>
+                    <div class="bg-accent-red text-white p-3 rounded-2xl rounded-tr-none inline-block max-w-[70%] text-sm">
+                        ${text}
+                    </div>
+                </div>
+            `;
+
+            // Append and Scroll
+            messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            chatInput.value = '';
+        }
+
+        // Event Listener for Send Button
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Event Listener for Enter key in textarea
+        chatInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+    </script>
+</body>
+</html>
