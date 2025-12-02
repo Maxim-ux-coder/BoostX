@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Team Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#050505',
+                            800: '#0F0F0F',
+                            700: '#141414',
+                            600: '#1F1F1F',
+                        },
+                        accent: {
+                            red: '#DC2626',
+                            green: '#10B981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 3px;
+        }
+        .role-dropdown-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .role-dropdown-scroll::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 2px;
+        }
+        input[type="text"], select {
+            color-scheme: dark;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white h-screen flex overflow-hidden font-sans">
+
+    <aside class="w-64 h-full flex flex-col border-r border-white/5 bg-dark-900 flex-shrink-0 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-white/5">
+            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3">
+                <i class="ph-fill ph-fire text-white"></i>
+            </div>
+            <span class="font-semibold text-lg">Admin Panel</span>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-chart-bar text-xl"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="users.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users text-xl"></i>
+                <span>Users</span>
+            </a>
+            <a href="projects.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-folder text-xl"></i>
+                <span>Colosseum</span>
+            </a>
+            <a href="referrals.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-users-three text-xl"></i>
+                <span>Referrals</span>
+            </a>
+            <a href="boosters.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-rocket-launch text-xl"></i>
+                <span>Boosters</span>
+            </a>
+            <a href="chains.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-link text-xl"></i>
+                <span>Chains</span>
+            </a>
+            <a href="finance.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-currency-dollar text-xl"></i>
+                <span>Finance</span>
+            </a>
+            <a href="team-management.html" class="flex items-center gap-3 px-4 py-3 bg-red-600 text-white shadow-lg shadow-red-900/20">
+                <i class="ph ph-gear text-xl"></i>
+                <span>Team management</span>
+            </a>
+             <a href="support-tickets.html" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
+                <i class="ph ph-ticket text-xl"></i>
+                <span>Support tickets</span>
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-800 text-xs text-gray-500">
+            Your role: CEO
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto relative">
+        <header class="sticky top-0 z-10 bg-dark-900/80 backdrop-blur-md border-b border-white/5 px-8 py-4 flex items-center justify-between">
+            <div class="relative w-96">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input type="text" placeholder="Find Any Things" class="w-full bg-dark-800 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-gray-300 focus:outline-none focus:border-gray-600 transition">
+            </div>
+        </header>
+
+        <div class="p-8 pb-32">
+            
+            <h1 class="text-3xl font-bold mb-8">Team management</h1>
+
+            <div class="space-y-2">
+                
+                <div class="flex items-center justify-between bg-black/40 border border-white/5 p-4 rounded-xl hover:bg-white/5 transition group relative z-10">
+                    <div class="flex items-center gap-4 w-1/4">
+                        <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-white border border-white/10">
+                            <i class="ph-fill ph-user"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-white flex items-center gap-2">
+                                John Davidson <span class="text-[10px] text-green-500">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-1/4 text-xs text-gray-500">
+                        email: alexxxxxxx@boostx.com
+                    </div>
+
+                    <div class="w-1/4 text-xs text-gray-500">
+                        password: 1234567qwerty
+                    </div>
+
+                    <div class="flex items-center gap-3 w-auto justify-end">
+                        <span class="text-sm text-gray-300">Role:</span>
+                        
+                        <div class="relative">
+                            <button onclick="toggleRoleDropdown(this)" class="bg-dark-800 border border-white/10 rounded px-3 py-1.5 text-xs text-white flex items-center gap-6 hover:border-white/20 transition w-32 justify-between">
+                                <span class="selected-role">CEO</span>
+                                <i class="ph ph-caret-down text-gray-500"></i>
+                            </button>
+                            
+                            <div class="hidden absolute top-full right-0 mt-2 w-72 bg-dark-800 border border-white/10 rounded-xl shadow-2xl z-30 overflow-hidden role-dropdown">
+                                <div class="max-h-80 overflow-y-auto role-dropdown-scroll p-1">
+                                    <div onclick="selectRole(this, 'CEO')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">CEO</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                                            Has full unlimited access to all sections and functions of the platform. Can view any information, manage users, projects, finances.
+                                        </p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Moderator')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Moderator</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                                            Has access to tools related to content quality control and platform security. Can review projects, approve or reject submissions.
+                                        </p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Support manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Support manager</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                                            Responsible for communication with users and resolving issues. Has access to the ticketing system, can view conversation history.
+                                        </p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Project manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Project manager</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">
+                                            Manages projects, their statuses, and promotion lifecycle. Can create new projects, edit information, update banners.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-red-700 transition">
+                            <i class="ph-fill ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition">
+                            <i class="ph-fill ph-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between bg-black/40 border border-white/5 p-4 rounded-xl hover:bg-white/5 transition group relative z-0">
+                    <div class="flex items-center gap-4 w-1/4">
+                        <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-white border border-white/10">
+                            <i class="ph-fill ph-user"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-white flex items-center gap-2">
+                                Sarah Smith <span class="text-[10px] text-red-500">Offline</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-xs text-gray-500">email: sarah@boostx.com</div>
+                    <div class="w-1/4 text-xs text-gray-500">password: *********</div>
+                    <div class="flex items-center gap-3 w-auto justify-end">
+                        <span class="text-sm text-gray-300">Role:</span>
+                        
+                        <div class="relative">
+                            <button onclick="toggleRoleDropdown(this)" class="bg-dark-800 border border-white/10 rounded px-3 py-1.5 text-xs text-white flex items-center gap-6 hover:border-white/20 transition w-32 justify-between">
+                                <span class="selected-role">Moderator</span>
+                                <i class="ph ph-caret-down text-gray-500"></i>
+                            </button>
+                            
+                            <div class="hidden absolute top-full right-0 mt-2 w-72 bg-dark-800 border border-white/10 rounded-xl shadow-2xl z-30 overflow-hidden role-dropdown">
+                                <div class="max-h-80 overflow-y-auto role-dropdown-scroll p-1">
+                                    <div onclick="selectRole(this, 'CEO')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">CEO</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Has full unlimited access to all sections and functions of the platform.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Moderator')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Moderator</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Has access to tools related to content quality control and platform security.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Support manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Support manager</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Responsible for communication with users and resolving issues.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Project manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Project manager</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Manages projects, their statuses, and promotion lifecycle.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-red-700 transition">
+                            <i class="ph-fill ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition">
+                            <i class="ph-fill ph-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between bg-black/40 border border-white/5 p-4 rounded-xl hover:bg-white/5 transition group relative z-0">
+                    <div class="flex items-center gap-4 w-1/4">
+                        <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-white border border-white/10">
+                            <i class="ph-fill ph-user"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-white flex items-center gap-2">
+                                Mike Ross <span class="text-[10px] text-green-500">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-1/4 text-xs text-gray-500">email: mike@boostx.com</div>
+                    <div class="w-1/4 text-xs text-gray-500">password: *********</div>
+                    <div class="flex items-center gap-3 w-auto justify-end">
+                        <span class="text-sm text-gray-300">Role:</span>
+                        
+                        <div class="relative">
+                            <button onclick="toggleRoleDropdown(this)" class="bg-dark-800 border border-white/10 rounded px-3 py-1.5 text-xs text-white flex items-center gap-6 hover:border-white/20 transition w-32 justify-between">
+                                <span class="selected-role">Support</span>
+                                <i class="ph ph-caret-down text-gray-500"></i>
+                            </button>
+                            
+                            <div class="hidden absolute top-full right-0 mt-2 w-72 bg-dark-800 border border-white/10 rounded-xl shadow-2xl z-30 overflow-hidden role-dropdown">
+                                <div class="max-h-80 overflow-y-auto role-dropdown-scroll p-1">
+                                    <div onclick="selectRole(this, 'CEO')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">CEO</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Has full unlimited access.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Moderator')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Moderator</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Content quality control.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Support')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Support</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Communication with users.</p>
+                                    </div>
+                                    <div onclick="selectRole(this, 'Project manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition role-item">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-white text-sm font-medium">Project manager</span>
+                                            <i class="ph-fill ph-check text-white text-xs check-icon hidden"></i>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 leading-relaxed">Manages projects.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white hover:bg-red-700 transition">
+                            <i class="ph-fill ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition">
+                            <i class="ph-fill ph-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button id="add-member-btn" class="bg-accent-red hover:bg-red-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition">
+                    Add new team member
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-backdrop" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"></div>
+
+    <div id="toast" class="hidden fixed top-5 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-xl z-[100] transition-all transform translate-y-0 flex items-center gap-2">
+        <i class="ph-fill ph-check-circle text-xl"></i>
+        <span>Team member added successfully</span>
+    </div>
+
+    <div id="modal-add-member" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] bg-dark-900 border border-white/10 rounded-2xl shadow-2xl z-50 p-6">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-bold text-white">Add new team member</h3>
+            <button id="close-modal-btn" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition">
+                <i class="ph ph-x text-lg"></i>
+            </button>
+        </div>
+
+        <div class="space-y-4 mb-8">
+            <div class="relative">
+                <input type="text" placeholder="Name Second name" class="w-full bg-transparent border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder-gray-500 focus:border-red-600 focus:outline-none transition">
+            </div>
+
+            <div class="relative">
+                <input type="text" placeholder="Telegram id" class="w-full bg-transparent border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder-gray-500 focus:border-red-600 focus:outline-none transition">
+            </div>
+
+            <div class="relative">
+                <div class="relative">
+                    <button onclick="toggleModalRoleDropdown(this)" class="w-full bg-transparent border border-white/10 rounded-full px-5 py-3 text-sm text-white flex items-center justify-between focus:border-red-600 focus:outline-none transition" id="modal-role-btn">
+                        <span id="modal-selected-role">Select Role</span>
+                        <i class="ph ph-caret-down text-white"></i>
+                    </button>
+                    
+                    <div class="hidden absolute top-full left-0 mt-2 w-full bg-dark-800 border border-white/10 rounded-xl shadow-2xl z-30 overflow-hidden role-dropdown" id="modal-role-dropdown">
+                        <div class="max-h-60 overflow-y-auto role-dropdown-scroll p-1">
+                            <div onclick="selectModalRole(this, 'CEO')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition modal-role-item">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white text-sm font-medium">CEO</span>
+                                    <i class="ph-fill ph-check text-white text-xs modal-check-icon hidden"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-500 leading-relaxed">Has full unlimited access to all sections and functions of the platform.</p>
+                            </div>
+                            <div onclick="selectModalRole(this, 'Moderator')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition modal-role-item">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white text-sm font-medium">Moderator</span>
+                                    <i class="ph-fill ph-check text-white text-xs modal-check-icon hidden"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-500 leading-relaxed">Content quality control and platform security.</p>
+                            </div>
+                            <div onclick="selectModalRole(this, 'Support manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition modal-role-item">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white text-sm font-medium">Support manager</span>
+                                    <i class="ph-fill ph-check text-white text-xs modal-check-icon hidden"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-500 leading-relaxed">Communication with users and resolving issues.</p>
+                            </div>
+                            <div onclick="selectModalRole(this, 'Project manager')" class="p-3 hover:bg-white/5 rounded-lg cursor-pointer transition modal-role-item">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white text-sm font-medium">Project manager</span>
+                                    <i class="ph-fill ph-check text-white text-xs modal-check-icon hidden"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-500 leading-relaxed">Manages projects, statuses, and promotion lifecycle.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="confirm-add-btn" class="w-full bg-accent-red hover:bg-red-700 text-white font-medium py-3 rounded-full transition flex items-center justify-center gap-2">
+            Add team member <i class="ph ph-plus"></i>
+        </button>
+    </div>
+
+    <script>
+        const backdrop = document.getElementById('modal-backdrop');
+        const toast = document.getElementById('toast');
+        const modal = document.getElementById('modal-add-member');
+        const addBtn = document.getElementById('add-member-btn');
+        const closeBtn = document.getElementById('close-modal-btn');
+        const confirmBtn = document.getElementById('confirm-add-btn');
+        const modalRoleBtn = document.getElementById('modal-role-btn');
+        const modalRoleDropdown = document.getElementById('modal-role-dropdown');
+        const modalSelectedRoleSpan = document.getElementById('modal-selected-role');
+
+        function toggleRoleDropdown(button) {
+            const dropdown = button.nextElementSibling;
+            const parentGroup = button.closest('.group');
+            
+            document.querySelectorAll('.role-dropdown').forEach(el => {
+                if (el !== dropdown && el !== modalRoleDropdown) el.classList.add('hidden');
+            });
+
+            document.querySelectorAll('.group').forEach(el => {
+               if(el !== parentGroup) el.style.zIndex = "0";
+            });
+            
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                if(parentGroup) parentGroup.style.zIndex = "50";
+            } else {
+                dropdown.classList.add('hidden');
+                if(parentGroup) parentGroup.style.zIndex = "0";
+            }
+        }
+
+        function selectRole(element, roleName) {
+            const dropdown = element.closest('.role-dropdown');
+            const button = dropdown.previousElementSibling;
+            const selectedSpan = button.querySelector('.selected-role');
+            
+            selectedSpan.textContent = roleName;
+
+            const items = dropdown.querySelectorAll('.role-item');
+            items.forEach(item => {
+                const icon = item.querySelector('.check-icon');
+                icon.classList.add('hidden');
+            });
+
+            const currentIcon = element.querySelector('.check-icon');
+            currentIcon.classList.remove('hidden');
+
+            dropdown.classList.add('hidden');
+            const parentGroup = button.closest('.group');
+            if(parentGroup) parentGroup.style.zIndex = "0";
+        }
+
+        function toggleModalRoleDropdown(button) {
+            modalRoleDropdown.classList.toggle('hidden');
+        }
+
+        function selectModalRole(element, roleName) {
+            modalSelectedRoleSpan.textContent = roleName;
+
+            const items = modalRoleDropdown.querySelectorAll('.modal-role-item');
+            items.forEach(item => {
+                const icon = item.querySelector('.modal-check-icon');
+                icon.classList.add('hidden');
+            });
+
+            const currentIcon = element.querySelector('.modal-check-icon');
+            currentIcon.classList.remove('hidden');
+
+            modalRoleDropdown.classList.add('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.relative') && !e.target.closest('.role-dropdown')) {
+                document.querySelectorAll('.role-dropdown').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                document.querySelectorAll('.group').forEach(el => {
+                   el.style.zIndex = "0";
+                });
+            }
+        });
+
+        function openModal() {
+            backdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            backdrop.classList.add('hidden');
+            modal.classList.add('hidden');
+            modalSelectedRoleSpan.textContent = "Select Role";
+            const items = modalRoleDropdown.querySelectorAll('.modal-role-item');
+             items.forEach(item => {
+                const icon = item.querySelector('.modal-check-icon');
+                icon.classList.add('hidden');
+            });
+        }
+
+        addBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+
+        confirmBtn.addEventListener('click', () => {
+            closeModal();
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

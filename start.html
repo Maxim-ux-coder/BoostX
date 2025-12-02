@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoostX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+        }
+        .gold-text {
+            background: linear-gradient(to bottom, #FCD34D, #B45309);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .screens-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: transparent;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100%); 
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+            z-index: 20;
+        }
+
+        .screen.prev {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-30%);
+            z-index: 10;
+        }
+
+        .bg-glow {
+            background: radial-gradient(circle at center 60%, rgba(220, 38, 38, 0.25) 0%, rgba(0, 0, 0, 1) 70%);
+        }
+        
+        .progress-dot {
+            height: 6px;
+            border-radius: 999px;
+            background-color: #374151;
+            width: 8px;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+        .progress-dot:hover {
+            background-color: #4B5563;
+        }
+        .progress-dot.active {
+            width: 32px;
+            background: linear-gradient(to right, #FCD34D, #B45309);
+            cursor: default;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex justify-center bg-black text-white">
+
+    <div class="w-full max-w-[375px] h-full bg-black relative flex flex-col shadow-2xl overflow-hidden">
+        
+        <div class="absolute inset-0 bg-glow pointer-events-none z-0"></div>
+
+        <div class="relative z-30 pt-12 pb-4 flex justify-center space-x-2 w-full shrink-0 transition-all duration-300" id="progress-container">
+            <div class="progress-dot active" id="dot-1" onclick="goToScreen(1)"></div>
+            <div class="progress-dot" id="dot-2" onclick="goToScreen(2)"></div>
+            <div class="progress-dot" id="dot-3" onclick="goToScreen(3)"></div>
+            <div class="progress-dot" id="dot-4" onclick="goToScreen(4)"></div>
+            <div class="progress-dot" id="dot-5" onclick="goToScreen(5)"></div>
+            <div class="progress-dot" id="dot-6" onclick="goToScreen(6)"></div>
+            <div class="progress-dot" id="dot-7" onclick="goToScreen(7)"></div>
+        </div>
+
+        <div class="screens-wrapper relative z-10 flex-1">
+            
+            <div id="screen-1" class="screen active">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h1 class="text-3xl font-bold mb-4 text-center">
+                        Welcome to <span class="text-red-600">BoostX</span>
+                    </h1>
+                    <p class="text-gray-400 text-base text-center mb-8 leading-relaxed">
+                        Smart blockchain-based metrics boosting for your <span class="text-white">growth!</span>
+                    </p>
+
+                    <div class="w-full h-72 flex items-center justify-center relative overflow-hidden rounded-xl bg-gray-900/20">
+                        <video src="VIDEO_URL_HERE" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(2)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-2" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h2 class="text-2xl font-medium mb-4 text-center">
+                        BoostX — Smart Boosts <br>for Your Token
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-8">
+                        We are a service that increases statistical data of tokens on the blockchain: volume, activity, holders, engagement and other key signals.
+                    </p>
+
+                    <div class="w-56 h-56 flex items-center justify-center">
+                        <img src="IMAGE_URL_HERE" alt="Service Info" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(3)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-3" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h2 class="text-2xl font-medium mb-4 text-center">
+                        Add Your Token by <br>Contract Address
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-8">
+                        Launch promotion of your project in popular networks: Ethereum, BNB, Arbitrum, Base, Polygon, Solana, TRX, Tron.
+                    </p>
+
+                    <div class="w-full h-60 flex items-center justify-center">
+                        <img src="IMAGE_URL_HERE" alt="Networks" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(4)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-4" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h2 class="text-2xl font-medium mb-4 text-center">
+                        Level Up Your Profile <br>and Earn
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-6">
+                        Publish posts, collect achievements, get activity and grow in the platform ranking.
+                    </p>
+
+                    <div class="w-48 h-72 flex items-center justify-center">
+                        <img src="IMAGE_URL_HERE" alt="Level Up UI" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(5)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-5" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h2 class="text-2xl font-medium mb-4 text-center">
+                        Earn from Referrals
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-8">
+                        Invite users and projects — get a percentage of their activity.
+                    </p>
+
+                    <div class="mb-8">
+                        <h1 class="text-5xl font-bold gold-text drop-shadow-md">+1936$</h1>
+                    </div>
+
+                    <div class="w-48 h-48 flex items-center justify-center -rotate-3">
+                        <img src="IMAGE_URL_HERE" alt="Referral Card" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(6)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-6" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <h2 class="text-2xl font-medium mb-4 text-center">
+                        Enter the Colosseum <br>and Win
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-8">
+                        Place your token in the daily contest. If your project gets the most votes — you receive prizes and support.
+                    </p>
+
+                    <div class="w-full h-56 flex items-center justify-center">
+                        <img src="IMAGE_URL_HERE" alt="Colosseum" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full pb-10">
+                    <button onclick="goToScreen(7)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <div id="screen-7" class="screen">
+                <div class="flex-1 flex flex-col items-center justify-center px-6 min-h-0">
+                    <div class="w-28 h-28 mb-6 flex items-center justify-center">
+                        <img src="IMAGE_URL_HERE" alt="Gift Icon" class="w-full h-full object-contain">
+                    </div>
+
+                    <h2 class="text-3xl font-bold mb-3 text-center">
+                        Claim free Boost!
+                    </h2>
+                    <p class="text-gray-400 text-sm text-center leading-relaxed mb-8">
+                        We're excited to have you here. As a special welcome gift, we're offering you a free trial boost!
+                    </p>
+
+                    <div class="w-full bg-[#1C1C1E] p-4 rounded-2xl flex items-start text-left border border-gray-800">
+                        <div class="mt-1 mr-4 shrink-0">
+                            <div class="w-6 h-6 rounded-full bg-red-900/30 border border-red-900 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-red-600 rounded-full"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-semibold text-base">Free Trial Boost</h3>
+                            <p class="text-gray-500 text-xs mt-1">
+                                Get 10k volume boost for EVM networks. No paid required!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 shrink-0 w-full flex flex-col gap-3 pb-10">
+                    <button class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
+                        Claim Your Free Boost
+                    </button>
+
+                    <p class="text-gray-600 text-[10px] text-center">
+                        By continuing, you agree to our <a href="#" class="text-gray-400 underline">Terms</a> and <a href="#" class="text-gray-400 underline">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalScreens = 7;
+
+        function goToScreen(targetStep) {
+            if (targetStep === currentStep) return;
+
+            const isForward = targetStep > currentStep;
+            
+            document.querySelectorAll('.progress-dot').forEach(d => d.classList.remove('active'));
+            document.getElementById(`dot-${targetStep}`).classList.add('active');
+
+            for (let i = 1; i <= totalScreens; i++) {
+                const screen = document.getElementById(`screen-${i}`);
+                
+                if (i < targetStep) {
+                    screen.classList.remove('active');
+                    screen.classList.add('prev');
+                    screen.style.transform = 'translateX(-30%)';
+                } else if (i === targetStep) {
+                    screen.classList.remove('prev');
+                    screen.classList.add('active');
+                    screen.style.transform = 'translateX(0)';
+                } else {
+                    screen.classList.remove('active', 'prev');
+                    screen.style.transform = 'translateX(100%)';
+                }
+            }
+
+            currentStep = targetStep;
+        }
+    </script>
+</body>
+</html>
