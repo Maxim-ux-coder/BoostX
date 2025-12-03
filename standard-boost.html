@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -29,6 +32,10 @@
                     },
                     animation: {
                         'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both',
+                        'fadeIn': 'fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'wave': 'wave 1.2s ease-in-out infinite',
+                        'wave-delay-1': 'wave 1.2s ease-in-out infinite 0.1s',
+                        'wave-delay-2': 'wave 1.2s ease-in-out infinite 0.2s',
                     },
                     keyframes: {
                         shake: {
@@ -36,6 +43,14 @@
                             '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
                             '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
                             '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        wave: {
+                            '0%, 60%, 100%': { transform: 'translateY(0)' },
+                            '30%': { transform: 'translateY(-6px)' }
                         }
                     }
                 }
@@ -100,11 +115,11 @@
             box-shadow: 0 0 0 1px #DC2626;
         }
 
-        /* Loading Animation Dots */
         @keyframes wave {
             0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
+            30% { transform: translateY(-6px); }
         }
+
         .dot-wave { animation: wave 1.2s ease-in-out infinite; }
         .dot-wave-1 { animation: wave 1.2s ease-in-out infinite 0.1s; }
         .dot-wave-2 { animation: wave 1.2s ease-in-out infinite 0.2s; }
@@ -114,17 +129,30 @@
             to { transform: translateY(0); }
         }
         .modal-slide-up { animation: slideUpModal 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            mix-blend-mode: screen; 
+        }
+        .nav-icon-boost {
+             width: 38px;
+             height: 38px;
+             object-fit: contain;
+             mix-blend-mode: screen;
+        }
     </style>
 </head>
 <body>
 
-<div class="relative w-full h-full md:w-[375px] md:h-[850px] md:max-h-[95vh] bg-black md:overflow-hidden md:shadow-2xl md:border md:border-gray-800 md:rounded-[30px] flex flex-col isolate">
+<div class="relative w-full h-[100dvh] md:w-[375px] md:h-[850px] md:max-h-[95vh] bg-black md:overflow-hidden md:shadow-2xl flex flex-col isolate mx-auto">
     
     <div class="flex-1 overflow-y-auto no-scrollbar w-full relative z-0 pb-32">
         
-        <main id="chooseNetworkPage" class="min-h-full bg-black p-4 pt-8">
-            <div class="flex items-center mb-6">
-                <button onclick="window.location.href='index.html'" class="mr-3 text-gray-400 hover:text-white">
+        <main id="chooseNetworkPage" class="min-h-full bg-black p-4 pt-0 animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-8 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="window.location.href='index.html'" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-2xl font-bold text-white">Choose your network type:</h1>
@@ -206,9 +234,9 @@
             </div>
         </main>
 
-        <main id="setupBoostPage" class="min-h-full bg-black p-4 pt-8 hidden">
-            <div class="flex items-center mb-6">
-                <button onclick="showPage('chooseNetworkPage')" class="mr-3 text-gray-400 hover:text-white">
+        <main id="setupBoostPage" class="min-h-full bg-black p-4 pt-0 hidden animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-8 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="showPage('chooseNetworkPage')" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-2xl font-bold text-white">Set up your boost</h1>
@@ -223,8 +251,8 @@
             </div>
 
             <div class="flex border-b border-gray-800 mb-6">
-                <button id="tabBoost" onclick="switchTab('Boost')" class="flex-1 pb-3 text-center font-semibold text-white border-b-2 border-white">Boost</button>
-                <button id="tabUSDT" onclick="switchTab('USDT')" class="flex-1 pb-3 text-center font-semibold text-gray-500 border-b-2 border-transparent">USDT</button>
+                <button id="tabBoost" onclick="switchTab('Boost')" class="flex-1 pb-3 text-center font-semibold text-white border-b-2 border-white transition-all">Boost</button>
+                <button id="tabUSDT" onclick="switchTab('USDT')" class="flex-1 pb-3 text-center font-semibold text-gray-500 border-b-2 border-transparent transition-all">USDT</button>
             </div>
 
             <div class="bg-gradient-to-r from-[#1a1a1a] to-black rounded-xl p-4 border border-[#D4AF37]/30 mb-4 relative overflow-hidden">
@@ -309,14 +337,14 @@
                 <span class="text-boost-green font-bold text-2xl">444444$</span>
             </div>
 
-            <button onclick="handleButtonClick(this, goToContractPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95">
+            <button onclick="handleButtonClick(this, goToContractPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95 flex items-center justify-center">
                 Start boosting
             </button>
         </main>
 
-        <main id="contractDataPage" class="min-h-full bg-black p-4 pt-8 hidden">
-            <div class="flex items-center mb-6">
-                <button onclick="showPage('setupBoostPage')" class="mr-3 text-gray-400 hover:text-white">
+        <main id="contractDataPage" class="min-h-full bg-black p-4 pt-0 hidden animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-8 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="showPage('setupBoostPage')" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-2xl font-bold text-white">Fill in the contract details</h1>
@@ -346,15 +374,15 @@
 
                 <div class="flex-1"></div>
 
-                <button onclick="handleButtonClick(this, validateAndGoToCheckOrder)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95">
+                <button onclick="handleButtonClick(this, validateAndGoToCheckOrder)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95 flex items-center justify-center">
                     Next
                 </button>
             </div>
         </main>
 
-        <main id="checkOrderPage" class="min-h-full bg-black p-4 pt-8 hidden">
-            <div class="flex items-center mb-6">
-                <button onclick="showPage('contractDataPage')" class="mr-3 text-gray-400 hover:text-white">
+        <main id="checkOrderPage" class="min-h-full bg-black p-4 pt-0 hidden animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-8 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="showPage('contractDataPage')" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-2xl font-bold text-white">Check your order</h1>
@@ -408,16 +436,16 @@
                         </div>
                     </div>
 
-                    <button onclick="handleButtonClick(this, goToPaymentMethodPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95">
+                    <button onclick="handleButtonClick(this, goToPaymentMethodPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95 flex items-center justify-center">
                         Confirm payment
                     </button>
                 </div>
             </div>
         </main>
 
-        <main id="paymentMethodPage" class="min-h-full bg-black p-4 pt-8 hidden">
-            <div class="flex items-center mb-6">
-                <button onclick="showPage('checkOrderPage')" class="mr-3 text-gray-400 hover:text-white">
+        <main id="paymentMethodPage" class="min-h-full bg-black p-4 pt-0 hidden animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-8 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="showPage('checkOrderPage')" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-2xl font-bold text-white">Your payment method</h1>
@@ -452,7 +480,7 @@
                     </div>
                 </div>
 
-                <button onclick="handleButtonClick(this, goToTransferPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95 mb-4">
+                <button onclick="handleButtonClick(this, goToTransferPage)" class="w-full bg-boost-red text-white py-4 rounded-full font-bold text-lg shadow-[0_4px_20px_rgba(220,38,38,0.4)] transition-transform active:scale-95 mb-4 flex items-center justify-center">
                     Next
                 </button>
 
@@ -464,9 +492,9 @@
             </div>
         </main>
 
-        <main id="transferPage" class="min-h-full bg-black p-4 pt-8 hidden">
-            <div class="flex items-center mb-4">
-                <button onclick="showPage('paymentMethodPage')" class="mr-3 text-gray-400 hover:text-white">
+        <main id="transferPage" class="min-h-full bg-black p-4 pt-0 hidden animate-fadeIn">
+            <div class="sticky top-0 z-30 bg-black pt-4 pb-4 mb-2 flex items-center border-b border-transparent shadow-md shadow-black/20">
+                <button onclick="showPage('paymentMethodPage')" class="mr-3 text-gray-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <h1 class="text-xl font-bold text-white">Transfer your crypto</h1>
@@ -658,31 +686,34 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="absolute bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-[9999] w-full pb-6 pt-3 md:rounded-b-[30px]">
-        <div class="flex justify-around items-center w-full relative">
-            <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70">
-            
-            <a href="index.html" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                <img src="images/home.jpg" alt="Home" class="w-6 h-6 object-contain">
-                <span class="text-[10px] leading-none">Home</span>
+    <nav class="absolute bottom-0 left-0 right-0 bg-black border-t border-gray-800 z-[9999] w-full mx-auto">
+        <div class="flex justify-around items-center py-3 relative">
+            <img src="images/light.png" alt=""
+                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70 w-48"
+                 onerror="this.style.display='none'">
+
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/home.jpg" alt="Home" class="nav-icon shrink-0">
+                <span class="text-xs leading-none">Home</span>
             </a>
-            
-            <button onclick="window.location.href='index.html'" class="flex flex-col items-center justify-center gap-1 transition-colors relative z-10">
+
+            <button onclick="window.location.href='index.html'"
+                    class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 rounded-xl transition-colors relative z-10">
                 <div class="relative">
-                    <img src="images/boost.jpg" alt="Boost" class="w-6 h-6 object-contain">
-                    <div class="absolute -top-1 -right-1 w-2 h-2 bg-boost-red rounded-full"></div>
+                    <img src="images/fire.png" alt="BoosT" class="nav-icon-boost shrink-0">
+                    <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-600 rounded-full ring-2 ring-black"></div>
                 </div>
-                <span class="text-[10px] font-semibold text-gold-shine leading-none">BoosT</span>
+                <span class="text-xs font-semibold text-gold-shine leading-none">BoosT</span>
             </button>
-            
-            <a href="colosseum.html" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                <img src="images/colosseum.jpg" alt="Colosseum" class="w-6 h-6 object-contain">
-                <span class="text-[10px] leading-none">Colosseum</span>
+
+            <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/colosseum.jpg" alt="Colosseum" class="nav-icon shrink-0">
+                <span class="text-xs leading-none">Colosseum</span>
             </a>
-            
-            <a href="profile.html" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
-                <img src="images/profile.jpg" alt="Profile" class="w-6 h-6 object-contain">
-                <span class="text-[10px] leading-none">Profile</span>
+
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/profile.jpg" alt="Profile" class="nav-icon shrink-0">
+                <span class="text-xs leading-none">Profile</span>
             </a>
         </div>
     </nav>
@@ -695,6 +726,7 @@
     let selectedPaymentNetwork = '';
     let selectedCrypto = '';
 
+    // --- СТАРАЯ АНИМАЦИЯ WAVE (ПРЫГАЮЩИЕ ТОЧКИ) ---
     function showButtonLoader(button) {
         const originalText = button.innerHTML;
         const originalWidth = button.offsetWidth;
