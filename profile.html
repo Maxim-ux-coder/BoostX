@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BoostTX - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E50914', 
+                            black: '#000000',
+                            dark: '#0F0F0F',
+                            gray: '#1A1A1A'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .modal {
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translate3d(100%, 0, 0);
+            z-index: 60;
+            will-change: transform;
+        }
+        .modal.active { transform: translate3d(0, 0, 0); }
+        .modal-slide-up {
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translate3d(0, 100%, 0);
+            z-index: 100;
+            will-change: transform;
+        }
+        .modal-slide-up.active { transform: translate3d(0, 0, 0); }
+        .modal-blur {
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 110;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-blur.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .input-dark {
+            background-color: #0a0a0a;
+            border: 1px solid #222;
+            outline: none;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input-dark:focus { 
+            border-color: #dc2626; 
+            background-color: #0f0f0f;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .input-group:focus-within {
+            border-color: #DC2626;
+        }
+        .custom-input {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 14px;
+            width: 100%;
+        }
+        .custom-input::placeholder {
+            color: #666;
+        }
+        .text-gold-shine {
+            background: linear-gradient(
+                to right,
+                #bf953f,
+                #fcf6ba,
+                #b38728,
+                #fbf5b7,
+                #aa771c
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+            font-weight: 800; 
+            text-shadow: 0px 0px 10px rgba(255, 215, 0, 0.3); 
+        }
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        .custom-checkbox input:checked + div {
+            background-color: #dc2626;
+            border-color: #dc2626;
+        }
+        .custom-checkbox input:checked + div svg {
+            display: block;
+        }
+        @keyframes slideInRight { 
+            from { transform: translate3d(100%, 0, 0); opacity: 0; } 
+            to { transform: translate3d(0, 0, 0); opacity: 1; } 
+        }
+        @keyframes fadeOut { 
+            from { opacity: 1; } 
+            to { opacity: 0; } 
+        }
+        .toast { animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast.hiding { animation: fadeOut 0.3s ease-in forwards; }
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawChart 2.5s ease-out forwards;
+        }
+        @keyframes drawChart { to { stroke-dashoffset: 0; } }
+        .chart-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 
+            0% { r: 3; opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 
+            50% { r: 5; opacity: 0.7; box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 
+            100% { r: 3; opacity: 1; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } 
+        }
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0; overflow: hidden; opacity: 0;
+            will-change: max-height, opacity;
+        }
+        .accordion-content.open { max-height: 500px; opacity: 1; }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotate-icon.open { transform: rotate(180deg); }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        * { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+    <div id="app-container" class="w-full max-w-[375px] bg-black h-screen flex flex-col overflow-hidden relative shadow-2xl border-x border-[#111]">
+        <div class="flex-1 overflow-y-auto pb-32 relative no-scrollbar" id="main-scroll">
+            <div class="relative bg-gradient-to-b from-red-900/40 via-black to-black pt-4 px-4 pb-6">
+                <div class="absolute top-4 left-4 z-50 pt-2">
+                     <button onclick="openModal('gifts-modal')" class="bg-[#1a1a1a] border border-gray-800 text-white text-[10px] px-3 py-1.5 rounded-full flex items-center gap-2 font-bold hover:bg-[#222] transition active:scale-95 cursor-pointer relative">
+                        Your Gifts <i class="fa-solid fa-gift text-red-500"></i>
+                     </button>
+                </div>
+                <div class="flex justify-end mb-4 sticky top-0 z-30 pt-2">
+                    <button onclick="openModal('settings-modal')" class="text-gray-400 hover:text-white transition active:scale-95 transform duration-100 bg-black/40 rounded-full p-2 backdrop-blur-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-col items-center -mt-8">
+                    <div class="relative mb-3 group">
+                        <div class="w-24 h-24 rounded-full border-2 border-white/10 overflow-hidden bg-gray-800 flex items-center justify-center relative transition-transform duration-300 group-hover:scale-105">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="absolute inset-0 w-full h-full object-cover">
+                        </div>
+                        <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
+                    </div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h1 class="text-2xl font-bold text-white">Alex Kuznetsov</h1>
+                        <i class="fa-solid fa-certificate text-red-600"></i>
+                    </div>
+                    <div class="mb-3">
+                        <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-[0_0_10px_rgba(220,38,38,0.5)]">Team Lead</span>
+                    </div>
+                    <p class="text-gray-400 text-xs mb-6">CryptoBoost Solutions</p>
+                    <div class="flex gap-4 mb-2">
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-brands fa-telegram text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200"><i class="fa-solid fa-envelope text-xl"></i></button>
+                        <button class="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition border border-white/5 active:scale-90 duration-200">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex w-full border-b border-gray-800 px-2 sticky top-0 bg-black/95 backdrop-blur-md z-20 select-none overflow-x-auto no-scrollbar">
+                <button onclick="switchTab('wall')" id="tab-wall" class="flex-1 min-w-[60px] py-3 text-center text-xs font-medium text-white border-b-2 border-red-600 flex items-center justify-center gap-1 transition-all duration-300">
+                    Wall <i class="fa-regular fa-newspaper text-[10px]"></i>
+                </button>
+                <button onclick="switchTab('projects')" id="tab-projects" class="flex-1 min-w-[60px] py-3 text-center text-xs font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-1 hover:text-gray-300 transition-all duration-300">
+                    Projects <i class="fa-solid fa-rocket text-[10px]"></i>
+                </button>
+                <button onclick="switchTab('activity')" id="tab-activity" class="flex-1 min-w-[60px] py-3 text-center text-xs font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-1 hover:text-gray-300 transition-all duration-300">
+                    Activity <i class="fa-solid fa-fire text-[10px]"></i>
+                </button>
+                <button onclick="switchTab('achievements')" id="tab-achievements" class="flex-1 min-w-[60px] py-3 text-center text-xs font-medium text-gray-500 border-b-2 border-transparent flex items-center justify-center gap-1 hover:text-gray-300 transition-all duration-300">
+                    Achievements
+                </button>
+            </div>
+            <div id="content-area" class="p-4 min-h-[400px]">
+                <div class="relative mb-6" id="global-search">
+                    <input type="text" placeholder="Search..." class="w-full bg-[#0a0a0a] text-gray-300 text-sm py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-red-600 focus:outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(220,38,38,0.2)]">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-gray-500"></i>
+                </div>
+                <div id="content-wall" class="space-y-4 animate-fade-in">
+                    <div class="bg-[#111] border border-gray-800 rounded-2xl p-4 mb-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex gap-3">
+                                <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Fire" class="w-10 h-10 rounded-full bg-black border border-gray-700">
+                                <div>
+                                    <div class="flex items-center gap-1">
+                                        <h4 class="font-bold text-sm text-white">CryptoTrader Pro</h4>
+                                        <i class="fa-solid fa-certificate text-red-500 text-[10px]"></i>
+                                    </div>
+                                    <div class="text-[10px] text-gray-500">@cryptotrader • 2h ago</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button onclick="openModal('post-options-modal')" class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-200 mb-3 leading-relaxed">🚀 Bitcoin breaking new resistance levels! Analysis shows strong bullish momentum.</p>
+                        <div class="w-full h-48 bg-[#080808] rounded-xl border border-gray-800 relative overflow-hidden mb-4">
+                            <div class="absolute top-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white font-mono z-10">BTC/USD</div>
+                            <svg viewBox="0 0 300 100" class="w-full h-full absolute bottom-0" preserveAspectRatio="none">
+                                <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15 V100 H0 Z" fill="rgba(34, 197, 94, 0.1)"></path>
+                                <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15" fill="none" stroke="#22c55e" stroke-width="2"></path>
+                            </svg>
+                        </div>
+                        <div class="flex justify-between items-center text-gray-500 border-t border-gray-800 pt-3">
+                            <button class="flex items-center gap-1 text-xs hover:text-red-500 transition"><i class="fa-regular fa-heart"></i> 2.4k</button>
+                            <button class="flex items-center gap-1 text-xs hover:text-blue-500 transition"><i class="fa-regular fa-comment"></i> 43</button>
+                            <button class="flex items-center gap-1 text-xs hover:text-green-500 transition"><i class="fa-solid fa-retweet"></i> 12.8k</button>
+                            <button onclick="openModal('share-post-modal')" class="flex items-center gap-1 text-xs hover:text-white transition"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="content-projects" class="hidden space-y-4 animate-fade-in">
+                   <div class="w-full h-24 rounded-xl bg-gradient-to-r from-red-900 to-red-600 flex flex-col items-center justify-center relative overflow-hidden mb-6 shadow-lg shadow-red-900/20">
+                        <div class="absolute inset-0 bg-black/20"></div>
+                        <h2 class="text-3xl font-bold text-white relative z-10">127</h2>
+                        <p class="text-xs text-white/80 relative z-10 uppercase tracking-wide">Projects Launched</p>
+                    </div>
+                     <div class="bg-[#151515] rounded-3xl p-4 border border-gray-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-orange-600 rounded-full blur-3xl opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
+                <div class="flex justify-between items-start mb-3 relative z-10">
+                    <button class="flex items-center gap-1 text-xs text-gray-300 hover:text-white bg-gray-800/50 px-2 py-1 rounded-lg border border-gray-700 transition">
+                        Share 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex gap-3 items-center mb-4 relative z-10">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full overflow-hidden border-2 border-orange-400 flex-shrink-0">
+                        <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fire" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <div class="bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded inline-flex items-center gap-1 mb-1">
+                            Solana 
+                            <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 5h14v2H3V5zm0 8h14v2H3v-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">SoulVerse RPG</h3>
+                        <div class="text-gray-400 text-xs flex items-center gap-1 font-medium">
+                            CA: 0x34a9...4a86 
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mb-4 relative z-10">
+                    <button class="bg-red-900/40 border border-red-900 text-red-200 px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 flex-1 justify-center hover:bg-red-900/60 transition">
+                        Vote 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                        </svg>
+                    </button>
+                    <button onclick="openBoost()" class="bg-[#1f1f1f] text-gray-300 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-700 flex-1 text-center hover:bg-[#2a2a2a] hover:text-white transition">
+                        More info
+                    </button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 relative z-10">
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Transactions</div>
+                        <div class="text-green-500 font-bold text-sm">+1.6M</div>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Volume</div>
+                        <div class="text-green-500 font-bold text-sm">+$2.4M</div>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Holders</div>
+                        <div class="text-green-500 font-bold text-sm">+5.2K</div>
+                    </div>
+                </div>
+            </div>
+                     <div class="bg-[#151515] rounded-3xl p-4 border border-gray-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-orange-600 rounded-full blur-3xl opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
+                <div class="flex justify-between items-start mb-3 relative z-10">
+                    <button class="flex items-center gap-1 text-xs text-gray-300 hover:text-white bg-gray-800/50 px-2 py-1 rounded-lg border border-gray-700 transition">
+                        Share 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex gap-3 items-center mb-4 relative z-10">
+                    <div class="w-16 h-16 bg-orange-500 rounded-full overflow-hidden border-2 border-orange-400 flex-shrink-0">
+                        <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fire" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <div class="bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded inline-flex items-center gap-1 mb-1">
+                            Solana 
+                            <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 5h14v2H3V5zm0 8h14v2H3v-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">SoulVerse RPG</h3>
+                        <div class="text-gray-400 text-xs flex items-center gap-1 font-medium">
+                            CA: 0x34a9...4a86 
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 mb-4 relative z-10">
+                    <button class="bg-red-900/40 border border-red-900 text-red-200 px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 flex-1 justify-center hover:bg-red-900/60 transition">
+                        Vote 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                        </svg>
+                    </button>
+                    <button onclick="openBoost()" class="bg-[#1f1f1f] text-gray-300 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-700 flex-1 text-center hover:bg-[#2a2a2a] hover:text-white transition">
+                        More info
+                    </button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 relative z-10">
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Transactions</div>
+                        <div class="text-green-500 font-bold text-sm">+1.6M</div>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Volume</div>
+                        <div class="text-green-500 font-bold text-sm">+$2.4M</div>
+                    </div>
+                    <div class="bg-black/40 p-2 rounded-xl text-center border border-gray-800">
+                        <div class="text-[10px] text-gray-400 font-medium">Holders</div>
+                        <div class="text-green-500 font-bold text-sm">+5.2K</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+                <div id="content-activity" class="hidden space-y-3 animate-fade-in">
+                     <div class="bg-[#0f0f0f] p-4 rounded-2xl border border-gray-800 hover:border-gray-700 transition">
+                         <div class="flex items-center gap-2 mb-3">
+                             <div class="w-6 h-6 rounded-full overflow-hidden"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover"></div>
+                            <span class="text-gray-300 text-xs">Alex Kuznetsov</span>
+                         </div>
+                         <div class="bg-[#151515] p-3 rounded-xl flex items-center justify-between">
+                             <div class="flex items-center gap-3">
+                                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white"><i class="fa-regular fa-heart"></i></div>
+                                 <div>
+                                     <p class="text-[10px] text-gray-500">30 minutes ago</p>
+                                     <p class="text-white text-sm font-semibold">Voted for CryptoMoon</p>
+                                 </div>
+                             </div>
+                             <span class="text-green-500 text-xs font-bold">+120XP</span>
+                         </div>
+                    </div>
+                </div>
+                <div id="content-achievements" class="hidden animate-fade-in pb-6">
+                    <h2 class="text-2xl font-bold text-white mb-4">Achievements</h2>
+                    <div class="flex items-center gap-2 mb-4 text-red-600 text-sm font-medium">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Unlocked 4 of 12</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div onclick="openModal('achievement-detail-modal')" class="aspect-square bg-[#111] rounded-2xl border border-gray-800 relative flex flex-col items-center justify-center p-2 cursor-pointer active:scale-95 transition hover:border-red-900/50">
+                            <div class="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full shadow-[0_0_5px_#dc2626]"></div>
+                            <div class="w-12 h-12 rounded-full mb-2 flex items-center justify-center">
+                                <svg viewBox="0 0 100 100" class="w-full h-full text-orange-500 drop-shadow-[0_0_5px_rgba(249,115,22,0.5)]">
+                                    <path fill="currentColor" d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" />
+                                    <circle cx="50" cy="50" r="15" fill="#fff" />
+                                </svg>
+                            </div>
+                            <span class="text-[9px] text-gray-400 font-medium text-center">First Launch</span>
+                        </div>
+                        <div class="aspect-square bg-[#111] rounded-2xl border border-gray-800 relative flex flex-col items-center justify-center p-2 cursor-pointer active:scale-95 transition hover:border-red-900/50">
+                            <div class="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full shadow-[0_0_5px_#dc2626]"></div>
+                             <div class="w-12 h-12 rounded-full mb-2 flex items-center justify-center">
+                                <i class="fa-solid fa-rocket text-2xl text-orange-500"></i>
+                            </div>
+                            <span class="text-[9px] text-gray-400 font-medium text-center">Explorer</span>
+                        </div>
+                        <div class="aspect-square bg-[#0a0a0a] rounded-2xl border border-gray-900 relative flex flex-col items-center justify-center p-2 opacity-50">
+                             <div class="w-12 h-12 rounded-full mb-2 flex items-center justify-center grayscale">
+                                <i class="fa-solid fa-lock text-2xl text-gray-600"></i>
+                            </div>
+                            <span class="text-[9px] text-gray-600 font-medium text-center">Locked</span>
+                        </div>
+                    </div>
+                    <div class="bg-[#111] rounded-2xl p-5 border border-gray-800">
+                        <h3 class="text-white font-bold mb-4">Alex Kuznetsov</h3>
+                        <div class="flex justify-between text-xs text-gray-500 mb-2"><span>Total achievements</span><span class="text-white">12</span></div>
+                        <div class="flex justify-between text-xs text-gray-500 mb-2"><span>Unlocked</span><span class="text-green-500">4</span></div>
+                        <div class="flex justify-between text-xs text-gray-500 mb-3"><span>Progress</span><span class="text-white">33%</span></div>
+                        <div class="w-full bg-gray-800 rounded-full h-2.5"><div class="bg-red-600 h-2.5 rounded-full" style="width: 33%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-40 max-w-[375px] mx-auto">
+            <div class="absolute -top-16 right-3 flex flex-col items-center pointer-events-none z-50">
+                <button onclick="openModal('create-post-modal')" class="pointer-events-auto w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition border-2 border-white/20" style="background: radial-gradient(circle at 30% 30%, #fcd34d, #f59e0b, #b45309);">
+                    <i class="fa-solid fa-pen text-xl text-black drop-shadow-sm"></i>
+                </button>
+            </div>
+            <div class="flex justify-around items-center py-3 relative">
+                <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70" onerror="this.style.display='none'">
+                <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <img src="images/home.jpg" alt="Home" class="w-8 h-8">
+                    <span class="text-xs">Home</span>
+                </a>
+                <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <div class="relative">
+                        <img src="images/boostO.png" alt="Boost" class="w-8 h-8">
+                        <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-600 rounded-full"></div>
+                    </div>
+                    <span class="text-xs">BoosT</span>
+                </a>
+                <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                    <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8">
+                    <span class="text-xs">Colosseum</span>
+                </a>
+                <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 rounded-xl transition-colors relative z-10">
+                    <img src="images/profileR.png" alt="Profile" class="w-8 h-8">
+                    <span class="text-xs font-semibold text-gold-shine">Profile</span>
+                </a>
+            </div>
+        </nav>
+        <div id="gifts-modal" class="modal absolute inset-0 z-[70] bg-black flex flex-col overflow-hidden hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <button onclick="closeModal('gifts-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Your Gifts <i class="fa-solid fa-gift text-red-600 text-lg"></i></h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar pt-4">
+                <div class="bg-gradient-to-r from-red-900/40 to-black border border-red-900/30 rounded-2xl p-4 mb-6 flex items-center gap-4">
+                    <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-600/30">
+                        <i class="fa-solid fa-rocket text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold text-sm">Free Boost Gifts</h3>
+                        <p class="text-gray-400 text-[10px] leading-tight mt-1">You have 4 free boost activations available. Use them now or schedule for later!</p>
+                    </div>
+                </div>
+                <div class="text-[10px] text-red-500 mb-2 font-bold uppercase tracking-wider"><i class="fa-solid fa-gift"></i> Free Gift</div>
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-3xl p-5 mb-4">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-[#1a1a1a] rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-users text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">Free Boost: Holders</h3>
+                            <p class="text-gray-500 text-[10px]">Limited time offer</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mb-5">
+                        <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-3 flex-1">
+                            <p class="text-gray-500 text-[10px] mb-1">Amount</p>
+                            <p class="text-white font-bold text-lg">10k</p>
+                        </div>
+                        <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-3 flex-1">
+                            <p class="text-gray-500 text-[10px] mb-1"><i class="fa-regular fa-clock"></i> Duration</p>
+                            <p class="text-white font-bold text-lg">2h</p>
+                        </div>
+                    </div>
+                    <button onclick="openModal('activate-success-modal')" class="w-full bg-red-600 text-white py-3.5 rounded-full font-bold mb-3 flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30">
+                        <i class="fa-solid fa-bolt"></i> Activate Now
+                    </button>
+                    <button onclick="openBlurModal('schedule-modal')" class="w-full bg-[#0a0a0a] border border-gray-800 text-white py-3.5 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-[#111] transition">
+                        <i class="fa-regular fa-calendar"></i> Schedule Activation
+                    </button>
+                </div>
+                <div class="text-[10px] text-red-500 mb-2 font-bold uppercase tracking-wider"><i class="fa-solid fa-gift"></i> Free Gift</div>
+                <div class="bg-[#0f0f0f] border border-gray-800 rounded-3xl p-5 mb-4">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-[#1a1a1a] rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-trend-up text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">Free Boost: Engagement</h3>
+                            <p class="text-gray-500 text-[10px]">Limited time offer</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mb-5">
+                        <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-3 flex-1"><p class="text-gray-500 text-[10px] mb-1">Amount</p><p class="text-white font-bold text-lg">5k</p></div>
+                        <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-3 flex-1"><p class="text-gray-500 text-[10px] mb-1"><i class="fa-regular fa-clock"></i> Duration</p><p class="text-white font-bold text-lg">1h</p></div>
+                    </div>
+                    <button onclick="openModal('activate-success-modal')" class="w-full bg-red-600 text-white py-3.5 rounded-full font-bold mb-3 flex items-center justify-center gap-2 shadow-lg shadow-red-900/30"><i class="fa-solid fa-bolt"></i> Activate Now</button>
+                    <button onclick="openBlurModal('schedule-modal')" class="w-full bg-[#0a0a0a] border border-gray-800 text-white py-3.5 rounded-full font-bold flex items-center justify-center gap-2"><i class="fa-regular fa-calendar"></i> Schedule Activation</button>
+                </div>
+            </div>
+        </div>
+        <div id="schedule-modal" class="modal-blur absolute inset-0 z-[100] flex items-center justify-center hidden">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeBlurModal('schedule-modal')"></div>
+            <div class="bg-[#0f0f0f] border border-gray-800 w-[90%] max-w-[350px] rounded-3xl p-6 relative z-10">
+                <h3 class="text-white text-xl font-bold mb-4">Schedule Activation</h3>
+                <div class="mb-4">
+                    <p class="text-gray-400 text-sm">Boost: Holders</p>
+                    <p class="text-gray-500 text-xs">Amount: 10k • Duration: 2h</p>
+                </div>
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="text-gray-500 text-xs mb-2 block">Select Date</label>
+                        <input type="text" placeholder="DD.MM.YY" class="w-full bg-[#050505] border border-gray-800 text-white text-sm py-3 px-4 rounded-2xl outline-none focus:border-gray-600">
+                    </div>
+                    <div>
+                        <label class="text-gray-500 text-xs mb-2 block">Select Time</label>
+                        <input type="text" placeholder="HH:MM" class="w-full bg-[#050505] border border-gray-800 text-white text-sm py-3 px-4 rounded-2xl outline-none focus:border-gray-600">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeBlurModal('schedule-modal')" class="flex-1 bg-[#0a0a0a] border border-gray-800 text-white py-3 rounded-full font-medium hover:bg-[#111]">Cancel</button>
+                    <button onclick="confirmSchedule()" class="flex-1 bg-brand-red/20 text-red-500 border border-red-900/50 py-3 rounded-full font-medium hover:bg-brand-red hover:text-white transition">Confirm</button>
+                </div>
+            </div>
+        </div>
+        <div id="activate-success-modal" class="modal-slide-up absolute inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center hidden">
+            <div class="relative mb-6">
+                <div class="absolute inset-0 bg-red-600 blur-3xl opacity-40 rounded-full"></div>
+                <div class="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center relative z-10 shadow-2xl shadow-red-600/50">
+                    <i class="fa-solid fa-fire text-white text-5xl"></i>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Boost Successfully Launched!</h2>
+            <p class="text-gray-500 text-sm mb-8 max-w-[280px]">Your boost is now active and working to improve your project's visibility</p>
+            <div class="w-full bg-[#0f0f0f] border border-gray-800 rounded-2xl p-4 mb-8">
+                <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-800/50">
+                    <div class="w-10 h-10 bg-[#1a1a1a] rounded-xl flex items-center justify-center"><i class="fa-solid fa-bolt text-red-500"></i></div>
+                    <div class="text-left"><h4 class="text-white font-bold text-sm">Boost Details</h4><p class="text-green-500 text-[10px]">Active now</p></div>
+                </div>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between text-gray-400"><span><i class="fa-solid fa-chart-line mr-2"></i> Boost Type</span><span class="text-white">Holders</span></div>
+                    <div class="flex justify-between text-gray-400"><span><i class="fa-solid fa-users mr-2"></i> Amount</span><span class="text-white">10k</span></div>
+                    <div class="flex justify-between text-gray-400"><span><i class="fa-regular fa-clock mr-2"></i> Duration</span><span class="text-white">2h</span></div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between text-[10px] text-gray-500 mb-1"><span>Initializing...</span><span>100%</span></div>
+                    <div class="w-full bg-gray-800 rounded-full h-1.5"><div class="bg-red-600 h-1.5 rounded-full" style="width: 100%"></div></div>
+                </div>
+            </div>
+            <div class="w-full space-y-3">
+                <button onclick="openTrackerFromSuccess()" class="w-full bg-red-600 text-white py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30">Track my boost <i class="fa-solid fa-arrow-right"></i></button>
+                <button onclick="closeModal('activate-success-modal')" class="w-full bg-[#1a1a1a] text-gray-400 py-4 rounded-full font-bold hover:text-white transition">Go back</button>
+            </div>
+        </div>
+        <div id="boosts-tracker-modal" class="modal absolute inset-0 z-[80] bg-black flex flex-col overflow-hidden hidden">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10">
+                <button onclick="closeModal('boosts-tracker-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Boosts tracker</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3"><p class="text-gray-500 text-[10px] mb-1">Active</p><p class="text-white font-bold text-lg">2</p></div>
+                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3"><p class="text-gray-500 text-[10px] mb-1">Scheduled</p><p class="text-white font-bold text-lg">2</p></div>
+                    <div class="bg-[#0f0f0f] border border-gray-800 rounded-2xl p-3"><p class="text-gray-500 text-[10px] mb-1">Completed</p><p class="text-white font-bold text-lg">1</p></div>
+                </div>
+                 <div class="bg-[#0f0f0f] border border-gray-800 rounded-3xl p-5 mb-4 relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex gap-3">
+                            <div class="w-10 h-10 bg-[#1a1a1a] rounded-xl flex items-center justify-center text-red-500">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-gray-500">Order number: #1245151</div>
+                                <h3 class="text-white font-bold text-sm">Holders Boost Campaign</h3>
+                                <p class="text-gray-500 text-[10px]">Boosting holders</p>
+                            </div>
+                        </div>
+                        <span class="bg-red-900/30 text-red-500 border border-red-900/50 px-2 py-1 rounded text-[10px] font-bold">Active Now</span>
+                    </div>
+                    <div class="inline-block bg-red-900/20 text-red-500 px-2 py-0.5 rounded text-[10px] font-bold mb-4 border border-red-900/30"><i class="fa-solid fa-gift"></i> Free Gift</div>
+                    <div class="bg-[#0a0a0a] rounded-2xl p-3 mb-3">
+                        <div class="flex justify-between text-[10px] mb-1">
+                            <span class="text-gray-500">Contract</span>
+                            <span class="text-white font-mono">0x1234...5678</span>
+                        </div>
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-network-wired mr-1"></i> Network</span>
+                            <span class="text-white font-bold">Ethereum</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-[#0a0a0a] border border-gray-800 text-gray-400 text-xs py-3 rounded-xl hover:bg-[#111] transition">
+                        <i class="fa-regular fa-comment mr-1"></i> Contact Support
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="achievement-detail-modal" class="modal-slide-up absolute inset-0 z-[80] flex items-end justify-center hidden">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('achievement-detail-modal')"></div>
+            <div class="bg-[#000] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-gray-800 h-[60vh] flex flex-col">
+                <button onclick="closeModal('achievement-detail-modal')" class="absolute right-4 top-4 text-gray-500 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <div class="flex flex-col items-start mb-6">
+                    <div class="flex gap-4 mb-1">
+                        <div class="w-16 h-16 rounded-2xl bg-black border border-gray-800 flex items-center justify-center shadow-lg shadow-orange-500/10">
+                            <svg viewBox="0 0 100 100" class="w-12 h-12 text-orange-500">
+                                <path fill="currentColor" d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" />
+                                <circle cx="50" cy="50" r="15" fill="#fff" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h2 class="text-xl font-bold text-white">First Launch</h2>
+                            <span class="text-red-600 text-sm font-medium">Unlocked</span>
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-gray-900 mb-6 w-full">
+                <div class="space-y-6 flex-1 overflow-y-auto no-scrollbar">
+                    <div>
+                        <p class="text-gray-500 text-xs mb-1">How to unlock</p>
+                        <p class="text-white text-sm font-medium">Launch your first promotional campaign</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-1">Reward</p>
+                        <p class="text-white text-sm font-medium">1 free boost</p>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1"><p class="text-gray-500 text-xs">Progress</p><p class="text-white text-sm">100%</p></div>
+                        <div class="w-full bg-gray-800 rounded-full h-2"><div class="bg-red-600 h-2 rounded-full" style="width: 100%"></div></div>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs mb-1">Unlocked date</p>
+                        <p class="text-white text-sm font-medium">Nov 15, 2024</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="page-boost" class="hidden fixed inset-0 z-[100] bg-black max-w-[375px] mx-auto overflow-y-auto no-scrollbar pb-24">
+    <div class="w-full h-40 overflow-hidden relative">
+        <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fire" class="w-full h-[300%] object-cover -mt-12 object-top blur-sm opacity-50 absolute">
+        <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fire" class="w-64 h-64 object-cover absolute left-1/2 -translate-x-1/2 -top-4">
+    </div>
+    <div class="px-4 pt-2 pb-24">
+        <div class="flex items-center justify-between mb-3">
+            <button onclick="closeBoost()" class="text-gray-300 hover:text-white transition -ml-1 p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <div class="flex items-center gap-2 border border-green-500 rounded-full px-3 py-1 bg-green-900/10">
+                <span class="text-green-500 font-medium text-[10px]">Approved</span>
+                <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <svg onclick="openSettings()" class="w-5 h-5 text-white cursor-pointer hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </div>
+        <div class="flex gap-3 items-start mb-3">
+            <div class="w-16 h-16 bg-orange-500 rounded-full flex-shrink-0 border-2 border-orange-400 overflow-hidden">
+                <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=fire" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 mb-1">
+                    Solana 
+                    <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 5h14v2H3V5zm0 8h14v2H3v-2z"/>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold mb-0.5 truncate">BoostTX Project</h2>
+                <div class="text-gray-500 text-[10px] flex items-center gap-1">
+                    CA: 0x34a9...4a86 
+                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <p class="text-gray-400 text-xs leading-relaxed mb-3">Blockchain analytics automation platform for optimizing on-chain metrics and data growth.</p>
+        <div class="flex gap-2 mb-3">
+            <a href="#" class="w-9 h-9 bg-[#0a0a0a] border border-[#222] rounded-lg flex items-center justify-center hover:bg-[#111] transition">
+                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+            </a>
+            <a href="#" class="w-9 h-9 bg-[#0a0a0a] border border-[#222] rounded-lg flex items-center justify-center hover:bg-[#111] transition">
+                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <a href="#" class="w-9 h-9 bg-[#0a0a0a] border border-[#222] rounded-lg flex items-center justify-center hover:bg-[#111] transition">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                </svg>
+            </a>
+            <button class="ml-auto px-3 h-9 bg-[#0a0a0a] border border-[#222] rounded-lg text-xs text-gray-400 hover:text-white hover:bg-[#111] transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+                Share
+            </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="bg-[#0a0a0a] border border-[#222] rounded-xl p-2.5">
+                <div class="text-gray-500 text-[9px] mb-0.5">Market Cap</div>
+                <div class="text-white font-bold text-sm">$2.4M</div>
+                <div class="text-green-500 text-[9px]">+15.3%</div>
+            </div>
+            <div class="bg-[#0a0a0a] border border-[#222] rounded-xl p-2.5">
+                <div class="text-gray-500 text-[9px] mb-0.5">24h Volume</div>
+                <div class="text-white font-bold text-sm">$847K</div>
+                <div class="text-red-500 text-[9px]">-8.2%</div>
+            </div>
+            <div class="bg-[#0a0a0a] border border-[#222] rounded-xl p-2.5">
+                <div class="text-gray-500 text-[9px] mb-0.5">Holders</div>
+                <div class="text-white font-bold text-sm">3,248</div>
+                <div class="text-green-500 text-[9px]">+122</div>
+            </div>
+            <div class="bg-[#0a0a0a] border border-[#222] rounded-xl p-2.5">
+                <div class="text-gray-500 text-[9px] mb-0.5">Supply</div>
+                <div class="text-white font-bold text-sm">100M</div>
+                <div class="text-gray-500 text-[9px]">Fixed</div>
+            </div>
+        </div>
+        <div class="bg-[#0a0a0a] border border-[#222] rounded-xl p-3 mb-3">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <div class="text-gray-500 text-[9px] mb-0.5">Current Price</div>
+                    <div class="text-white font-bold text-xl">$0.024</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-green-500 font-bold text-lg">+12.5%</div>
+                    <div class="text-gray-500 text-[9px]">24h</div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 bg-[#DC2626] text-white py-2 rounded-lg font-bold text-xs hover:bg-red-700 transition">
+                    Buy
+                </button>
+                <button class="flex-1 bg-[#111] border border-[#333] text-white py-2 rounded-lg font-bold text-xs hover:bg-[#1a1a1a] transition">
+                    Trade
+                </button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-white font-bold text-sm">Price Chart</h3>
+                <div class="flex gap-1">
+                    <button class="px-2 py-0.5 bg-[#0a0a0a] border border-[#222] rounded text-[10px] text-gray-400 hover:text-white hover:border-[#DC2626] transition">1H</button>
+                    <button class="px-2 py-0.5 bg-[#0a0a0a] border border-[#DC2626] rounded text-[10px] text-white transition">24H</button>
+                    <button class="px-2 py-0.5 bg-[#0a0a0a] border border-[#222] rounded text-[10px] text-gray-400 hover:text-white hover:border-[#DC2626] transition">7D</button>
+                    <button class="px-2 py-0.5 bg-[#0a0a0a] border border-[#222] rounded text-[10px] text-gray-400 hover:text-white hover:border-[#DC2626] transition">30D</button>
+                </div>
+            </div>
+            <div id="tradingview_12345" class="w-full h-64 bg-[#0a0a0a] rounded-2xl border border-[#222]"></div>
+        </div>
+        <button class="w-full bg-gradient-to-r from-[#DC2626] to-[#ff3347] text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-red-900/50 hover:shadow-red-900/70 transition flex items-center justify-center gap-2 mb-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+            </svg>
+            Vote for this project
+            <span class="bg-white/20 px-2 py-0.5 rounded-full text-[10px]">2.5K</span>
+        </button>
+    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-40 max-w-[375px] mx-auto">
+        <div class="flex justify-around items-center py-3 relative">
+            <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70">
+            <a href="javascript:void(0)" onclick="closeBoost()" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/home.jpg" alt="Home" class="w-8 h-8">
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="javascript:void(0)" onclick="closeBoost()" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <div class="relative">
+                    <img src="images/boostO.png" alt="Boost" class="w-8 h-8">
+                </div>
+                <span class="text-xs">BoosT</span>
+            </a>
+            <a href="javascript:void(0)" onclick="closeBoost()" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8">
+                <span class="text-xs">Colosseum</span>
+            </a>
+            <a href="profile.html" onclick="closeBoost()" class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 rounded-xl transition-colors relative z-10">
+            <img src="images/profileR.png" alt="Profile" class="w-8 h-8">
+            <span class="text-xs font-semibold text-gold-shine">Profile</span>
+        </a>
+        </div>
+    </nav>
+</div>
+<div id="page-edit" class="hidden fixed inset-0 z-[120] bg-black max-w-[375px] mx-auto overflow-y-auto no-scrollbar pb-36">
+    <div class="px-4 pt-6">
+        <div class="flex items-center mb-6 relative">
+            <button onclick="closeSettings()" class="absolute left-0 text-gray-300 hover:text-white p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h2 class="text-center text-2xl font-bold w-full">Edit your project</h2>
+        </div>
+        <div class="flex flex-col items-center gap-2 mb-6">
+            <div class="w-24 h-24 bg-[#DC2626] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_20px_rgba(220,38,38,0.3)] relative overflow-hidden">
+                <img src="images/upload.png" alt="Upload Avatar" class="w-8 h-8 object-contain">
+            </div>
+            <span class="text-xs text-gray-400">Set up avatar</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 mb-8">
+            <div class="w-full h-32 bg-[#DC2626] rounded-3xl flex items-center justify-center cursor-pointer shadow-[0_0_20px_rgba(220,38,38,0.3)] relative overflow-hidden">
+                <img src="images/upload.png" alt="Upload Banner" class="w-10 h-10 object-contain">
+            </div>
+            <span class="text-xs text-gray-400">Set up banner (ratio 3:1)</span>
+        </div>
+        <div class="input-group">
+            <input type="text" placeholder="Enter name" class="custom-input">
+        </div>
+        <div class="input-group justify-between cursor-pointer" onclick="openNetworkModal('edit')">
+            <div class="flex items-center gap-2">
+                <div id="edit-net-icon" class="w-5 h-5 flex items-center justify-center">
+                    <img src="images/eth.png" class="w-full h-full object-contain">
+                </div>
+                <span id="edit-net-name" class="bg-white text-black px-2 py-0.5 rounded font-bold text-sm">Ethereum</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="edit-net-std" class="text-gray-400 text-sm">ERC20</span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="input-group">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            <input type="text" placeholder="Your Telegram channel link" class="custom-input text-right">
+        </div>
+        <div class="input-group">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+            </svg>
+            <input type="text" placeholder="Your website link" class="custom-input text-right">
+        </div>
+        <div class="input-group">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <input type="text" placeholder="https://x.com" class="custom-input text-right">
+        </div>
+        <div class="relative mb-8">
+            <div class="bg-[#0a0a0a] border border-[#333] rounded-2xl p-4 pb-8">
+                <textarea class="w-full bg-transparent text-white text-sm outline-none resize-none h-20" placeholder="My project description"></textarea>
+            </div>
+            <span class="absolute bottom-2 right-4 text-xs text-gray-500">0 / 120</span>
+            <div class="absolute bottom-0 left-0 w-full h-[1px] bg-red-600 rounded-b-2xl"></div>
+        </div>
+        <button onclick="closeSettings()" class="w-full bg-[#DC2626] text-white py-3.5 rounded-full font-bold text-lg mb-8 shadow-lg shadow-red-900/40">
+            Continue
+        </button>
+        <div class="bg-[#0a0a0a] rounded-3xl p-6 border border-[#151515]">
+            <h3 class="text-red-600 font-bold text-center mb-4">Danger zone</h3>
+            <button onclick="openDeleteModal()" class="w-full border border-[#333] bg-[#111] text-gray-300 py-3 rounded-full flex items-center justify-between px-6 hover:bg-red-900/20 transition">
+                <span>Delete project</span>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-900 z-40 max-w-[375px] mx-auto">
+        <div class="flex justify-around items-center py-3 relative">
+            <img src="images/light.png" alt="" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70">
+            <a href="javascript:void(0)" onclick="closeSettings(); closeBoost()" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/home.jpg" alt="Home" class="w-8 h-8">
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="javascript:void(0)" onclick="closeSettings(); closeBoost()"  class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <div class="relative">
+                    <img src="images/boostO.png" alt="Boost" class="w-8 h-8">
+                </div>
+                <span class="text-xs">BoosT</span>
+            </a>
+            <a href="javascript:void(0)" onclick="closeSettings(); closeBoost()" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+                <img src="images/colosseum.jpg" alt="Colosseum" class="w-8 h-8">
+                <span class="text-xs">Colosseum</span>
+            </a>
+            <a href="profile.html"class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 rounded-xl transition-colors relative z-10">
+            <img src="images/profileR.png" alt="Profile" class="w-8 h-8">
+            <span class="text-xs font-semibold text-gold-shine">Profile</span>
+        </a>
+        </div>
+    </nav>
+</div>
+<div id="modal-delete" class="hidden fixed inset-0 z-[150] blur-backdrop flex items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] w-full max-w-sm rounded-3xl p-6 border border-[#222] relative">
+        <h3 class="text-red-600 font-bold text-xl text-center mb-2 leading-tight">Are you really ready to delete your project?</h3>
+        <p class="text-gray-400 text-xs text-center mb-6">After deletion, it will be impossible to restore.</p>
+        <p class="text-white text-center mb-2 text-sm">Enter the <span class="font-bold">FULL</span> name of the project to delete</p>
+        <div class="input-group border border-[#333] bg-[#111] rounded-xl mb-6">
+            <input type="text" placeholder="Enter project name" class="custom-input text-center">
+        </div>
+        <button onclick="closeDeleteModal()" class="w-full border border-[#333] bg-transparent text-gray-400 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-white/5 transition">
+            <span>Delete project</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<div id="settings-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[60]">
+    <div class="px-4 pt-6 pb-4 flex justify-between items-center sticky top-0 bg-black z-10 border-b border-gray-900/50">
+        <div class="flex items-center gap-2">
+            <button onclick="closeModal('settings-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 class="text-2xl font-bold text-white">Settings</h2>
+        </div>
+        <button onclick="closeModal('settings-modal')" class="text-gray-400 hover:text-white text-sm">Done</button>
+    </div>
+    <div class="px-4 mb-6 mt-4">
+        <div class="relative">
+            <input type="text" placeholder="Search settings" class="w-full bg-[#0a0a0a] text-white py-3 px-4 pl-4 rounded-full border border-gray-800 focus:border-white/20 focus:outline-none transition-all">
+            <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-white"></i>
+        </div>
+    </div>
+    <div class="flex-1 overflow-y-auto px-4 space-y-1 pb-32 no-scrollbar">
+        <button onclick="openModal('profile-edit-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-user w-6 text-center"></i><span>Profile settings</span></div>
+        </button>
+        <button onclick="openModal('boosts-tracker-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-chart-simple w-6 text-center"></i><span>My boosts</span></div>
+        </button>
+        <button onclick="openModal('launched-projects-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-rocket w-6 text-center"></i><span>Launched projects</span></div>
+        </button>
+        <button onclick="openModal('privacy-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-shield-halved w-6 text-center"></i><span>Privacy & Security</span></div>
+        </button>
+        <button onclick="openModal('finance-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-dollar-sign w-6 text-center"></i><span>Finance & Referrals</span></div>
+        </button>
+        <button onclick="openModal('faq-modal')" class="w-full flex items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-regular fa-circle-question w-6 text-center"></i><span>FAQ & Support</span></div>
+        </button>
+        <a href="admin panel/dashboard.html" class="hidden lg:flex w-full items-center justify-between py-4 hover:bg-white/5 rounded-lg px-2 transition active:scale-[0.98]">
+            <div class="flex items-center gap-4 text-white"><i class="fa-solid fa-user-shield w-6 text-center"></i><span>Admin Panel</span></div>
+        </a>
+    </div>
+</div>
+        <div id="profile-edit-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex justify-between items-center sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <div class="flex items-center gap-2">
+                    <button onclick="closeModal('profile-edit-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 class="text-xl font-bold text-white ml-2">Profile settings</h2>
+                </div>
+                <button onclick="closeModal('profile-edit-modal')" class="text-white hover:text-red-500 transition"><i class="fa-solid fa-check text-xl"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                <div class="flex justify-center mb-8 mt-4">
+                    <div class="relative">
+                        <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a1a1a]">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alex" class="w-full h-full object-cover opacity-60">
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition p-3 overflow-hidden">
+                                <img src="images/upload.png" class="w-full h-full object-contain">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your name</label>
+                        <input type="text" value="Alex Kuznetsov" class="w-full input-dark text-white py-3 px-4 rounded-2xl border border-gray-800 bg-transparent">
+                    </div>
+                    <div><input type="text" placeholder="Second name" class="w-full input-dark text-white py-3 px-4 rounded-2xl border border-gray-800 bg-transparent"></div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2 ml-1">Bio</label>
+                        <div class="relative">
+                            <textarea placeholder="Tell something about yourself" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-32 resize-none border border-gray-800 bg-transparent"></textarea>
+                            <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your role</label>
+                        <button class="w-full input-dark text-white py-3 px-4 rounded-2xl flex justify-between items-center border border-gray-800 bg-transparent">
+                            <span class="bg-red-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">Team Lead</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-sm"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm mb-2 ml-1">Your social media</label>
+                        <div class="space-y-3">
+                            <div class="relative group">
+                                <i class="fa-brands fa-telegram absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
+                                <input type="text" placeholder="Your Telegram channel link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
+                            </div>
+                            <div class="relative group">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white pointer-events-none"><svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></div>
+                                <input type="text" placeholder="Your X link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
+                            </div>
+                            <div class="relative group">
+                                <i class="fa-solid fa-globe absolute left-4 top-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none"></i>
+                                <input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-14 pr-4 rounded-2xl text-xs border border-gray-800 bg-transparent text-right placeholder-gray-600 focus:border-red-600 transition-colors">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="launched-projects-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <button onclick="closeModal('launched-projects-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Your projects</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                 <div class="overflow-x-auto pb-4">
+                    <table class="w-full min-w-[800px] text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#111] text-white text-xs border-b border-gray-800">
+                                <th class="p-3">#</th><th class="p-3">Project</th><th class="p-3">Status</th><th class="p-3">Network</th><th class="p-3">Contract</th><th class="p-3">Total votes</th><th class="p-3">Growth 24h</th><th class="p-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs">
+                            <tr class="border-b border-gray-800 hover:bg-white/5 transition">
+                                <td class="p-3 text-white font-bold">1</td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-8 h-8 rounded-full bg-orange-500"><div class="text-white">John Davidson</div></div></td>
+                                <td class="p-3"><span class="border border-red-500 text-red-500 px-2 py-1 rounded-full text-[10px]">Rejected</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Ethereum</span></td>
+                                <td class="p-3 text-gray-500">0x...5e8f</td>
+                                <td class="p-3 text-white">15,234</td>
+                                <td class="p-3 text-green-500">+123.45%</td>
+                                <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-white/5 transition">
+                                <td class="p-3 text-white font-bold">2</td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/bottts/svg?seed=AI" class="w-8 h-8 rounded-full bg-blue-500"><div class="text-white">CryptoAI</div></div></td>
+                                <td class="p-3"><span class="border border-green-500 text-green-500 px-2 py-1 rounded-full text-[10px]">Active</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Solana</span></td>
+                                <td class="p-3 text-gray-500">0x...a1b2</td>
+                                <td class="p-3 text-white">4,500</td>
+                                <td class="p-3 text-green-500">+12.5%</td>
+                                <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-white/5 transition">
+                                <td class="p-3 text-white font-bold">3</td>
+                                <td class="p-3"><div class="flex items-center gap-2"><img src="https://api.dicebear.com/9.x/bottts/svg?seed=NFT" class="w-8 h-8 rounded-full bg-purple-500"><div class="text-white">NFT World</div></div></td>
+                                <td class="p-3"><span class="border border-yellow-500 text-yellow-500 px-2 py-1 rounded-full text-[10px]">Pending</span></td>
+                                <td class="p-3"><span class="bg-white text-black px-2 py-1 rounded-full font-bold">Polygon</span></td>
+                                <td class="p-3 text-gray-500">0x...9c4d</td>
+                                <td class="p-3 text-white">0</td>
+                                <td class="p-3 text-gray-500">0%</td>
+                                <td class="p-3 flex gap-2 text-white"><i class="fa-brands fa-telegram"></i><i class="fa-brands fa-x-twitter"></i><i class="fa-regular fa-eye"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button onclick="openModal('rules-modal')" class="w-full mt-4 bg-red-600 text-white py-3 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg shadow-red-900/30">Publish project +</button>
+            </div>
+        </div>
+        <div id="rules-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+             <div class="px-4 pt-6 pb-4 text-center sticky top-0 bg-black z-10">
+                 <h2 class="text-xl font-bold text-white">The Colosseum Rules</h2>
+             </div>
+             <div class="flex-1 overflow-y-auto px-6 pb-4 no-scrollbar text-gray-300 text-xs space-y-4">
+                <div>
+                    <h3 class="font-bold text-white mb-2">1. General provisions</h3>
+                    <p class="mb-1">1.1. These Regulations define the procedure and conditions of the contest (hereinafter referred to as the Contest).</p>
+                    <p>1.2. The organizer of the Contest is Boost (X) (hereinafter referred to as the Organizer).</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-2">2. Terms of participation</h3>
+                    <p class="mb-1">2.1. To participate, you must fill out an application for the participation of the token in the voting:</p>
+                    <ul class="list-disc pl-4 mb-2 space-y-1">
+                        <li>Specify the correct ticker and contract address;</li>
+                        <li>Upload the project's logo and banner;</li>
+                        <li>Fill in the project description;</li>
+                        <li>Provide a valid contact for communication: Telegram or Twitter;</li>
+                        <li>Wait for the token to be approved for participation: Share a link to vote.</li>
+                    </ul>
+                    <p class="mb-1">2.2. Token Admission Criteria:</p>
+                    <ul class="list-disc pl-4 mb-2 space-y-1">
+                        <li>The token must be launched on the mainnet;</li>
+                        <li>The token must have liquidity on one of the exchanges or DEX;</li>
+                        <li>The token should not have any risk indicators for users.</li>
+                    </ul>
+                    <p>2.3. The Organizer reserves the right to reject the application for participation without explanation in case of violation of these Rules.</p>
+                </div>
+                <div class="pt-2 flex items-start gap-3">
+                     <label class="custom-checkbox relative flex items-center cursor-pointer">
+                         <input type="checkbox" id="rules-check" class="peer sr-only" onchange="toggleRulesButton()">
+                         <div class="w-5 h-5 border-2 border-gray-600 rounded transition-colors flex items-center justify-center mt-0.5">
+                             <svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                         </div>
+                     </label>
+                     <span class="text-white text-xs leading-tight">I have read the rules of the "The Colosseum" section and agree with them.</span>
+                 </div>
+             </div>
+             <div class="p-4 pb-8 bg-black sticky bottom-0 border-t border-gray-900/50">
+                 <button id="rules-continue-btn" onclick="openModal('publish-form-modal')" disabled class="w-full bg-[#1a1a1a] text-gray-500 py-4 rounded-2xl font-bold text-lg transition-colors">Continue</button>
+             </div>
+        </div>
+        <div id="publish-form-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[90]">
+             <div class="px-4 pt-6 pb-4 text-center relative sticky top-0 bg-black z-10">
+                 <h2 class="text-xl font-bold text-white">Publish your project</h2>
+                 <button onclick="closeModal('publish-form-modal')" class="absolute right-4 top-6 text-white"><i class="fa-solid fa-xmark"></i></button>
+             </div>
+             <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-4 no-scrollbar">
+                 <div class="flex flex-col items-center gap-2">
+                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 overflow-hidden p-4">
+                         <img src="images/upload.png" class="w-full h-full object-contain">
+                     </div>
+                     <span class="text-gray-500 text-xs">Set up avatar</span>
+                 </div>
+                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner overflow-hidden p-8">
+                     <img src="images/upload.png" class="w-12 h-12 object-contain">
+                 </div>
+                 <div class="text-center text-gray-500 text-xs mb-4">Set up banner (ratio 3:1)</div>
+                 <input type="text" placeholder="Enter name" class="w-full input-dark text-white py-3 px-4 rounded-2xl">
+                 <div class="flex gap-2">
+                    <div class="bg-black border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] text-[#FDE68A] px-4 py-3 rounded-2xl flex items-center gap-2 font-bold text-sm" id="selected-network-display">
+                        <i class="fa-brands fa-ethereum text-lg"></i> 
+                        <span class="text-gold-shine">Ethereum</span>
+                    </div>
+                    <button onclick="openModal('network-select-modal')" class="flex-1 bg-[#121212] border border-[#D4AF37]/50 text-[#FDE68A] shadow-[0_0_5px_rgba(212,175,55,0.1)] py-3 px-4 rounded-2xl text-sm flex items-center justify-between transition-all active:scale-95">
+                        <span id="token-standard" class="font-medium">ERC20</span> 
+                        <i class="fa-solid fa-chevron-down text-[#D4AF37]"></i>
+                    </button>
+                </div>
+                 <input type="text" placeholder="Contract address" class="w-full input-dark text-white py-3 px-4 rounded-2xl text-xs">
+                 <div class="relative"><i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="Telegram channel link" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 <div class="relative"><i class="fa-solid fa-globe absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="Your website link" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 <div class="relative"><i class="fa-brands fa-x-twitter absolute left-4 top-3.5 text-white"></i><input type="text" placeholder="https://x.com" class="w-full input-dark text-white py-3 pl-10 px-4 rounded-2xl text-xs text-right"></div>
+                 <div class="relative">
+                     <textarea placeholder="My project description" class="w-full input-dark text-white p-4 rounded-2xl h-24 resize-none text-xs"></textarea>
+                     <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
+                 </div>
+                 <button onclick="finishPublish()" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg shadow-red-900/30">Continue</button>
+             </div>
+        </div>
+        <div id="finance-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <button onclick="closeModal('finance-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Finance & Referrals</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                <p class="text-gray-400 text-sm mt-4 mb-4">Invite your friends and earn commissions</p>
+                <div class="bg-[#111] rounded-3xl p-5 border border-gray-800 shadow-lg mb-6">
+                    <button onclick="openModal('setup-wallets-modal')" class="w-full bg-[#DC2626] hover:bg-red-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_4px_14px_rgba(220,38,38,0.4)]">
+                        Copy Referral Link <i class="fa-regular fa-copy"></i>
+                    </button>
+                    <div class="text-center mt-3 mb-1">
+                        <span class="text-[10px] text-gray-500 bg-[#1a1a1a] px-3 py-1 rounded-full border border-gray-800">https:
+                    </div>
+                    <div class="text-[10px] text-gray-500 text-center mb-3">or scan QR-code</div>
+                    <div class="flex justify-center">
+                        <div class="bg-white p-2 rounded-xl">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://t.me/boostx?ref=12345BTX" alt="QR" class="w-32 h-32 object-contain">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <p class="text-gray-400 text-xs mb-3">You've done a great job, and now you have:</p>
+                    <div class="w-full bg-gradient-to-r from-[#DC2626] to-[#7f1d1d] rounded-3xl p-5 relative overflow-hidden shadow-[0_5px_20px_rgba(220,38,38,0.3)]">
+                        <div class="flex items-center justify-center gap-3">
+                            <span class="text-5xl font-bold text-white tracking-tighter">1234</span>
+                            <div class="flex flex-col text-white text-sm font-medium leading-tight opacity-90">
+                                <span>active</span>
+                                <span>referrals</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-end">
+                            <span class="text-white/60 text-[10px] bg-black/20 px-2 py-1 rounded-lg">Your total income:</span>
+                            <span class="text-[#4ade80] text-lg font-bold">1,124.34$</span>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 text-center mt-2">You can view the full list of referrals below</p>
+                </div>
+                <button onclick="openModal('withdraw-funds-modal')" class="w-full mb-8 bg-[#DC2626] hover:bg-red-700 text-white font-bold py-3.5 rounded-2xl shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all active:scale-95">
+                    Withdrawal funds
+                </button>
+                <div class="mb-8">
+                    <h3 class="font-bold text-sm text-gray-300 mb-3">Your reward withdrawal wallets</h3>
+                    <p class="text-gray-500 text-xs mb-2">EVM Chains</p>
+                    <div class="bg-[#111] rounded-2xl p-3 mb-3 flex items-center justify-between border border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                <i class="fa-solid fa-shield-dog text-orange-500 text-lg"></i> 
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-sm">Metamask wallet</div>
+                                <div class="text-gray-500 text-[10px] flex items-center gap-1">0x742d.....5e8f <i class="fa-solid fa-link text-[8px]"></i></div>
+                            </div>
+                        </div>
+                        <button onclick="openModal('edit-wallet-modal')" class="w-8 h-8 bg-[#DC2626] rounded-lg flex items-center justify-center text-white hover:bg-red-700 transition">
+                            <i class="fa-solid fa-pencil text-xs"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-2 mt-4">SOL Chain</p>
+                     <div class="bg-[#111] rounded-2xl p-3 mb-3 flex items-center justify-between border border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                                <i class="fa-solid fa-ghost text-purple-400 text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-white font-bold text-sm">Phantom wallet</div>
+                                <div class="text-gray-500 text-[10px] flex items-center gap-1">Gw7dNs.....kaGd9 <i class="fa-solid fa-link text-[8px]"></i></div>
+                            </div>
+                        </div>
+                        <button onclick="openModal('edit-wallet-modal')" class="w-8 h-8 bg-[#DC2626] rounded-lg flex items-center justify-center text-white hover:bg-red-700 transition">
+                            <i class="fa-solid fa-pencil text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="relative w-full mb-4">
+                        <input type="text" placeholder="Find your referral" class="w-full bg-[#111] border border-gray-800 rounded-xl py-3 px-4 pl-4 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-red-600">
+                        <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-gray-500 text-xs"></i>
+                    </div>
+                    <div class="bg-[#111] rounded-2xl border border-gray-800 overflow-hidden">
+                        <div class="overflow-x-auto no-scrollbar">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="bg-[#1a1a1a] text-gray-400">
+                                    <tr>
+                                        <th class="px-4 py-3 font-medium">#</th>
+                                        <th class="px-4 py-3 font-medium">Referral</th>
+                                        <th class="px-4 py-3 font-medium">Registration date</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr class="hover:bg-white/5 transition">
+                                        <td class="px-4 py-3 text-white">1</td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-6 h-6 rounded-full border border-orange-500 bg-orange-500">
+                                                <div>
+                                                    <div class="text-white font-bold">John Davidson</div>
+                                                    <div class="text-[9px] text-gray-500">0x742d...5e8f</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-300">14.11.2025</td>
+                                    </tr>
+                                    <tr class="hover:bg-white/5 transition">
+                                        <td class="px-4 py-3 text-white">1</td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Jane" class="w-6 h-6 rounded-full border border-orange-500 bg-orange-500">
+                                                <div>
+                                                    <div class="text-white font-bold">John Davidson</div>
+                                                    <div class="text-[9px] text-gray-500">0x742d...5e8f</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-300">14.11.2025</td>
+                                    </tr>
+                                     <tr class="hover:bg-white/5 transition">
+                                        <td class="px-4 py-3 text-white">1</td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Bob" class="w-6 h-6 rounded-full border border-orange-500 bg-orange-500">
+                                                <div>
+                                                    <div class="text-white font-bold">John Davidson</div>
+                                                    <div class="text-[9px] text-gray-500">0x742d...5e8f</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-300">14.11.2025</td>
+                                    </tr>
+                                    <tr class="hover:bg-white/5 transition">
+                                        <td class="px-4 py-3 text-white">1</td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Alice" class="w-6 h-6 rounded-full border border-orange-500 bg-orange-500">
+                                                <div>
+                                                    <div class="text-white font-bold">John Davidson</div>
+                                                    <div class="text-[9px] text-gray-500">0x742d...5e8f</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-300">14.11.2025</td>
+                                    </tr>
+                                    <tr class="hover:bg-white/5 transition">
+                                        <td class="px-4 py-3 text-white">1</td>
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Mike" class="w-6 h-6 rounded-full border border-orange-500 bg-orange-500">
+                                                <div>
+                                                    <div class="text-white font-bold">John Davidson</div>
+                                                    <div class="text-[9px] text-gray-500">0x742d...5e8f</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-gray-300">14.11.2025</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="post-options-modal" class="modal-slide-up absolute inset-0 z-[110] flex items-end justify-center hidden">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('post-options-modal')"></div>
+            <div class="w-full max-w-[375px] px-4 pb-8 relative z-10">
+                <div class="bg-[#1C1C1E] rounded-xl overflow-hidden mb-3">
+                     <button class="w-full p-4 flex items-center justify-between border-b border-gray-700/50 active:bg-white/5 transition">
+                         <span class="text-[#FF3B30] font-medium text-lg">Complain</span>
+                         <i class="fa-solid fa-triangle-exclamation text-[#FF3B30] text-xl"></i>
+                     </button>
+                     <button onclick="copyLink(); closeModal('post-options-modal')" class="w-full p-4 flex items-center justify-between active:bg-white/5 transition">
+                         <span class="text-white font-medium text-lg">Copy link</span>
+                         <i class="fa-regular fa-copy text-white text-xl"></i>
+                     </button>
+                </div>
+                <button onclick="closeModal('post-options-modal')" class="w-full bg-[#1C1C1E] text-white font-bold text-lg py-4 rounded-xl active:scale-95 transition">Cancel</button>
+            </div>
+        </div>
+        <div id="setup-wallets-modal" class="modal absolute inset-0 z-[80] bg-black flex flex-col overflow-hidden hidden">
+            <div class="p-6 pt-12 flex flex-col items-center">
+                <div class="w-12 h-12 bg-[#1a1a1a] rounded-full flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-wallet text-[#DC2626]"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white">Setup Your Wallets</h2>
+                <p class="text-gray-400 text-xs text-center mt-2 px-6">Add wallet addresses to receive referral rewards in different networks</p>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-20 no-scrollbar space-y-3">
+                <div class="bg-[#1a1a1a] p-4 rounded-2xl border border-gray-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-brands fa-ethereum text-gray-400"></i>
+                        <span class="text-sm font-medium text-white">EVM Networks</span>
+                    </div>
+                    <input type="text" placeholder="0x..." class="w-full bg-black border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:border-red-600 focus:outline-none placeholder-gray-600">
+                </div>
+                <div class="bg-[#1a1a1a] p-4 rounded-2xl border border-gray-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-bars-staggered text-purple-400"></i>
+                        <span class="text-sm font-medium text-white">Solana</span>
+                    </div>
+                    <input type="text" placeholder="Enter SOL address" class="w-full bg-black border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:border-red-600 focus:outline-none placeholder-gray-600">
+                </div>
+                <div class="bg-[#1a1a1a] p-4 rounded-2xl border border-gray-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-regular fa-gem text-red-500"></i>
+                        <span class="text-sm font-medium text-white">Tron</span>
+                    </div>
+                    <input type="text" placeholder="T..." class="w-full bg-black border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:border-red-600 focus:outline-none placeholder-gray-600">
+                </div>
+            </div>
+            <div class="p-4 bg-black border-t border-gray-900">
+                <button onclick="closeModal('setup-wallets-modal')" class="w-full bg-[#DC2626] text-white font-bold py-3.5 rounded-xl hover:bg-red-700 transition">Save Wallets</button>
+                <button onclick="closeModal('setup-wallets-modal')" class="w-full text-gray-500 py-2 mt-2 text-sm hover:text-white transition">Back</button>
+            </div>
+        </div>
+        <div id="withdraw-funds-modal" class="modal absolute inset-0 z-[80] bg-black flex flex-col overflow-hidden hidden">
+            <div class="p-4 flex items-center gap-3 border-b border-gray-900 sticky top-0 bg-black z-10">
+                <button onclick="closeModal('withdraw-funds-modal')" class="text-white"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-lg font-bold text-white">Withdraw Funds</h2>
+            </div>
+            <p class="px-4 text-[10px] text-gray-500 mt-1">Transfer funds to your wallet</p>
+            <div class="flex-1 px-4 pt-4 overflow-y-auto no-scrollbar">
+                <div class="bg-[#1a1a1a] rounded-2xl p-5 mb-6 border border-gray-800">
+                    <div class="text-xs text-gray-400 mb-1">Available balance</div>
+                    <div class="text-2xl font-bold text-[#4ade80]">$1250.50 <span class="text-sm text-gray-500 font-normal">USDT</span></div>
+                </div>
+                <label class="text-sm font-bold text-white block mb-2">Withdrawal Wallet</label>
+                <div class="bg-[#1a1a1a] rounded-xl p-3 flex items-center justify-between mb-6 cursor-pointer border border-gray-800">
+                    <div class="flex items-center gap-2 text-gray-400 text-sm">
+                        <i class="fa-solid fa-wallet"></i> Select wallet
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+                </div>
+                <label class="text-sm font-bold text-white block mb-2 flex justify-between">
+                    Withdrawal Amount <span class="text-[#DC2626] text-xs cursor-pointer">MAX</span>
+                </label>
+                <div class="relative mb-6">
+                    <input type="text" placeholder="0" class="w-full bg-[#000] border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:border-red-600 focus:outline-none">
+                </div>
+                <div class="bg-[#1a1a1a] rounded-xl p-4 mb-6 border border-gray-800/50">
+                    <div class="flex gap-2 items-start">
+                        <i class="fa-solid fa-circle-info text-[#DC2626] text-xs mt-0.5"></i>
+                        <ul class="text-[10px] text-gray-400 space-y-1">
+                            <li>Minimum withdrawal: $10 USDT</li>
+                            <li>Processing time: 5-30 minutes</li>
+                            <li>Network fee is deducted from your balance</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-sm font-bold text-white">Financial Password</label>
+                    <button onclick="openModal('reset-password-modal')" class="text-[#DC2626] text-xs font-bold hover:underline">Change Password</button>
+                </div>
+                <div class="relative mb-6">
+                    <input type="password" placeholder="Current Password" class="w-full bg-[#000] border border-gray-800 rounded-xl px-4 py-3 pr-10 text-sm text-white focus:border-red-600 focus:outline-none">
+                    <i class="fa-regular fa-eye absolute right-4 top-3.5 text-gray-500"></i>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-900 bg-black">
+                <button class="w-full bg-[#1a1a1a] text-gray-500 font-bold py-3.5 rounded-xl hover:bg-[#DC2626] hover:text-white transition">Confirm Withdrawal</button>
+            </div>
+        </div>
+        <div id="edit-wallet-modal" class="modal absolute inset-0 z-[80] bg-black flex flex-col overflow-hidden hidden">
+            <div class="p-6 pt-8 sticky top-0 bg-black z-10">
+                <h2 class="text-xl font-bold text-white">Edit Wallet</h2>
+                <p class="text-gray-500 text-xs mt-1">Update your wallet address</p>
+                <div class="bg-[#1a1a1a] rounded-2xl p-4 mt-6 flex items-center gap-3 border border-gray-800">
+                    <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
+                        <i class="fa-brands fa-ethereum text-gray-400"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold text-sm">Ethereum (EVM)</div>
+                        <div class="text-[9px] text-gray-500">ETH • Base • Arbitrum • Polygon • BNB Chain</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 px-4 overflow-y-auto no-scrollbar">
+                <label class="text-sm font-bold text-white block mb-2">Current Address</label>
+                <div class="relative mb-4">
+                    <div class="w-full bg-[#1a1a1a] border border-gray-800 rounded-xl px-4 py-3 text-xs text-gray-400 break-all pr-10">
+                        0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+                    </div>
+                    <i class="fa-regular fa-copy absolute right-4 top-3.5 text-white cursor-pointer"></i>
+                </div>
+                <label class="text-sm font-bold text-white block mb-2">New Address</label>
+                <div class="relative mb-6">
+                    <input type="text" placeholder="0x..." class="w-full bg-black border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:border-red-600 focus:outline-none">
+                </div>
+                <div class="bg-[#1a1a1a] rounded-2xl p-5 mb-4 border border-gray-800">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
+                        <span class="font-bold text-white text-sm">Important Notice</span>
+                    </div>
+                    <ul class="text-[10px] text-gray-400 space-y-1.5 list-disc pl-4">
+                        <li>Make sure you own this wallet address</li>
+                        <li>All future rewards will be sent to this address</li>
+                        <li>This change requires password verification</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-4 bg-black border-t border-gray-900 flex gap-3">
+                <button onclick="closeModal('edit-wallet-modal')" class="flex-1 bg-[#DC2626] text-white font-bold py-3.5 rounded-2xl hover:bg-red-700 transition">Apply</button>
+                <button onclick="closeModal('edit-wallet-modal')" class="flex-1 bg-[#1a1a1a] text-white font-bold py-3.5 rounded-2xl hover:bg-gray-800 transition">Cancel</button>
+            </div>
+        </div>
+        <div id="reset-password-modal" class="modal absolute inset-0 z-[90] bg-black flex flex-col overflow-hidden hidden">
+            <div class="p-6 pt-8 sticky top-0 bg-black z-10">
+                <h2 class="text-xl font-bold text-white">Reset Password</h2>
+                <p class="text-gray-500 text-xs mt-1">Update your account financial password</p>
+                <div class="w-10 h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center mt-4">
+                    <i class="fa-solid fa-shield-halved text-[#DC2626]"></i>
+                </div>
+            </div>
+            <div class="flex-1 px-4 overflow-y-auto no-scrollbar">
+                <label class="text-sm font-bold text-gray-300 block mb-2">Current Password</label>
+                <div class="relative mb-4">
+                    <input type="password" placeholder="Current Password" class="w-full bg-[#111] border border-gray-800 rounded-xl px-4 py-3 pr-10 text-sm text-white focus:border-red-600 focus:outline-none">
+                </div>
+                <label class="text-sm font-bold text-gray-300 block mb-2">New Password</label>
+                <div class="relative mb-4">
+                    <input type="password" placeholder="New Password" class="w-full bg-[#111] border border-gray-800 rounded-xl px-4 py-3 pr-10 text-sm text-white focus:border-red-600 focus:outline-none">
+                </div>
+                <label class="text-sm font-bold text-gray-300 block mb-2">Confirm New Password</label>
+                <div class="relative mb-6">
+                    <input type="password" placeholder="Confirm Password" class="w-full bg-[#111] border border-gray-800 rounded-xl px-4 py-3 pr-10 text-sm text-white focus:border-red-600 focus:outline-none">
+                </div>
+            </div>
+            <div class="p-4 bg-black border-t border-gray-900">
+                <button onclick="closeModal('reset-password-modal')" class="w-full bg-[#1a1a1a] text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition">Update Password</button>
+                <button onclick="closeModal('reset-password-modal')" class="w-full text-gray-500 py-2 mt-2 text-sm hover:text-white transition">Cancel</button>
+            </div>
+        </div>
+        <div id="network-select-modal" class="modal-slide-up fixed inset-0 z-[130] flex items-end justify-center hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('network-select-modal'); setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300)"></div>
+    <div class="bg-[#0A0A0A] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-[#D4AF37] shadow-[0_-5px_20px_rgba(212,175,55,0.2)]">
+        <h3 class="text-gold-shine text-xl font-bold text-center mb-6 drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">Select Network</h3>
+        <div class="space-y-4 mb-6">
+            <button onclick="selectNetwork('Ethereum', 'ERC20', 'fa-brands fa-ethereum')" class="w-full flex items-center gap-4 p-3 border border-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-2xl transition-all group">
+                <i class="fa-brands fa-ethereum text-2xl text-gray-400 group-hover:text-[#FDE68A] w-8 text-center transition-colors"></i>
+                <div class="text-left">
+                    <div class="text-white font-bold group-hover:text-[#FDE68A] transition-colors">Ethereum</div>
+                    <div class="text-gray-500 text-xs group-hover:text-[#FDE68A]/70 transition-colors">ERC20</div>
+                </div>
+            </button>
+            <button onclick="selectNetwork('Solana', 'SPL', 'fa-solid fa-wind')" class="w-full flex items-center gap-4 p-3 border border-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-2xl transition-all group">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-teal-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">S</div>
+                <div class="text-left">
+                    <div class="text-white font-bold group-hover:text-[#FDE68A] transition-colors">Solana</div>
+                    <div class="text-gray-500 text-xs group-hover:text-[#FDE68A]/70 transition-colors">SPL</div>
+                </div>
+            </button>
+             <button onclick="selectNetwork('TON', 'Jetton', 'fa-solid fa-diamond')" class="w-full flex items-center gap-4 p-3 border border-white/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-2xl transition-all group">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-sm"><i class="fa-regular fa-gem"></i></div>
+                <div class="text-left">
+                    <div class="text-white font-bold group-hover:text-[#FDE68A] transition-colors">TON</div>
+                    <div class="text-gray-500 text-xs group-hover:text-[#FDE68A]/70 transition-colors">Jetton</div>
+                </div>
+            </button>
+        </div>
+        <button onclick="closeModal('network-select-modal'); setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300)" class="w-full text-gray-500 py-4 text-center hover:text-[#FDE68A] transition-colors">Cancel</button>
+    </div>
+</div>
+        </div>
+        <div id="privacy-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                <button onclick="closeModal('privacy-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 class="text-xl font-bold text-white ml-2">Privacy & Security</h2>
+            </div>
+            <div class="flex-1 px-4 pt-4">
+                <p class="text-white text-sm mb-3">Set financial password</p>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <input type="password" id="fin-pass" value="1234444435cgdfg" class="w-full input-dark text-white py-3 px-4 rounded-full pr-10" oninput="checkPass()">
+                        <button onclick="togglePass('fin-pass')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                    <input type="password" placeholder="Repeat the password" class="w-full input-dark text-white py-3 px-4 rounded-full">
+                    <button id="btn-confirm-pass" onclick="closeModal('privacy-modal'); openModal('settings-modal');" class="w-full bg-[#1a1a1a] text-gray-400 py-3 rounded-full font-medium mt-6 transition-colors">Confirm financial password</button>
+                </div>
+            </div>
+        </div>
+         <div id="wallet-modal" class="modal-slide-up absolute inset-0 z-[100] flex items-end justify-center hidden">
+            <div class="absolute inset-0 bg-black/80             backdrop-blur-sm" onclick="closeWalletModal()"></div>
+            <div class="bg-[#0f0f0f] w-full max-w-[430px] rounded-t-3xl p-6 relative z-10 border-t border-red-900/30">
+                <h3 class="text-white text-2xl font-bold text-center mb-2">Connect your wallet</h3>
+                <div class="grid grid-cols-3 gap-4 mb-8 mt-6">
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-12 h-12"></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><i class="fa-solid fa-shield-halved text-blue-500 text-4xl"></i></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><i class="fa-solid fa-ghost text-purple-400 text-4xl"></i></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><i class="fa-solid fa-wallet text-blue-400 text-3xl"></i></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" class="w-10 h-10 grayscale opacity-80"></button>
+                    <button class="aspect-square bg-[#1a1a1a] rounded-2xl flex items-center justify-center hover:bg-white/5 transition"><img src="images/coinbase.png" class="w-10 h-10 grayscale opacity-80"></button>
+                </div>
+            </div>
+        </div>
+        <div id="faq-modal" class="modal-slide-up fixed inset-0 z-[70] flex items-center justify-center hidden">
+                <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('faq-modal')"></div>
+                <div class="bg-black w-full max-w-[375px] h-full relative z-10 flex flex-col overflow-hidden border-x border-gray-800 shadow-2xl">
+                    <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+                        <button onclick="closeModal('faq-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="text-xl font-bold text-white ml-2">FAQ & Support</h2>
+                    </div>
+                    <div class="flex-1 overflow-y-auto px-4 pb-32 no-scrollbar">
+                        <h3 class="text-gray-300 mb-4 mt-4">FAQ about the BoosTX</h3>
+                        <div class="space-y-3 mb-8">
+                            <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800">
+                                <button class="w-full flex justify-between items-center text-left" onclick="toggleAccordion(this)">
+                                    <span class="text-white text-sm font-bold pr-4">How does it work?</span>
+                                    <i class="fa-solid fa-chevron-down text-gray-400 text-xs rotate-icon"></i>
+                                </button>
+                                <div class="accordion-content text-gray-400 text-xs mt-2 leading-relaxed">Simple. You boost, we promote.</div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <button onclick="openModal('support-form-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-white/5 transition">Support team</button>
+                            <button onclick="openModal('tickets-modal')" class="w-full bg-[#1a1a1a] text-white py-4 rounded-2xl font-medium hover:bg-white/5 transition">Tickets list</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<div id="support-form-modal" class="modal-slide-up fixed inset-0 z-[80] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('support-form-modal')"></div>
+    <div class="bg-black w-full max-w-[375px] h-full relative z-10 flex flex-col overflow-hidden border-x border-gray-800 shadow-2xl">
+        <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10">
+            <button onclick="closeModal('support-form-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+            <h2 class="text-xl font-bold text-white ml-2">Support</h2>
+        </div>
+        <div class="flex-1 px-4 pt-4">
+            <h3 class="text-white text-lg mb-4">How can we help you?</h3>
+            <div class="space-y-4">
+                <input type="text" placeholder="Subject" class="w-full input-dark text-white py-3 px-4 rounded-2xl">
+                <textarea placeholder="Tell us about your problem" class="w-full input-dark text-white py-3 px-4 rounded-2xl h-64 resize-none"></textarea>
+                <button onclick="sendSupport()" class="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg mt-4 hover:bg-red-700 transition">Send an appeal</button>
+            </div>
+        </div>
+        <div id="support-success" class="absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500 z-[90]">
+            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4"><i class="fa-solid fa-check text-white text-3xl"></i></div>
+            <h3 class="text-white text-xl font-bold">Message Sent!</h3>
+        </div>
+    </div>
+</div>
+<div id="tickets-modal" class="modal-slide-up fixed inset-0 z-[80] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('tickets-modal')"></div>
+    <div class="bg-black w-full max-w-[375px] h-full relative z-10 flex flex-col overflow-hidden border-x border-gray-800 shadow-2xl">
+        <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 bg-black z-10 border-b border-gray-900/50">
+            <button onclick="closeModal('tickets-modal')" class="text-white text-xl p-2"><i class="fa-solid fa-chevron-left"></i></button>
+            <h2 class="text-xl font-bold text-white ml-2">Tickets list</h2>
+        </div>
+        <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-3 no-scrollbar pt-4">
+            <div class="bg-[#0f0f0f] rounded-2xl p-4 border border-gray-800 hover:border-gray-700 transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-2">
+                        <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=John" class="w-8 h-8 rounded-full bg-orange-500">
+                        <div>
+                            <div class="text-white text-sm">John Davidson</div>
+                            <div class="text-[10px] text-gray-500">#TK-2847</div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400">2 min</span>
+                </div>
+                <div class="text-white text-sm font-medium mb-1">Theme: I can't withdraw funds</div>
+                <p class="text-gray-500 text-xs mb-3">Hello! I've been trying to withdraw funds for 2 days now...</p>
+                <div class="flex justify-between items-center">
+                    <span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-dollar-sign text-[8px]"></i> Finance</span>
+                    <span class="bg-red-900/50 text-red-400 text-[10px] px-3 py-1 rounded-full border border-red-900">New</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <div id="project-info-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[70]">
+            <div class="relative h-full w-full flex flex-col">
+                <div class="w-full h-48 relative">
+                     <div class="w-full h-full bg-gradient-to-b from-orange-400 to-black relative overflow-hidden">
+                         <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="absolute top-10 left-1/2 transform -translate-x-1/2 w-64 h-64 object-cover">
+                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                     </div>
+                     <div class="absolute top-4 left-0 right-0 pl-16 px-4 flex justify-between items-center z-10 mr-2">
+                         <div class="bg-green-700/80 border border-green-300/30 text-green-400 px-3 py-1 rounded-full text-xs flex items-center gap-1 pr-4">
+                             The application has been approved <i class="fa-solid fa-circle-check"></i>
+                         </div>
+                         <button onclick="openModal('project-edit-modal')" class="text-white bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-white/20 transition backdrop-blur-sm shadow-lg">
+                             <i class="fa-solid fa-gear"></i>
+                         </button>
+                     </div>
+                </div>
+                <div class="px-4 -mt-12 relative z-10 flex-1 overflow-y-auto no-scrollbar pb-24">
+                    <div class="flex gap-4 items-end mb-4">
+                        <div class="w-24 h-24 rounded-full border-4 border-black bg-orange-500 overflow-hidden flex-shrink-0">
+                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Fire" class="w-full h-full object-cover">
+                        </div>
+                        <div class="pb-2">
+                             <span class="bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded mb-1 inline-block">Solana <i class="fa-solid fa-bars"></i></span>
+                             <h2 class="text-2xl font-bold text-white leading-tight">BoostX Project</h2>
+                        </div>
+                    </div>
+                    <div class="text-gray-400 text-[10px] mb-2 flex items-center gap-2">
+                        <span>CA: 0x34a9c05...b84a86</span>
+                        <button class="text-gray-300 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <p class="text-gray-400 text-xs mb-4">Blockchain analytics automation platform for optimizing on-chain metrics and statistical data growth across networks.</p>
+                    <div class="flex gap-2 mb-6">
+                        <button class="w-10 h-10 rounded-xl bg-[#1a1a1a] text-white flex items-center justify-center hover:bg-[#222]"><i class="fa-brands fa-telegram"></i></button>
+                        <button class="w-10 h-10 rounded-xl bg-[#1a1a1a] text-white flex items-center justify-center hover:bg-[#222]">
+                             <svg viewBox="0 0 24 24" aria-hidden="true" class="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        </button>
+                        <button class="w-10 h-10 rounded-xl bg-[#1a1a1a] text-white flex items-center justify-center hover:bg-[#222]"><i class="fa-solid fa-globe"></i></button>
+                    </div>
+                    <div class="flex gap-3 mb-6 overflow-x-auto no-scrollbar">
+                         <button class="bg-red-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 text-sm whitespace-nowrap hover:bg-red-700">Vote <i class="fa-regular fa-thumbs-up"></i></button>
+                         <button class="bg-[#1a1a1a] text-gray-300 px-6 py-3 rounded-2xl font-medium text-sm whitespace-nowrap hover:bg-[#222]">Follow</button>
+                         <div class="bg-[#111] border border-gray-800 rounded-2xl p-2 min-w-[80px] flex flex-col items-center justify-center">
+                             <span class="text-[9px] text-gray-500">Transactions</span>
+                             <span class="text-green-500 font-bold text-sm">+1.6M</span>
+                         </div>
+                         <div class="bg-[#111] border border-gray-800 rounded-2xl p-2 min-w-[80px] flex flex-col items-center justify-center">
+                             <span class="text-[9px] text-gray-500">Transactions</span>
+                             <span class="text-green-500 font-bold text-sm">+1.6M</span>
+                         </div>
+                         <div class="bg-[#111] border border-gray-800 rounded-2xl p-2 min-w-[80px] flex flex-col items-center justify-center">
+                             <span class="text-[9px] text-gray-500">Transactions</span>
+                             <span class="text-green-500 font-bold text-sm">+1.6M</span>
+                         </div>
+                    </div>
+                    <div class="w-full h-[350px] bg-black rounded-2xl border border-gray-800 overflow-hidden mb-8">
+                        <div class="flex justify-between items-center p-2 border-b border-gray-800">
+                            <div class="flex gap-4 text-xs text-gray-400">
+                                <span class="text-white font-bold text-lg ml-2"><i class="fa-solid fa-plus-circle"></i></span>
+                                <span class="hover:text-white cursor-pointer">1s</span>
+                                <span class="hover:text-white cursor-pointer">1m</span>
+                                <span class="hover:text-white cursor-pointer">5m</span>
+                                <span class="text-blue-500 font-bold">1h</span>
+                                <span class="hover:text-white cursor-pointer">4h</span>
+                            </div>
+                            <div class="flex gap-2 text-gray-400">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                          <div id="tradingview_12345" style="height: 100%; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeModal('project-info-modal')" class="absolute top-4 left-4 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition z-20 backdrop-blur-sm">
+                    <i class="fa-solid fa-chevron-left"></i>
+                 </button>
+            </div>
+        </div>
+        <div id="project-edit-modal" class="modal absolute inset-0 bg-black flex flex-col overflow-hidden z-[80]">
+             <div class="px-4 pt-6 pb-4 text-center relative sticky top-0 bg-black z-10">
+                 <button onclick="closeModal('project-edit-modal')" class="absolute left-4 top-6 text-white text-xl hover:text-gray-300"><i class="fa-solid fa-chevron-left"></i></button>
+                 <h2 class="text-xl font-bold text-white">Edit your project</h2>
+             </div>
+             <div class="flex-1 overflow-y-auto px-4 pb-32 space-y-4 no-scrollbar">
+                 <div class="flex flex-col items-center gap-2">
+                     <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 relative overflow-hidden p-4">
+                         <img src="images/upload.png" class="w-full h-full object-contain">
+                     </div>
+                     <span class="text-gray-500 text-[10px]">Set up avatar</span>
+                 </div>
+                 <div class="w-full h-32 bg-red-600 rounded-2xl flex items-center justify-center shadow-inner relative overflow-hidden p-8">
+                     <img src="images/upload.png" class="w-12 h-12 object-contain">
+                 </div>
+                 <div class="text-center text-gray-500 text-[10px] mb-4">Set up banner (ratio 3:1)</div>
+                 <input type="text" placeholder="Enter name" class="w-full input-dark text-white py-3 px-4 rounded-2xl text-sm border border-gray-800 bg-transparent">
+                 <div class="relative">
+                     <i class="fa-brands fa-telegram absolute left-4 top-3.5 text-white text-lg"></i>
+                     <span class="absolute right-4 top-3.5 text-gray-500 text-xs">Your Telegram channel link</span>
+                     <input type="text" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-2xl text-sm border border-gray-800 bg-transparent text-right">
+                 </div>
+                 <div class="relative">
+                     <i class="fa-solid fa-globe absolute left-4 top-3.5 text-white text-lg"></i>
+                     <span class="absolute right-4 top-3.5 text-gray-500 text-xs">Your website link</span>
+                     <input type="text" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-2xl text-sm border border-gray-800 bg-transparent text-right">
+                 </div>
+                 <div class="relative">
+                      <div class="absolute left-4 top-3.5 w-4 h-4 text-white"><svg viewBox="0 0 24 24" aria-hidden="true" class="w-full h-full fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></div>
+                     <span class="absolute right-4 top-3.5 text-gray-500 text-xs">https://x.com</span>
+                     <input type="text" class="w-full input-dark text-white py-3 pl-12 pr-4 rounded-2xl text-sm border border-gray-800 bg-transparent text-right">
+                 </div>
+                 <div class="relative">
+                     <textarea placeholder="My project description" class="w-full input-dark text-white p-4 rounded-2xl h-28 resize-none text-xs border border-red-900/50 bg-transparent"></textarea>
+                     <span class="absolute bottom-3 right-4 text-[10px] text-gray-500">0 / 120</span>
+                 </div>
+                 <button class="w-full bg-red-600 text-white py-4 rounded-full font-bold text-lg hover:bg-red-700 transition shadow-lg shadow-red-900/30 mt-2">Continue</button>
+                 <div class="mt-8 pt-4 border-t border-gray-900">
+                     <h3 class="text-red-600 text-center font-bold mb-4">Danger zone</h3>
+                     <button onclick="openBlurModal('delete-confirm-modal')" class="w-full border border-gray-800 text-white py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition">
+                         Delete project <i class="fa-regular fa-trash-can text-gray-400"></i>
+                     </button>
+                 </div>
+             </div>
+        </div>
+        <div id="delete-confirm-modal" class="modal-blur absolute inset-0 flex items-center justify-center z-[90]">
+             <div class="absolute inset-0 bg-black/60" onclick="closeBlurModal('delete-confirm-modal')"></div>
+             <div class="bg-[#0f0f0f] border border-gray-800 w-[90%] max-w-[350px] rounded-3xl p-6 relative z-10 flex flex-col items-center text-center shadow-2xl">
+                 <h3 class="text-red-500 font-bold text-xl mb-2 leading-tight">Are you really ready to delete your project?</h3>
+                 <p class="text-gray-500 text-[10px] mb-6">After deletion, it will be impossible to restore the project's indicators.</p>
+                 <p class="text-white text-xs mb-2">Enter the <span class="font-bold">FULL</span> name of the project to delete</p>
+                 <input type="text" placeholder="Enter project name" class="w-full bg-[#050505] border border-gray-800 text-white text-xs py-3 px-4 rounded-xl mb-6 focus:border-red-500 outline-none text-center">
+                 <button class="w-full border border-gray-700 text-gray-400 py-3 rounded-full text-sm flex items-center justify-center gap-2 hover:border-red-500 hover:text-red-500 transition group">
+                     Delete project <i class="fa-regular fa-trash-can group-hover:text-red-500 transition"></i>
+                 </button>
+             </div>
+        </div>
+        <div id="create-post-modal" class="fixed inset-0 z-[90] hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('create-post-modal')"></div>
+    <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[380px] bg-black flex flex-col border-x border-gray-800 shadow-2xl">
+        <div class="flex justify-between items-center p-4 border-b border-gray-900 bg-black z-10 shrink-0">
+            <h2 class="text-xl font-bold text-white">Create Post</h2>
+            <button onclick="closeModal('create-post-modal')" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div class="p-4 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div class="flex items-center gap-3 mb-4">
+                 <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">A</div>
+                 <div>
+                     <h4 class="font-bold text-white text-sm">Admin</h4>
+                     <p class="text-xs text-gray-500">@admin</p>
+                 </div>
+            </div>
+            <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-3 mb-4">
+                <textarea placeholder="Write some bio about your project" class="w-full h-32 bg-transparent outline-none text-gray-300 text-sm resize-none placeholder-gray-600 mb-2"></textarea>
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-2">
+                        <button class="bg-[#1a1a1a] px-3 py-1 rounded-full text-[10px] text-gray-300 border border-gray-700 flex items-center gap-1"><i class="fa-regular fa-image text-red-500"></i> Image +</button>
+                        <button class="bg-[#1a1a1a] px-3 py-1 rounded-full text-[10px] text-gray-300 border border-gray-700 flex items-center gap-1"><i class="fa-solid fa-video text-red-500"></i> Video +</button>
+                        <button class="bg-[#1a1a1a] px-3 py-1 rounded-full text-[10px] text-gray-300 border border-gray-700 flex items-center gap-1"><i class="fa-solid fa-chart-line text-red-500"></i> Chart +</button>
+                    </div>
+                    <span class="text-[10px] text-gray-600">0 / 1200</span>
+                </div>
+            </div>
+            <div class="relative w-full h-40 bg-[#111] rounded-2xl border border-gray-800 overflow-hidden mb-4">
+                <button class="absolute top-2 right-2 w-6 h-6 bg-black/80 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark text-xs"></i></button>
+                 <svg viewBox="0 0 300 100" class="w-full h-full absolute bottom-0" preserveAspectRatio="none">
+                    <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15 V100 H0 Z" fill="rgba(34, 197, 94, 0.1)"></path>
+                    <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15" fill="none" stroke="#22c55e" stroke-width="2"></path>
+                </svg>
+            </div>
+            <input type="text" placeholder="Enter contract address (Optionally)" class="w-full bg-[#050505] border border-gray-800 rounded-2xl py-3 px-4 text-xs text-gray-300 outline-none focus:border-gray-600 mb-4">
+            <div class="bg-[#111] rounded-xl p-4 mb-8">
+                <p class="text-xs text-gray-500 mb-2">Tips:</p>
+                <ul class="space-y-1">
+                    <li class="text-[10px] text-gray-600 flex items-center gap-2"><span class="w-1 h-1 bg-red-500 rounded-full"></span> Add token charts to share market insights</li>
+                    <li class="text-[10px] text-gray-600 flex items-center gap-2"><span class="w-1 h-1 bg-red-500 rounded-full"></span> Attach images or videos to make posts engaging</li>
+                    <li class="text-[10px] text-gray-600 flex items-center gap-2"><span class="w-1 h-1 bg-red-500 rounded-full"></span> Keep your content relevant and informative</li>
+                </ul>
+            </div>
+            <button class="w-full bg-[#E50914] hover:bg-red-700 text-white font-bold py-3.5 rounded-full mb-3 transition shadow-lg shadow-red-900/40">Publish post</button>
+            <button onclick="closeModal('create-post-modal')" class="w-full bg-[#111] border border-gray-800 text-gray-400 font-bold py-3.5 rounded-full hover:text-white transition mb-8">Delete post</button>
+        </div>
+    </div>
+</div>
+         <div id="share-post-modal" class="fixed inset-0 z-[90] hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('share-post-modal')"></div>
+    <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[400px] bg-black flex flex-col border-x border-gray-800 shadow-2xl">
+        <div class="p-4 flex items-center gap-4 bg-black z-10 shrink-0 border-b border-gray-900">
+            <button onclick="closeModal('share-post-modal')" class="text-white text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-900 transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="text-xl font-bold text-white">Share Post</h2>
+        </div>
+        <div class="p-4 overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <p class="text-sm text-gray-400 mb-3 font-medium">Post Preview</p>
+            <div class="bg-[#111] rounded-2xl p-4 mb-6 border border-gray-800">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex gap-3">
+                        <img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Fire" class="w-10 h-10 rounded-full bg-black border border-gray-700">
+                        <div>
+                            <div class="flex items-center gap-1">
+                                <h4 class="font-bold text-sm text-white">CryptoTrader Pro</h4>
+                                <div class="text-[10px] text-gray-500">@cryptotrader • 2h ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-200 mb-3 leading-relaxed">
+                    🚀 Bitcoin breaking new resistance levels! <br>
+                    Analysis shows strong bullish momentum with key support at $42k.
+                    <span class="text-gray-400">#Bitcoin #Crypto #BTC</span>
+                </p>
+                <div class="w-full h-32 bg-[#080808] rounded-xl border border-gray-800 relative overflow-hidden mb-3">
+                    <div class="absolute top-2 right-2 bg-black/80 px-2 py-1 rounded text-[8px] text-white font-mono z-10">BTC/USD</div>
+                    <svg viewBox="0 0 300 100" class="w-full h-full absolute bottom-0" preserveAspectRatio="none">
+                        <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15 V100 H0 Z" fill="rgba(34, 197, 94, 0.1)"></path>
+                        <path d="M0,80 L30,75 L60,85 L90,60 L120,65 L150,40 L180,50 L210,30 L240,35 L270,10 L300,15" fill="none" stroke="#22c55e" stroke-width="2"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-sm text-gray-200 mb-3 font-medium">Quick Share</p>
+            <div class="bg-[#1a1a1a] rounded-2xl p-4 flex items-center gap-4 mb-6 cursor-pointer hover:bg-[#222] active:scale-95 transition border border-gray-800/50">
+                <div class="w-10 h-10 rounded-full bg-[#333] flex items-center justify-center">
+                     <i class="fa-solid fa-link text-white text-lg"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <h4 class="font-bold text-sm text-white">Copy Link</h4>
+                    <p class="text-[10px] text-gray-500 truncate">https:
+                </div>
+            </div>
+            <p class="text-sm text-gray-200 mb-3 font-medium">Share to Social Media</p>
+            <div class="space-y-3 mb-6">
+                <button class="w-full bg-[#1a1a1a] p-3 rounded-2xl flex items-center gap-3 hover:bg-[#222] transition active:scale-95 border border-gray-800/50">
+                    <i class="fa-brands fa-twitter text-white text-lg w-8"></i> 
+                    <span class="text-sm text-gray-300 font-medium">Share on Twitter</span>
+                </button>
+                 <button class="w-full bg-[#1a1a1a] p-3 rounded-2xl flex items-center gap-3 hover:bg-[#222] transition active:scale-95 border border-gray-800/50">
+                    <i class="fa-brands fa-instagram text-white text-lg w-8"></i> 
+                    <span class="text-sm text-gray-300 font-medium">Share on Instagram</span>
+                </button>
+                 <button class="w-full bg-[#1a1a1a] p-3 rounded-2xl flex items-center gap-3 hover:bg-[#222] transition active:scale-95 border border-gray-800/50">
+                    <i class="fa-brands fa-telegram text-white text-lg w-8"></i> 
+                    <span class="text-sm text-gray-300 font-medium">Share on Telegram</span>
+                </button>
+            </div>
+            <p class="text-sm text-gray-200 mb-3 font-medium">Share to Stories</p>
+            <div class="space-y-3 pb-10">
+                 <button class="w-full bg-[#1a1a1a] p-3 rounded-2xl flex items-center gap-3 hover:bg-[#222] transition active:scale-95 border border-gray-800/50">
+                    <i class="fa-brands fa-instagram text-white text-lg w-8"></i> 
+                    <span class="text-sm text-gray-300 font-medium">Instagram Stories</span>
+                </button>
+                 <button class="w-full bg-[#1a1a1a] p-3 rounded-2xl flex items-center gap-3 hover:bg-[#222] transition active:scale-95 border border-gray-800/50">
+                    <i class="fa-brands fa-telegram text-white text-lg w-8"></i> 
+                    <span class="text-sm text-gray-300 font-medium">Telegram Stories</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+        <div id="toast-schedule" class="absolute top-5 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-3 rounded-full shadow-lg font-bold text-sm z-[200] opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i> Successfully Scheduled!
+        </div>
+        <div id="toast" class="absolute top-5 right-5 bg-white text-black px-4 py-2 rounded-lg shadow-lg font-bold text-sm z-[200] hidden">
+            Copied to clipboard!
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const openParam = urlParams.get('open');
+            if (openParam === 'tracker') {
+                setTimeout(() => {
+                    openModal('boosts-tracker-modal');
+                }, 100);
+            } else if (openParam === 'gifts') {
+                setTimeout(() => {
+                    openModal('gifts-modal');
+                }, 100);
+            }
+        });
+        const tabs = ['wall', 'projects', 'activity', 'achievements'];
+        let currentTabIndex = 0;
+        function switchTab(tabName) {
+            document.getElementById('content-wall').classList.add('hidden');
+            document.getElementById('content-projects').classList.add('hidden');
+            document.getElementById('content-activity').classList.add('hidden');
+            document.getElementById('content-achievements').classList.add('hidden');
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                const icon = btn.querySelector('i');
+                btn.classList.remove('text-white', 'border-red-600');
+                btn.classList.add('text-gray-500', 'border-transparent');
+                if(icon) icon.classList.remove('text-red-500');
+            });
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.classList.remove('text-gray-500', 'border-transparent');
+            activeBtn.classList.add('text-white', 'border-red-600');
+            currentTabIndex = tabs.indexOf(tabName);
+        }
+        function openModal(id) { 
+            const m = document.getElementById(id);
+            if(m) {
+                m.classList.remove('hidden'); 
+                setTimeout(()=>m.classList.add('active'), 10);
+            }
+        }
+        function closeModal(id) { 
+            const m = document.getElementById(id);
+            if(m) {
+                m.classList.remove('active'); 
+                setTimeout(()=>m.classList.add('hidden'), 350);
+            }
+        }
+        function openBlurModal(id) {
+            const m = document.getElementById(id);
+            if(m) {
+                m.classList.remove('hidden');
+                void m.offsetWidth; 
+                m.classList.add('active');
+            }
+        }
+        function closeBlurModal(id) {
+            const m = document.getElementById(id);
+            if(m) {
+                m.classList.remove('active');
+                setTimeout(()=>m.classList.add('hidden'), 200); 
+            }
+        }
+        function confirmSchedule() {
+            closeBlurModal('schedule-modal');
+            const toast = document.getElementById('toast-schedule');
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+        function openTrackerFromSuccess() {
+            closeModal('activate-success-modal');
+            closeModal('gifts-modal');
+            setTimeout(() => {
+                openModal('boosts-tracker-modal');
+            }, 300);
+        }
+         function openWalletModal() {
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+        function closeWalletModal() {
+            const modal = document.getElementById('wallet-modal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+        function selectNetwork(name, standard, iconClass) {
+            const display = document.getElementById('selected-network-display');
+            const standardDisplay = document.getElementById('token-standard');
+            if(display && standardDisplay) {
+                display.innerHTML = `<i class="${iconClass}"></i> ${name}`;
+                standardDisplay.innerText = standard;
+            }
+            closeModal('network-select-modal');
+            setTimeout(()=>document.getElementById('network-select-modal').classList.add('hidden'), 300);
+        }
+        function toggleRulesButton() {
+            const chk = document.getElementById('rules-check');
+            const btn = document.getElementById('rules-continue-btn');
+            if(chk.checked) {
+                btn.disabled = false;
+                btn.classList.remove('bg-[#1a1a1a]', 'text-gray-500');
+                btn.classList.add('bg-red-600', 'text-white');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-[#1a1a1a]', 'text-gray-500');
+                btn.classList.remove('bg-red-600', 'text-white');
+            }
+        }
+        function finishPublish() {
+            closeModal('publish-form-modal');
+            closeModal('rules-modal');
+            closeModal('launched-projects-modal');
+            closeModal('settings-modal');
+            switchTab('projects');
+        }
+        function togglePass(id) {
+            const inp = document.getElementById(id);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+        function checkPass() {
+            const val = document.getElementById('fin-pass');
+            if(!val) return;
+            const btn = document.getElementById('btn-confirm-pass');
+            if(val.value.length > 0) {
+                btn.classList.remove('bg-[#1a1a1a]', 'text-gray-400');
+                btn.classList.add('bg-red-600', 'text-white');
+            } else {
+                btn.classList.add('bg-[#1a1a1a]', 'text-gray-400');
+                btn.classList.remove('bg-red-600', 'text-white');
+            }
+        }
+        function openSettings() {
+        document.getElementById('page-edit').classList.remove('hidden');
+        }
+        function closeSettings() {
+            document.getElementById('page-edit').classList.add('hidden');
+        }
+        function sendSupport() {
+            const overlay = document.getElementById('support-success');
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                closeModal('support-form-modal');
+            }, 2000);
+        }
+        function copyLink() {
+            const link = "https://t.me/boostx?ref=12345BTX";
+            navigator.clipboard.writeText(link).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.remove('hidden');
+                toast.classList.remove('hidden'); 
+                toast.style.display = 'block'; 
+                toast.classList.add('toast');
+                setTimeout(() => {
+                    toast.classList.add('hiding');
+                    setTimeout(() => {
+                        toast.classList.remove('toast', 'hiding');
+                        toast.classList.add('hidden');
+                        toast.style.display = 'none'; 
+                    }, 300);
+                }, 3000);
+            });
+        }
+        let networkSelectionMode = 'publish'; 
+        function openNetworkModal(mode) {
+            networkSelectionMode = mode; 
+            openModal('network-select-modal');
+        }
+        function selectNetwork(name, standard, iconClass) {
+            if (networkSelectionMode === 'edit') {
+                const nameEl = document.getElementById('edit-net-name');
+                const stdEl = document.getElementById('edit-net-std');
+                if(nameEl) nameEl.innerText = name;
+                if(stdEl) stdEl.innerText = standard;
+            } else {
+                const display = document.getElementById('selected-network-display');
+                const standardDisplay = document.getElementById('token-standard');
+                if(display && standardDisplay) {
+                    display.innerHTML = `<i class="${iconClass}"></i> ${name}`;
+                    standardDisplay.innerText = standard;
+                }
+            }
+            closeModal('network-select-modal');
+            setTimeout(() => {
+                document.getElementById('network-select-modal').classList.add('hidden');
+            }, 300);
+        }
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.rotate-icon');
+            if (content.classList.contains('open')) {
+                content.classList.remove('open'); icon.classList.remove('open');
+            } else {
+                content.classList.add('open'); icon.classList.add('open');
+            }
+        }
+        function openBoost() {
+        document.getElementById('page-boost').classList.remove('hidden');
+        initChart(); 
+    }
+    function closeBoost() {
+        document.getElementById('page-boost').classList.add('hidden');
+    }
+        let chartInitialized = false;
+        function initChart() {
+            if(chartInitialized) return;
+            if(typeof TradingView !== 'undefined') {
+                 new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "BINANCE:BTCUSDT",
+                    "interval": "60",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": true,
+                    "hide_legend": true,
+                    "save_image": false,
+                    "container_id": "tradingview_12345",
+                    "allow_symbol_change": false,
+                    "backgroundColor": "rgba(0, 0, 0, 1)",
+                    "gridLineColor": "rgba(40, 40, 40, 0.5)"
+                });
+                chartInitialized = true;
+            }
+        }
+    </script>
+</body>
+</html>

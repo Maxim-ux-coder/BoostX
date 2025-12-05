@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BoostX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'boost-red': '#DC2626',
+                        'boost-dark': '#0A0A0A',
+                        'boost-card': '#1A1A1A',
+                        'boost-green': '#22C55E',
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.3s ease-in-out',
+                        'slideUp': 'slideUp 0.4s ease-out',
+                        'slideUpModal': 'slideUpModal 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        'pulse-glow': 'pulse-glow 2s infinite',
+                        'wave': 'wave 1.2s ease-in-out infinite',
+                        'wave-delay-1': 'wave 1.2s ease-in-out infinite 0.1s',
+                        'wave-delay-2': 'wave 1.2s ease-in-out infinite 0.2s',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #333;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #DC2626;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #DC2626;
+            cursor: pointer;
+            border: none;
+        }
+        .text-gold-shine {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+            font-weight: 800; 
+            text-shadow: 0px 0px 10px rgba(255, 215, 0, 0.3); 
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        @keyframes wave {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        .dot-wave { animation: wave 1.2s ease-in-out infinite; }
+        .dot-wave-1 { animation: wave 1.2s ease-in-out infinite 0.1s; }
+        .dot-wave-2 { animation: wave 1.2s ease-in-out infinite 0.2s; }
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .modal-slide-up { animation: slideUpModal 0.3s ease-out; }
+        .btn-gold {
+            background: linear-gradient(135.34deg, #F5AB4A 15.43%, #FBE67B 38.47%, #FCFBE7 53.36%, #F7D14E 69.97%, #D4A041 86.26%);
+            background-blend-mode: multiply;
+            color: #3f2e00;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+        .btn-gold:active {
+            transform: translateY(0) scale(0.95);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        .nav-icon-boost {
+             width: 38px;
+             height: 38px;
+             object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+<div class="relative w-full h-full md:max-w-[375px] md:h-[850px] md:max-h-[100vh] bg-black overflow-hidden md:shadow-2xl md:border md:border-gray-800 flex flex-col isolate">
+    <div class="flex-1 overflow-y-auto no-scrollbar w-full relative z-0 pb-24">
+        <div class="flex-1 overflow-y-auto relative no-scrollbar h-full">
+        <main id="mainPage" class="bg-boost-dark pt-20 pb-10 min-h-full relative"> 
+            <div class="absolute top-4 left-4 z-50 pt-2">
+                <button onclick="window.location.href='profile.html?open=gifts'"
+                    class="bg-[#1a1a1a] border border-gray-800 text-white text-[10px] px-3 py-1.5 rounded-full flex items-center gap-2 font-bold hover:bg-[#222] transition active:scale-95 cursor-pointer relative">
+                    Your Gifts <i class="fa-solid fa-gift text-red-500"></i>
+                </button>
+            </div>
+            <div class="absolute top-4 right-4 z-50 pt-2">
+                <button onclick="window.location.href='profile.html?open=tracker'"
+                    class="bg-[#1a1a1a] border border-gray-800 text-white text-[10px] px-3 py-1.5 rounded-full flex items-center gap-2 font-bold hover:bg-[#222] transition active:scale-95 cursor-pointer relative">
+                    My Boosts <i class="fa-solid fa-rocket text-gray-400"></i>
+                </button>
+            </div>
+            <div class="px-4 max-w-md mx-auto">
+                <h1 class="text-3xl font-bold text-white mb-1 text-center">
+                    <span class="text-boost-red">Boost</span> your projects with our
+                </h1>
+                <h1 class="text-3xl font-bold text-white mb-10 text-center">boosters:</h1>
+                <div class="relative mb-6 rounded-2xl overflow-hidden bg-boost-card h-[220px] flex flex-col group">
+                    <img src="images/boosters-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none">
+                    <div class="relative p-6 z-10 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-3">Standard booster</h2>
+                            <p class="text-gray-300 text-sm mb-6 max-w-[80%]">
+                                A basic booster package that automatically improves your blockchain project's core metrics.
+                            </p>
+                        </div>
+                        <button onclick="window.location.href='standard-boost.html'"
+                            class="btn-gold w-full py-3 rounded-full text-sm font-bold transition-all active:scale-95 relative z-20 cursor-pointer">
+                            Start boosting
+                        </button>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden bg-boost-card h-[220px] flex flex-col group">
+                    <img src="images/boosters-bg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none">
+                    <div class="relative p-6 z-10 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-3">Advanced booster</h2>
+                            <p class="text-gray-300 text-sm mb-6 max-w-[80%]">
+                                An advanced enhancement package that gives you complete control over the growth dynamics of your project.
+                            </p>
+                        </div>
+                        <button onclick="handleButtonClick(this, goToSetupPage)"
+                            class="btn-gold w-full py-3 rounded-full text-sm font-bold transition-all active:scale-95 relative z-20 cursor-pointer">
+                            Start boosting
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <main id="setupPage" class="min-h-full bg-boost-dark hidden pb-20">
+            <div class="p-4 pt-0 overflow-y-auto">
+                <div class="sticky top-0 bg-boost-dark z-30 pt-8 pb-4 mb-2 flex items-center border-b border-transparent">
+                    <button onclick="showPage('mainPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Set up your boost</h1>
+                </div>
+                <div class="flex gap-2 mb-8">
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-br from-yellow-900/40 via-black to-yellow-900/40 rounded-2xl p-4 border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#D4AF37]/10 to-transparent animate-pulse pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <h3 class="text-white font-semibold text-lg">Holders Boost</h3>
+                                    <p class="text-gray-400 text-xs">Increase unique holders</p>
+                                </div>
+                                <div class="text-2xl font-bold text-[#FDE68A] drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]" id="holdersValue">50,000</div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                    <span>Min: 100</span>
+                                    <span>Max: 100,000</span>
+                                </div>
+                                <input type="range" min="100" max="100000" value="50000" 
+                                    oninput="updateBoostValue('holders', this.value)" 
+                                    class="w-full range-gold">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-400">~0.0123$ per 1 holder</span>
+                                <span class="text-[#FDE68A] font-semibold">Price: <span id="holdersPrice">615$</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-red-900/30 to-red-950/30 rounded-2xl p-4 border border-red-900/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <h3 class="text-white font-semibold text-lg">Transactions Boost</h3>
+                                <p class="text-gray-400 text-xs">Increase unique transactions</p>
+                            </div>
+                            <div class="text-2xl font-bold text-boost-green" id="transactionsValue">25,000</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>Min: 100</span>
+                                <span>Max: 100,000</span>
+                            </div>
+                            <input type="range" min="100" max="100000" value="25000" 
+                                oninput="updateBoostValue('transactions', this.value)" 
+                                class="w-full">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">~0.0123$ per 1 transaction</span>
+                            <span class="text-boost-green font-semibold">Price: <span id="transactionsPrice">308$</span></span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-red-900/30 to-red-950/30 rounded-2xl p-4 border border-red-900/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <h3 class="text-white font-semibold text-lg">Volume Boost</h3>
+                                <p class="text-gray-400 text-xs">Increase trading volume</p>
+                            </div>
+                            <div class="text-2xl font-bold text-boost-green" id="volumeValue">50,000</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>Min: 100</span>
+                                <span>Max: 100,000</span>
+                            </div>
+                            <input type="range" min="100" max="100000" value="50000" 
+                                oninput="updateBoostValue('volume', this.value)" 
+                                class="w-full">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">~0.0123$ per 1 volume</span>
+                            <span class="text-boost-green font-semibold">Price: <span id="volumePrice">615$</span></span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-red-900/30 to-red-950/30 rounded-2xl p-4 border border-red-900/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <h3 class="text-white font-semibold text-lg">Dexscreener</h3>
+                                <p class="text-gray-400 text-xs">Increase reactions</p>
+                            </div>
+                            <div class="text-2xl font-bold text-boost-green" id="dexscreenerValue">50,000</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>Min: 100</span>
+                                <span>Max: 100,000</span>
+                            </div>
+                            <input type="range" min="100" max="100000" value="50000" 
+                                oninput="updateBoostValue('dexscreener', this.value)" 
+                                class="w-full">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-400">~0.0123$ per 1 reaction</span>
+                            <span class="text-boost-green font-semibold">Price: <span id="dexscreenerPrice">615$</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-between items-center text-white">
+                    <span class="text-lg">Total cost:</span>
+                    <span class="text-2xl font-bold text-boost-green" id="totalCost">2,153$</span>
+                </div>
+                <button onclick="handleButtonClick(this, goToAdvancedContract)" 
+                    class="w-full bg-boost-red text-white py-4 rounded-full font-semibold mt-6 transition-transform active:scale-95">
+                    Start boost
+                </button>
+            </div>
+        </main>
+        <main id="advancedContractPage" class="min-h-full bg-boost-dark hidden pb-20">
+            <div class="p-4 pt-0">
+                <div class="sticky top-0 bg-boost-dark z-30 pt-8 pb-4 mb-2 flex items-center border-b border-transparent">
+                    <button onclick="showPage('setupPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Contract details</h1>
+                </div>
+                <div class="flex gap-2 mb-8">
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                </div>
+                <div class="bg-boost-card rounded-2xl p-6">
+                    <h2 class="text-white text-xl font-semibold mb-6">Enter your contract address:</h2>
+                    <button onclick="openNetworkModal()" 
+                        class="w-full bg-gradient-to-br from-yellow-900/20 via-black to-yellow-900/20 border border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)] rounded-xl p-4 flex justify-between items-center mb-4 transition-all active:scale-[0.98]">
+                        <span id="selectedAdvancedNetwork" class="text-[#FDE68A]">Choose your network</span>
+                        <svg class="w-5 h-5 text-[#FDE68A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="bg-black rounded-xl px-6 py-4 mb-4">
+                        <input type="text" 
+                            id="advancedContractInput"
+                            placeholder="Enter CA" 
+                            class="w-full bg-transparent text-white placeholder-gray-500 focus:outline-none text-sm">
+                    </div>
+                    <p id="advancedErrorMessage" class="text-boost-red text-sm hidden">
+                        Please check your CA. Make sure this address belongs to the selected network.
+                    </p>
+                </div>
+                <button onclick="handleButtonClick(this, goToAdvancedCheckOrder)" 
+                    class="w-full bg-boost-red text-white py-4 rounded-full font-semibold mt-8 transition-transform active:scale-95">
+                    Next
+                </button>
+            </div>
+        </main>
+        <main id="advancedCheckOrderPage" class="min-h-full bg-boost-dark hidden pb-20">
+            <div class="p-4 pt-0">
+                <div class="sticky top-0 bg-boost-dark z-30 pt-8 pb-4 mb-2 flex items-center border-b border-transparent">
+                    <button onclick="showPage('advancedContractPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Check your order</h1>
+                </div>
+                <div class="flex gap-2 mb-8">
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                </div>
+                <div class="bg-boost-card rounded-2xl p-6">
+                    <h2 class="text-white text-xl font-semibold mb-6">Your order:</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Category:</span>
+                            <span class="text-white">Advanced</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">CA:</span>
+                            <span id="advancedOrderCA" class="text-white text-xs break-all">0x742d35Cc6634C0532925a3b844Bc9e7595e8f</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">Network:</span>
+                            <div class="flex items-center gap-2">
+                                <span id="advancedOrderNetwork" class="text-white">Ethereum</span>
+                            </div>
+                        </div>
+                        <div class="bg-boost-red text-white rounded-full px-4 py-2 inline-block text-sm font-semibold">
+                            What will be boosted:
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Holders:</span>
+                            <span class="text-white font-bold" id="checkHolders">50,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Volumes:</span>
+                            <span class="text-white font-bold" id="checkVolumes">50,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Transactions:</span>
+                            <span class="text-white font-bold" id="checkTransactions">25,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Dexscreener reactions:</span>
+                            <span class="text-white font-bold" id="checkDexscreener">50,000</span>
+                        </div>
+                        <div class="pt-4 border-t border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500">To payment:</span>
+                                <div class="flex items-center gap-2">
+                                    <img src="images/usdt.png" alt="USDT" class="w-6 h-6">
+                                    <span id="advancedOrderPrice" class="text-boost-green font-bold text-xl">2,153 USDT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="handleButtonClick(this, goToAdvancedPayment)" 
+                    class="w-full bg-boost-red text-white py-4 rounded-full font-semibold mt-8 transition-transform active:scale-95">
+                    Confirm payment
+                </button>
+            </div>
+        </main>
+        <main id="advancedPaymentPage" class="min-h-full bg-boost-dark hidden pb-20">
+            <div class="p-4 pt-0">
+                <div class="sticky top-0 bg-boost-dark z-30 pt-8 pb-4 mb-2 flex items-center border-b border-transparent">
+                    <button onclick="showPage('advancedCheckOrderPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">Your payment method</h1>
+                </div>
+                <div class="flex gap-2 mb-8">
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-gray-700 rounded-full"></div>
+                </div>
+                <div class="bg-boost-card rounded-2xl p-6">
+                    <h2 class="text-white text-xl font-semibold mb-6">Choose the payment method:</h2>
+                    <button onclick="openPaymentNetworkModal()" 
+                        class="w-full bg-gradient-to-br from-yellow-900/20 via-black to-yellow-900/20 border border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)] rounded-xl p-4 flex justify-between items-center mb-4 transition-all active:scale-[0.98]">
+                        <span id="selectedAdvancedPaymentNetwork" class="text-[#FDE68A]">Choose your network type</span>
+                        <svg class="w-5 h-5 text-[#FDE68A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <button onclick="openCryptoModal()" 
+                        class="w-full bg-gradient-to-br from-yellow-900/20 via-black to-yellow-900/20 border border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.2)] rounded-xl p-4 flex justify-between items-center mb-4 transition-all active:scale-[0.98]">
+                        <span id="selectedAdvancedCrypto" class="text-[#FDE68A]">Choose your crypto to pay</span>
+                        <svg class="w-5 h-5 text-[#FDE68A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="bg-black rounded-xl p-4 flex justify-between items-center">
+                        <span class="text-gray-500">To payment:</span>
+                        <div class="flex items-center gap-2">
+                            <span id="advancedPaymentAmount" class="text-boost-green font-bold">2,153 USDT</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="handleButtonClick(this, goToAdvancedTransfer)" 
+                    class="w-full bg-boost-red text-white py-4 rounded-full font-semibold mt-6 transition-transform active:scale-95">
+                    Next
+                </button>
+                <p class="text-center text-gray-500 my-4">or</p>
+                <button onclick="goToWalletConnect()" 
+                    class="w-full bg-red-900 text-white py-4 rounded-full font-semibold transition-transform active:scale-95">
+                    Connect wallet
+                </button>
+            </div>
+        </main>
+        <main id="advancedTransferPage" class="min-h-full bg-boost-dark hidden pb-20">
+            <div class="p-4 pt-4">
+                <div class="sticky top-0 bg-boost-dark z-30 pt-4 pb-4 mb-2 flex items-center border-b border-transparent">
+                    <button onclick="showPage('advancedPaymentPage')" class="mr-3 text-gray-300 hover:text-white p-1 -ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold text-white">Transfer your crypto</h1>
+                </div>
+                <div class="flex gap-2 mb-4">
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                    <div class="h-1 flex-1 bg-boost-red rounded-full"></div>
+                </div>
+                <div class="bg-boost-card rounded-2xl p-4">
+                    <div class="text-center">
+                        <h2 class="text-xl font-semibold text-white mb-2">You need to pay:</h2>
+                        <p class="text-xs text-gray-400 mb-1">Send the funds within 30 minutes</p>
+                        <p class="text-xs text-boost-red mb-4">This address is only valid for 30 minutes. After the deadline, DO NOT send the funds, as this will lead to their irretrievable loss.</p>
+                        <div class="text-boost-green text-3xl font-bold mb-4" id="advancedTimer">29:29:29</div>
+                        <div class="bg-white rounded-xl p-3 inline-block mb-4">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoXgnU7FduTcy0Z7GyoXnMnCqLBwMwAXdiFw&s" alt="QR Code" class="w-48 h-48">
+                        </div>
+                        <div class="text-left space-y-3">
+                            <div>
+                                <p class="text-gray-500 text-xs mb-1">Send it exactly:</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-boost-green font-bold text-lg" id="advancedTransferAmount">2,153 USDT</span>
+                                    <button onclick="copyToClipboard(document.getElementById('advancedTransferAmount').textContent)" class="text-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-xs mb-1">Network:</p>
+                                <p class="text-white" id="advancedTransferNetwork">TRON</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-xs mb-1">To this address:</p>
+                                <div class="flex items-center justify-between bg-black rounded-lg p-2">
+                                    <span class="text-white text-xs break-all" id="advancedWalletAddress">TBLRQkqRFVbdSH5prcSoHFi1EqKh1rqPh7</span>
+                                    <button onclick="copyToClipboard(document.getElementById('advancedWalletAddress').textContent)" class="text-gray-400 ml-2 flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full bg-gray-700 text-white py-3 rounded-full font-semibold flex items-center justify-center gap-2 mt-4">
+                    <span>Waiting for a transfer</span>
+                    <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </button>
+            </div>
+        </main>
+        <main id="successPage" class="min-h-full bg-boost-dark hidden">
+            <div class="h-full flex flex-col items-center justify-center p-4">
+                <div class="w-32 h-32 mb-6 rounded-full bg-boost-green/20 flex items-center justify-center">
+                    <img src="images/sucess-icon.png" alt="Success" class="w-20 h-20">
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-4">Payment successful!</h1>
+                <p class="text-gray-400 text-center mb-8">Your boost will be activated within a few minutes</p>
+                <button onclick="returnToHome()" 
+                    class="bg-boost-red text-white px-8 py-3 rounded-full font-semibold transition-transform active:scale-95">
+                    Back to home
+                </button>
+            </div>
+        </main>
+        <main id="errorPage" class="min-h-full bg-boost-dark hidden">
+            <div class="h-full flex flex-col items-center justify-center p-4">
+                <div class="w-32 h-32 mb-6 rounded-full bg-red-900/20 flex items-center justify-center">
+                    <img src="images/error-icon.png" alt="Error" class="w-20 h-20">
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-4">Payment failed!</h1>
+                <p class="text-gray-400 text-center mb-8">Something went wrong. Please try again or contact support.</p>
+                <button onclick="returnToHome()" 
+                    class="bg-boost-red text-white px-8 py-3 rounded-full font-semibold transition-transform active:scale-95">
+                    Try again
+                </button>
+            </div>
+        </main>
+    </div>
+    <div id="networkModal" class="absolute inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex items-center justify-center">
+        <div class="bg-[#0A0A0A] border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] rounded-2xl p-6 w-full max-w-sm max-h-[80vh] overflow-y-auto relative mx-4">
+            <button onclick="closeNetworkModal()" class="absolute top-4 right-4 text-gray-400 z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <h3 class="text-[#FDE68A] font-semibold text-lg mb-4 drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">Choose your network type:</h3>
+            <div class="mb-4">
+                <button onclick="toggleCollapsible('evmChains')" class="w-full bg-[#1A1A1A] border border-white/10 text-white rounded-xl p-3 flex justify-between items-center">
+                    <span>EVM Chains</span>
+                    <svg class="w-5 h-5 transition-transform" id="evmChainsArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="evmChains" class="mt-2 space-y-2 max-h-60 overflow-hidden transition-all duration-300" style="max-height: 240px">
+                    <button onclick="selectNetwork('Ethereum', 'ERC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/eth.png" alt="ETH" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Ethereum</span></div>
+                        <span class="text-gray-500 text-sm">ERC20</span>
+                    </button>
+                    <button onclick="selectNetwork('Arbitrum', 'ARB')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/arbitrum-logo.png" alt="ARB" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Arbitrum</span></div>
+                        <span class="text-gray-500 text-sm">ARB</span>
+                    </button>
+                    <button onclick="selectNetwork('Polygon', 'POL')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/polygon-logo.png" alt="POL" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Polygon</span></div>
+                        <span class="text-gray-500 text-sm">POL</span>
+                    </button>
+                    <button onclick="selectNetwork('Base', 'BASE')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/base-logo.png" alt="BASE" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Base</span></div>
+                        <span class="text-gray-500 text-sm">BASE</span>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <button onclick="toggleCollapsible('otherChains')" class="w-full bg-[#1A1A1A] border border-white/10 text-white rounded-xl p-3 flex justify-between items-center">
+                    <span>Other chains</span>
+                    <svg class="w-5 h-5 transition-transform" id="otherChainsArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="otherChains" class="mt-2 space-y-2 max-h-0 overflow-hidden transition-all duration-300">
+                    <button onclick="selectNetwork('BNB', 'BSC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/bnb-logo.png" alt="BNB" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">BNB</span></div>
+                        <span class="text-gray-500 text-sm">BSC20</span>
+                    </button>
+                    <button onclick="selectNetwork('Tron', 'TRC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/tron-logo.png" alt="TRX" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Tron</span></div>
+                        <span class="text-gray-500 text-sm">TRC20</span>
+                    </button>
+                    <button onclick="selectNetwork('Solana', 'SOL')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30">
+                        <div class="flex items-center gap-3"><img src="images/Solana-logo.png" alt="SOL" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Solana</span></div>
+                        <span class="text-gray-500 text-sm">SOL</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="paymentNetworkModal" class="absolute inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex items-center justify-center">
+        <div class="bg-[#0A0A0A] border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] rounded-2xl p-6 w-full max-w-sm max-h-[80vh] overflow-y-auto relative mx-4">
+            <button onclick="closePaymentNetworkModal()" class="absolute top-4 right-4 text-gray-400 z-10"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            <h3 class="text-[#FDE68A] font-semibold text-lg mb-4 drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">Choose your network type:</h3>
+            <div class="mb-4">
+                <button onclick="toggleCollapsible('paymentEvmChains')" class="w-full bg-[#1A1A1A] border border-white/10 text-white rounded-xl p-3 flex justify-between items-center"><span>EVM Chains</span><svg class="w-5 h-5 transition-transform" id="paymentEvmChainsArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div id="paymentEvmChains" class="mt-2 space-y-2 max-h-60 overflow-hidden transition-all duration-300" style="max-height: 240px">
+                    <button onclick="selectPaymentNetwork('Ethereum', 'ERC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/eth.png" alt="ETH" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Ethereum</span></div><span class="text-gray-500 text-sm">ERC20</span></button>
+                    <button onclick="selectPaymentNetwork('Arbitrum', 'ARB')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/arbitrum-logo.png" alt="ARB" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Arbitrum</span></div><span class="text-gray-500 text-sm">ARB</span></button>
+                    <button onclick="selectPaymentNetwork('Polygon', 'POL')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/polygon-logo.png" alt="POL" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Polygon</span></div><span class="text-gray-500 text-sm">POL</span></button>
+                    <button onclick="selectPaymentNetwork('Base', 'BASE')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/base-logo.png" alt="BASE" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Base</span></div><span class="text-gray-500 text-sm">BASE</span></button>
+                    <button onclick="selectPaymentNetwork('Avalanche', 'AVAX')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/avalanche.png" alt="AVAX" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Avalanche</span></div><span class="text-gray-500 text-sm">AVAX</span></button>
+                    <button onclick="selectPaymentNetwork('Optimism', 'OP')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/optimism.png" alt="OP" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Optimism</span></div><span class="text-gray-500 text-sm">OP</span></button>
+                </div>
+            </div>
+            <div>
+                <button onclick="toggleCollapsible('paymentOtherChains')" class="w-full bg-[#1A1A1A] border border-white/10 text-white rounded-xl p-3 flex justify-between items-center"><span>Other chains</span><svg class="w-5 h-5 transition-transform" id="paymentOtherChainsArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div id="paymentOtherChains" class="mt-2 space-y-2 max-h-0 overflow-hidden transition-all duration-300">
+                    <button onclick="selectPaymentNetwork('BNB', 'BSC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/bnb-logo.png" alt="BNB" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">BNB</span></div><span class="text-gray-500 text-sm">BSC20</span></button>
+                    <button onclick="selectPaymentNetwork('Tron', 'TRC20')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/tron-logo.png" alt="TRX" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Tron</span></div><span class="text-gray-500 text-sm">TRC20</span></button>
+                    <button onclick="selectPaymentNetwork('Solana', 'SOL')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/Solana-logo.png" alt="SOL" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Solana</span></div><span class="text-gray-500 text-sm">SOL</span></button>
+                    <button onclick="selectPaymentNetwork('Cardano', 'ADA')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/cardano-logo.png" alt="ADA" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Cardano</span></div><span class="text-gray-500 text-sm">ADA</span></button>
+                    <button onclick="selectPaymentNetwork('Polkadot', 'DOT')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/Polkadot-logo.png" alt="DOT" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Polkadot</span></div><span class="text-gray-500 text-sm">DOT</span></button>
+                    <button onclick="selectPaymentNetwork('Cosmos', 'ATOM')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/cosmos-logo.png" alt="ATOM" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Cosmos</span></div><span class="text-gray-500 text-sm">ATOM</span></button>
+                    <button onclick="selectPaymentNetwork('Near', 'NEAR')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/near-logo.png" alt="NEAR" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">Near</span></div><span class="text-gray-500 text-sm">NEAR</span></button>
+                    <button onclick="selectPaymentNetwork('TON', 'TON')" class="w-full flex items-center justify-between p-3 hover:bg-[#1A1A1A] rounded-xl transition border border-transparent hover:border-[#D4AF37]/30"><div class="flex items-center gap-3"><img src="images/ton-logo.webp" alt="TON" class="w-8 h-8"><span class="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">TON</span></div><span class="text-gray-500 text-sm">TON</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="cryptoModal" class="absolute inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex items-center justify-center">
+        <div class="bg-[#0A0A0A] border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] rounded-2xl p-6 w-full max-w-sm relative mx-4">
+            <button onclick="closeCryptoModal()" class="absolute top-4 right-4 text-gray-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            <h3 class="text-[#FDE68A] font-semibold text-lg mb-4 drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">Choose your crypto:</h3>
+            <div class="space-y-2">
+                <button onclick="selectCrypto('USDT')" class="w-full bg-[#1A1A1A] border border-[#D4AF37]/50 text-[#FDE68A] hover:border-[#D4AF37] rounded-full py-3 font-semibold transition-all active:scale-95 flex items-center justify-center gap-2"><img src="images/usdt.png" alt="USDT" class="w-6 h-6">USDT</button>
+                <button onclick="selectCrypto('USDC')" class="w-full bg-[#1A1A1A] border border-[#D4AF37]/50 text-[#FDE68A] hover:border-[#D4AF37] rounded-full py-3 font-semibold transition-all active:scale-95 flex items-center justify-center gap-2"><img src="images/usdc.png" alt="USDC" class="w-6 h-6">USDC</button>
+                <button onclick="selectCrypto('ETH')" class="w-full bg-[#1A1A1A] border border-[#D4AF37]/50 text-[#FDE68A] hover:border-[#D4AF37] rounded-full py-3 font-semibold transition-all active:scale-95 flex items-center justify-center gap-2"><img src="images/eth.png" alt="ETH" class="w-6 h-6">ETH</button>
+                <button onclick="selectCrypto('BTC')" class="w-full bg-[#1A1A1A] border border-[#D4AF37]/50 text-[#FDE68A] hover:border-[#D4AF37] rounded-full py-3 font-semibold transition-all active:scale-95 flex items-center justify-center gap-2"><img src="images/btc.png" alt="BTC" class="w-6 h-6">BTC</button>
+            </div>
+        </div>
+    </div>
+    <div id="walletConnectModal" class="absolute inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeWalletConnect()"></div>
+        <div id="walletContent" class="absolute bottom-0 left-0 right-0 bg-boost-card rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300 max-w-[375px] mx-auto">
+            <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-6"></div>
+            <h2 class="text-white text-xl font-semibold mb-2 text-center">Connect your wallet</h2>
+            <p class="text-gray-500 text-sm text-center mb-8">Choose a wallet provider below to securely link your account and start using BoostX.</p>
+            <div class="grid grid-cols-3 gap-3">
+                <button class="wallet-item opacity-0 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 aspect-square flex items-center justify-center transition-all hover:from-gray-800 hover:to-gray-700 hover:scale-105"><img src="images/metamask.png" alt="MetaMask" class="w-10 h-10"></button>
+                <button class="wallet-item opacity-0 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 aspect-square flex items-center justify-center transition-all hover:from-gray-800 hover:to-gray-700 hover:scale-105"><img src="images/walletconnect.png" alt="WalletConnect" class="w-10 h-10"></button>
+                <button class="wallet-item opacity-0 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 aspect-square flex items-center justify-center transition-all hover:from-gray-800 hover:to-gray-700 hover:scale-105"><img src="images/phantom.png" alt="Phantom" class="w-10 h-10"></button>
+                <button class="wallet-item opacity-0 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 aspect-square flex items-center justify-center transition-all hover:from-gray-800 hover:to-gray-700 hover:scale-105"><img src="images/trustwallet.webp" alt="Trust Wallet" class="w-10 h-10"></button>
+                <button class="wallet-item opacity-0 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 aspect-square flex items-center justify-center transition-all hover:from-gray-800 hover:to-gray-700 hover:scale-105"><img src="images/coinbase.png" alt="Coinbase" class="w-10 h-10"></button>
+            </div>
+        </div>
+    </div>
+<nav class="absolute bottom-0 left-0 right-0 bg-black z-50 w-full mx-auto">
+    <div class="flex justify-around items-center py-3 relative">
+        <img src="images/light.png" alt=""
+             class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-70 w-48"
+             onerror="this.style.display='none'">
+        <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+            <img src="images/home.jpg" alt="Home" class="nav-icon shrink-0">
+            <span class="text-xs leading-none">Home</span>
+        </a>
+        <button onclick="returnToHome()"
+                class="flex flex-col items-center gap-1 px-4 py-2 -mx-4 -my-2 rounded-xl transition-colors relative z-10">
+            <div class="relative">
+                <img src="images/fire.png" alt="BoosT" class="nav-icon-boost shrink-0">
+                <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-600 rounded-full ring-2 ring-black"></div>
+            </div>
+            <span class="text-xs font-semibold text-gold-shine leading-none">BoosT</span>
+        </button>
+        <a href="colosseum.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+            <img src="images/colosseum.jpg" alt="Colosseum" class="nav-icon shrink-0">
+            <span class="text-xs leading-none">Colosseum</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors relative z-10">
+            <img src="images/profile.jpg" alt="Profile" class="nav-icon shrink-0">
+            <span class="text-xs leading-none">Profile</span>
+        </a>
+    </div>
+</nav>
+</div>
+<script>
+        let selectedBoostType = '';
+        let selectedNetworkData = '';
+        let selectedPaymentNetwork = '';
+        let selectedCryptoData = '';
+        let currentFlow = 'advanced';
+        let advancedBoostData = {
+            holders: 50000,
+            transactions: 25000,
+            volume: 50000,
+            dexscreener: 50000,
+            totalCost: 2153
+        };
+        let advancedTimerInterval = null;
+        function showFullScreenLoader() {
+            const loader = document.getElementById('fullScreenLoader');
+            if(loader) loader.style.display = 'flex';
+        }
+        function hideFullScreenLoader() {
+            const loader = document.getElementById('fullScreenLoader');
+            if(loader) {
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        }
+        function showButtonLoader(button) {
+            const originalText = button.innerHTML;
+            const originalWidth = button.offsetWidth;
+            const originalHeight = button.offsetHeight;
+            button.disabled = true;
+            button.style.width = originalWidth + 'px';
+            button.style.height = originalHeight + 'px';
+            button.style.minWidth = originalWidth + 'px';
+            button.style.minHeight = originalHeight + 'px';
+            button.innerHTML = `
+                <div class="flex justify-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full dot-wave"></div>
+                    <div class="w-1.5 h-1.5 bg-white rounded-full dot-wave-1"></div>
+                    <div class="w-1.5 h-1.5 bg-white rounded-full dot-wave-2"></div>
+                </div>
+            `;
+            return originalText;
+        }
+        function hideButtonLoader(button, originalText) {
+            button.disabled = false;
+            button.innerHTML = originalText;
+            button.style.width = '';
+            button.style.height = '';
+            button.style.minWidth = '';
+            button.style.minHeight = '';
+        }
+        function handleButtonClick(button, callback) {
+            const originalText = showButtonLoader(button);
+            setTimeout(() => {
+                hideButtonLoader(button, originalText);
+                if (typeof callback === 'function') {
+                    callback();
+                } else if (typeof window[callback] === 'function') {
+                    window[callback](); 
+                }
+            }, 1000);
+        }
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('main');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+        }
+        function goToSetupPage() {
+            currentFlow = 'advanced';
+            showPage('setupPage');
+        }
+        function openNetworkModal() {
+            const modal = document.getElementById('networkModal');
+            modal.style.display = 'flex';
+        }
+        function closeNetworkModal() {
+            document.getElementById('networkModal').style.display = 'none';
+        }
+        function selectNetwork(name, code) {
+            selectedNetworkData = name;
+            if (document.getElementById('selectedAdvancedNetwork')) {
+                document.getElementById('selectedAdvancedNetwork').textContent = name;
+                document.getElementById('selectedAdvancedNetwork').classList.remove('text-gray-400');
+                document.getElementById('selectedAdvancedNetwork').classList.add('text-white');
+            }
+            closeNetworkModal();
+        }
+        function openPaymentNetworkModal() {
+            const modal = document.getElementById('paymentNetworkModal');
+            modal.style.display = 'flex';
+        }
+        function closePaymentNetworkModal() {
+            document.getElementById('paymentNetworkModal').style.display = 'none';
+        }
+        function selectPaymentNetwork(name, code) {
+            selectedPaymentNetwork = name;
+            const el = document.getElementById('selectedAdvancedPaymentNetwork');
+            if(el) {
+                el.textContent = name;
+                el.classList.remove('text-gray-400');
+                el.classList.add('text-white');
+            }
+            closePaymentNetworkModal();
+        }
+        function openCryptoModal() {
+            const modal = document.getElementById('cryptoModal');
+            modal.style.display = 'flex';
+        }
+        function closeCryptoModal() {
+            document.getElementById('cryptoModal').style.display = 'none';
+        }
+        function selectCrypto(crypto) {
+            selectedCryptoData = crypto;
+            const el = document.getElementById('selectedAdvancedCrypto');
+            if(el) {
+                el.textContent = crypto;
+                el.classList.remove('text-gray-400');
+                el.classList.add('text-white');
+            }
+            closeCryptoModal();
+        }
+        function updateBoostValue(type, value) {
+            const numValue = parseInt(value);
+            const formattedValue = numValue.toLocaleString();
+            const price = Math.floor(numValue * 0.0123);
+            document.getElementById(type + 'Value').textContent = formattedValue;
+            document.getElementById(type + 'Price').textContent = price + '$';
+            advancedBoostData[type] = numValue;
+            const totalCost = 
+                Math.floor(advancedBoostData.holders * 0.0123) +
+                Math.floor(advancedBoostData.transactions * 0.0123) +
+                Math.floor(advancedBoostData.volume * 0.0123) +
+                Math.floor(advancedBoostData.dexscreener * 0.0123);
+            document.getElementById('totalCost').textContent = totalCost.toLocaleString() + '$';
+            advancedBoostData.totalCost = totalCost;
+        }
+        function goToAdvancedContract() {
+            currentFlow = 'advanced';
+            showPage('advancedContractPage');
+        }
+        function goToAdvancedCheckOrder() {
+            const contractInput = document.getElementById('advancedContractInput').value;
+            const network = document.getElementById('selectedAdvancedNetwork').textContent;
+            if (!contractInput || network === 'Choose your network') {
+                document.getElementById('advancedErrorMessage').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('advancedErrorMessage').classList.add('hidden');
+            document.getElementById('advancedOrderCA').textContent = contractInput;
+            document.getElementById('advancedOrderNetwork').textContent = network;
+            document.getElementById('checkHolders').textContent = advancedBoostData.holders.toLocaleString();
+            document.getElementById('checkVolumes').textContent = advancedBoostData.volume.toLocaleString();
+            document.getElementById('checkTransactions').textContent = advancedBoostData.transactions.toLocaleString();
+            document.getElementById('checkDexscreener').textContent = advancedBoostData.dexscreener.toLocaleString();
+            document.getElementById('advancedOrderPrice').textContent = advancedBoostData.totalCost.toLocaleString() + ' USDT';
+            showPage('advancedCheckOrderPage');
+        }
+        function goToAdvancedPayment() {
+            const price = document.getElementById('advancedOrderPrice').textContent;
+            document.getElementById('advancedPaymentAmount').textContent = price;
+            showPage('advancedPaymentPage');
+        }
+        function goToAdvancedTransfer() {
+            const network = document.getElementById('selectedAdvancedPaymentNetwork').textContent;
+            const crypto = document.getElementById('selectedAdvancedCrypto').textContent;
+            if (network === 'Choose your network type' || crypto === 'Choose your crypto to pay') {
+                alert('Please select network and cryptocurrency');
+                return;
+            }
+            const amount = document.getElementById('advancedPaymentAmount').textContent;
+            document.getElementById('advancedTransferAmount').textContent = amount;
+            document.getElementById('advancedTransferNetwork').textContent = selectedPaymentNetwork || 'TRON';
+            startAdvancedTimer();
+            showPage('advancedTransferPage');
+        }
+        function startAdvancedTimer() {
+            let totalSeconds = 29 * 60 + 29;
+            if (advancedTimerInterval) {
+                clearInterval(advancedTimerInterval);
+            }
+            advancedTimerInterval = setInterval(() => {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                const display = `29:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                const el = document.getElementById('advancedTimer');
+                if(el) el.textContent = display;
+                if (totalSeconds <= 0) {
+                    clearInterval(advancedTimerInterval);
+                    showPage('errorPage');
+                }
+                totalSeconds--;
+            }, 1000);
+        }
+        function goToWalletConnect() {
+            const modal = document.getElementById('walletConnectModal');
+            const content = document.getElementById('walletContent');
+            modal.style.display = 'block';
+            setTimeout(() => {
+                content.style.transform = 'translateY(0)';
+                const items = document.querySelectorAll('.wallet-item');
+                items.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                    }, index * 50);
+                });
+            }, 10);
+        }
+        function closeWalletConnect() {
+            const modal = document.getElementById('walletConnectModal');
+            const content = document.getElementById('walletContent');
+            content.style.transform = 'translateY(100%)';
+            const items = document.querySelectorAll('.wallet-item');
+            items.forEach((item) => {
+                item.style.opacity = '0';
+            });
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalButton = event.currentTarget;
+                const originalHTML = originalButton.innerHTML;
+                originalButton.innerHTML = `
+                    <svg class="w-5 h-5 text-boost-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                `;
+                setTimeout(() => {
+                    originalButton.innerHTML = originalHTML;
+                }, 2000);
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {}
+                document.body.removeChild(textArea);
+            });
+        }
+        function toggleCollapsible(id) {
+            const element = document.getElementById(id);
+            const arrow = document.getElementById(id + 'Arrow');
+            if (element.style.maxHeight === '0px' || element.style.maxHeight === '') {
+                element.style.maxHeight = '240px';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                element.style.maxHeight = '0px';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+        function returnToHome() {
+            selectedBoostType = '';
+            selectedNetworkData = '';
+            selectedPaymentNetwork = '';
+            selectedCryptoData = '';
+            advancedBoostData = {
+                holders: 50000,
+                transactions: 25000,
+                volume: 50000,
+                dexscreener: 50000,
+                totalCost: 2153
+            };
+            const advancedContractInput = document.getElementById('advancedContractInput');
+            if (advancedContractInput) advancedContractInput.value = '';
+            const selectedAdvancedNetwork = document.getElementById('selectedAdvancedNetwork');
+            if (selectedAdvancedNetwork) {
+                selectedAdvancedNetwork.textContent = 'Choose your network';
+                selectedAdvancedNetwork.classList.add('text-gray-400');
+                selectedAdvancedNetwork.classList.remove('text-white');
+            }
+            const selectedAdvancedPaymentNetwork = document.getElementById('selectedAdvancedPaymentNetwork');
+            if (selectedAdvancedPaymentNetwork) {
+                selectedAdvancedPaymentNetwork.textContent = 'Choose your network type';
+                selectedAdvancedPaymentNetwork.classList.add('text-gray-400');
+                selectedAdvancedPaymentNetwork.classList.remove('text-white');
+            }
+            const selectedAdvancedCrypto = document.getElementById('selectedAdvancedCrypto');
+            if (selectedAdvancedCrypto) {
+                selectedAdvancedCrypto.textContent = 'Choose your crypto to pay';
+                selectedAdvancedCrypto.classList.add('text-gray-400');
+                selectedAdvancedCrypto.classList.remove('text-white');
+            }
+            if (advancedTimerInterval) {
+                clearInterval(advancedTimerInterval);
+                advancedTimerInterval = null;
+            }
+            const advancedErrorMessage = document.getElementById('advancedErrorMessage');
+            if (advancedErrorMessage) advancedErrorMessage.classList.add('hidden');
+            const sliders = document.querySelectorAll('input[type="range"]');
+            sliders.forEach((slider, index) => {
+                if (index === 0) slider.value = 50000;
+                else if (index === 1) slider.value = 25000;
+                else if (index === 2) slider.value = 50000;
+                else if (index === 3) slider.value = 50000;
+            });
+            if (document.getElementById('holdersValue')) {
+                updateBoostValue('holders', 50000);
+                updateBoostValue('transactions', 25000);
+                updateBoostValue('volume', 50000);
+                updateBoostValue('dexscreener', 50000);
+            }
+            showPage('mainPage');
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modals = [
+                        'networkModal',
+                        'paymentNetworkModal',
+                        'cryptoModal',
+                        'walletConnectModal'
+                    ];
+                    modals.forEach(modalId => {
+                        const modal = document.getElementById(modalId);
+                        if (modal && modal.style.display !== 'none' && modal.style.display !== '') {
+                            if (modalId === 'walletConnectModal') {
+                                closeWalletConnect();
+                            } else if (modalId === 'networkModal') {
+                                closeNetworkModal();
+                            } else if (modalId === 'paymentNetworkModal') {
+                                closePaymentNetworkModal();
+                            } else if (modalId === 'cryptoModal') {
+                                closeCryptoModal();
+                            }
+                        }
+                    });
+                }
+            });
+            if (window.navigator && window.navigator.vibrate) {
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        window.navigator.vibrate(10);
+                    });
+                });
+            }
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.body.classList.add('ios-device');
+                function setViewportHeight() {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                }
+                window.addEventListener('resize', setViewportHeight);
+                setViewportHeight();
+            }
+            if (document.getElementById('holdersValue')) {
+                updateBoostValue('holders', 50000);
+                updateBoostValue('transactions', 25000);
+                updateBoostValue('volume', 50000);
+                updateBoostValue('dexscreener', 50000);
+            }
+        });
+    </script>
+</body>
+</html>
