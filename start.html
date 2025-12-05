@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BoostX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -11,7 +11,10 @@
             background-color: #000;
             margin: 0;
             padding: 0;
-            overflow: hidden; 
+            overflow: hidden;
+            /* Կարևոր է մոբայլ բրաուզերների համար */
+            height: 100dvh; 
+            width: 100vw;
         }
         .gold-text {
             background: linear-gradient(to bottom, #FCD34D, #B45309);
@@ -93,9 +96,14 @@
             object-fit: contain;
             z-index: 5;
         }
+        /* Ապահովում է, որ կոճակը միշտ վերև լինի home indicator-ից */
+        .safe-bottom {
+            padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+        }
     </style>
 </head>
-<body class="h-screen w-screen flex justify-center bg-black text-white">
+<!-- h-screen-ը փոխարինվել է h-[100dvh]-ով -->
+<body class="h-[100dvh] w-screen flex justify-center bg-black text-white">
     <div class="w-full max-w-[375px] h-full bg-black relative flex flex-col shadow-2xl overflow-hidden">
         <div class="absolute inset-0 bg-glow pointer-events-none z-0"></div>
         <div class="relative z-30 pt-12 pb-4 flex justify-center space-x-2 w-full shrink-0 transition-all duration-300" id="progress-container">
@@ -120,8 +128,8 @@
                         <video src="videos/hello.webm" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16">
+                <!-- Ավելացվել է safe-bottom դասը -->
+                <div class="p-6 shrink-0 w-full safe-bottom">
                     <button onclick="goToScreen(2)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -140,8 +148,7 @@
                         <img src="images/StartI/coin.png" alt="Service Info" class="w-[85%] h-auto object-contain relative z-10 translate-y-4">
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16 relative z-20">
+                <div class="p-6 shrink-0 w-full safe-bottom relative z-20">
                     <button onclick="goToScreen(3)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -164,8 +171,7 @@
                         <img src="images/StartI/hrtir.png" alt="Rocket" class="w-[55%] h-auto object-contain relative z-10 -rotate-[15deg] drop-shadow-2xl">
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16 relative z-20">
+                <div class="p-6 shrink-0 w-full safe-bottom relative z-20">
                     <button onclick="goToScreen(4)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -183,8 +189,7 @@
                         <img src="images/StartI/screen.png" alt="Level Up UI" class="w-[85%] h-auto object-contain translate-y-4">
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16 relative z-20">
+                <div class="p-6 shrink-0 w-full safe-bottom relative z-20">
                     <button onclick="goToScreen(5)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -206,8 +211,7 @@
                         <img src="images/StartI/referral.png" alt="Referral Card" class="w-[80%] h-auto object-contain -rotate-3 z-10">
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16">
+                <div class="p-6 shrink-0 w-full safe-bottom">
                     <button onclick="goToScreen(6)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -225,8 +229,7 @@
                         <img src="images/StartI/colosseum.png" alt="Colosseum" class="w-full h-full object-contain">
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full pb-16">
+                <div class="p-6 shrink-0 w-full safe-bottom">
                     <button onclick="goToScreen(7)" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Next
                     </button>
@@ -257,8 +260,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Փոխել եմ pb-10-ը pb-16-ի -->
-                <div class="p-6 shrink-0 w-full flex flex-col gap-3 pb-16">
+                <div class="p-6 shrink-0 w-full flex flex-col gap-3 safe-bottom">
                     <button onclick="window.location.href='profile.html?open=tracker'" class="w-full bg-[#E51D34] hover:bg-red-700 transition text-white font-semibold py-4 rounded-2xl text-lg shadow-[0_4px_14px_0_rgba(229,29,52,0.39)]">
                         Claim Your Free Boost
                     </button>
